@@ -1,4 +1,4 @@
-package com.dnacarromobile;
+package com.adatechnology.dnacarromobile;
 
 import android.app.Application;
 import android.content.res.Configuration;
