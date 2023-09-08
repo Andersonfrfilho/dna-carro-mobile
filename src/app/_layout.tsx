@@ -1,18 +1,11 @@
-import { Tabs } from "expo-router";
+import { Slot } from 'expo-router';
+import { SessionProvider } from '../context/auth';
 
-export default function TabRoutesLayout() {
-  return (<Tabs>
-    <Tabs.Screen
-      name="index"
-      options={{
-        title: "Inicio"
-      }}
-    />
-    <Tabs.Screen
-      name="profile"
-      options={{
-        title: "Profile"
-      }}
-    />
-  </Tabs>)
+export default function Root() {
+  // Set up the auth context and render our layout inside of it.
+  return (
+    <SessionProvider>
+      <Slot />
+    </SessionProvider>
+  );
 }
