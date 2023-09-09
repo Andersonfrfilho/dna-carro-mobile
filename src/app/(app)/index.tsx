@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native';
-import { useSession } from '../../context/auth';
+import { useSession } from '../../context/auth.context';
 
 
 export default function Index() {
