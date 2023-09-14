@@ -2,9 +2,22 @@
   "expo": {
     "name": "dna-carro-mobile",
     "slug": "dna-carro-mobile",
+    "scheme": "com.adatechnology.dnacarromobile",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
+    ],
+    "android": {
+      "package": "com.adatechnology.dnacarromobile"
+    },
+    "ios": {
+      "bundleIdentifier": "com.adatechnology.dnacarromobile"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router"
     ]
   }
 }

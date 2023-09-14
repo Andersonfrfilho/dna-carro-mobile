@@ -1,4 +1,4 @@
-package com.dnacarromobile;
+package com.adatechnology.dnacarromobile;
 
 import android.os.Build;
 import android.os.Bundle;
