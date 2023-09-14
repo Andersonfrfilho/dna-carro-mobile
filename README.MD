@@ -1,0 +1,1 @@
+[Animated](https://eveningkid.medium.com/interpolation-with-react-native-animations-853e467fe5c1)

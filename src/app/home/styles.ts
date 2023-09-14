@@ -2,6 +2,7 @@ import styled from "styled-components/native";
 import Constants from "expo-constants";
 import { Image } from "expo-image";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { Animated } from "react-native";
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -21,7 +22,7 @@ export const ContainerHeader = styled.View`
   border-bottom-left-radius: 100px;
 `;
 
-export const ContainerImage = styled.View`
+export const ContainerImage = styled(Animated.View)`
   flex: 2;
   justify-content: center;
   align-items: center;
