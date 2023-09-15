@@ -53,8 +53,7 @@ export const ContainerLogo = styled.View`
 `;
 
 export const ContainerBody = styled.View`
-  flex: 1;
-
+  height: 150px;
   flex-direction: row;
 
   justify-content: center;
@@ -63,7 +62,7 @@ export const ContainerBody = styled.View`
   background-color: ${(props) => props.theme.colors.powderWhite};
 `;
 
-export const ContainerSignIn = styled.TouchableOpacity`
+export const ContainerSignIn = styled.View`
   flex: 1;
 
   justify-content: center;
@@ -71,9 +70,27 @@ export const ContainerSignIn = styled.TouchableOpacity`
 
   border-top-right-radius: 100px;
 
-  margin-right: 2px;
+  margin-right: 1px;
 
   background-color: ${(props) => props.theme.colors.lightBlue};
+`;
+export const ButtonSignIn = styled.TouchableHighlight.attrs((props) => ({
+  underlayColor: props.theme.colors.rgba.persianBlue,
+}))`
+  justify-content: center;
+  align-items: center;
+
+  width: 120px;
+  height: 120px;
+
+  border-radius: 59px;
+
+  border-width: 4px;
+
+  border-block-color: ${(props) => props.theme.colors.rgba.highlightColor};
+  border-left-color: ${(props) => props.theme.colors.rgba.highlightColor};
+  border-right-color: ${(props) => props.theme.colors.rgba.highlightColor};
+  background-color: ${(props) => props.theme.colors.powderWhite};
 `;
 
 export const Title = styled.Text`
@@ -86,7 +103,7 @@ export const Title = styled.Text`
   text-align: center;
 `;
 
-export const ContainerSignUp = styled.TouchableOpacity`
+export const ContainerSignUp = styled.View`
   flex: 1;
 
   justify-content: center;
@@ -95,11 +112,32 @@ export const ContainerSignUp = styled.TouchableOpacity`
   border-top-left-radius: 100px;
 
   background-color: ${(props) => props.theme.colors.lightBlue};
+
+  margin-left: 1px;
+`;
+
+export const ButtonSignUp = styled.TouchableHighlight.attrs((props) => ({
+  underlayColor: props.theme.colors.rgba.persianBlue,
+}))`
+  justify-content: center;
+  align-items: center;
+
+  width: 120px;
+  height: 120px;
+
+  border-radius: 59px;
+
+  border-width: 4px;
+
+  border-block-color: ${(props) => props.theme.colors.rgba.highlightColor};
+  border-left-color: ${(props) => props.theme.colors.rgba.highlightColor};
+  border-right-color: ${(props) => props.theme.colors.rgba.highlightColor};
+  background-color: ${(props) => props.theme.colors.powderWhite};
 `;
 
 export const TitleButton = styled.Text`
   font-family: ${(props) => props.theme.fonts["Lato-Bold"]};
-  font-size: ${RFPercentage(3)}px;
+  font-size: ${RFPercentage(2.5)}px;
   color: ${(props) => props.theme.colors.background};
   text-align: center;
 `;

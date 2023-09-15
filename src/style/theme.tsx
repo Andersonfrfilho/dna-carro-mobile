@@ -15,6 +15,11 @@ export const theme = {
     accentColor: '#27ae60', // Verde
     secondaryColor: '#666666', // Cinza
     highlightColor: '#f39c12', // Amarelo ou laranja (cor de destaque)
+    rgba: {
+      highlightColor: 'rgba(256, 256, 200, 0.8)',
+      secondary: 'rgba(234, 134, 0, 0.3)',
+      persianBlue: 'rgba(18, 87, 104, 0.4)'
+    }
   },
   fonts: {
     'Lato-Black': 'Lato-Black',

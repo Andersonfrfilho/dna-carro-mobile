@@ -1,9 +1,9 @@
 import { useRouter } from 'expo-router';
-import { Container, ContainerBody, ContainerHeader, ContainerImage, ContainerSignIn, ContainerSignUp, ContainerTitle, LogoImage, Phrase, Title, TitleButton } from './styles';
+import { ButtonSignIn, ButtonSignUp, Container, ContainerBody, ContainerHeader, ContainerImage, ContainerSignIn, ContainerSignUp, ContainerTitle, LogoImage, Phrase, Title, TitleButton } from './styles';
 import { useEffect, useRef } from 'react';
 import { Animated } from 'react-native';
 
-export default function Home() {
+export default function Initial() {
   const logoAnimated = useRef(new Animated.Value(0)).current;
   const initialInputRangeLogo = useRef(0).current;
   const finallyInputRangeLogo = useRef(100).current;
@@ -71,23 +71,43 @@ export default function Home() {
             animatedOpacityLogo,
             animatedTransformLogo]}
         >
-          <LogoImage
-            source={require('../../assets/images/logo.svg')}
-          />
         </ContainerImage>
       </ContainerHeader>
       <ContainerBody>
         <ContainerSignIn
-          onPress={handleSignIn}
+
         >
-          <TitleButton>Login</TitleButton>
+          <ButtonSignIn
+            onPress={handleSignIn}
+            style={{
+              elevation: 10,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 3 },
+              shadowOpacity: 0.5,
+              shadowRadius: 5,
+            }}
+          >
+            <TitleButton>Login</TitleButton>
+          </ButtonSignIn>
         </ContainerSignIn>
         <ContainerSignUp
-          onPress={handleSignUp}
+
         >
-          <TitleButton>Cadastro</TitleButton>
+          <ButtonSignUp
+            onPress={handleSignUp}
+            style={{
+              elevation: 10,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 3 },
+              shadowOpacity: 0.5,
+              shadowRadius: 5,
+            }}
+          >
+
+            <TitleButton>Cadastro</TitleButton>
+          </ButtonSignUp>
         </ContainerSignUp>
       </ContainerBody>
-    </Container>
+    </Container >
   );
 }

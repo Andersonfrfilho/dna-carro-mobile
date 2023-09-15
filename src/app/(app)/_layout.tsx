@@ -18,7 +18,7 @@ export default function AppLayout() {
     console.log("########## - Home")
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
-    return <Redirect href="/home" />;
+    return <Redirect href="/initial" />;
   }
   console.log("########## - Auth")
   // This layout can be deferred because it's not the root layout.
