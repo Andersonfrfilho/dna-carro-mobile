@@ -1,25 +1,36 @@
-import { useRouter } from "expo-router";
 import {
-  ButtonSignIn,
-  ButtonSignUp,
   Container,
   ContainerBody,
   ContainerForm,
   ContainerHeader,
-  ContainerImage,
-  ContainerSignIn,
-  ContainerSignUp,
+  ContainerInput,
   ContainerTitle,
-  LogoImage,
   Phrase,
   Title,
-  TitleButton,
 } from "./styles";
-import { useEffect, useRef } from "react";
-import { Animated } from "react-native";
 import Input from "../../components/input";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+import { Button, Text, TextInput, View } from "react-native";
+
+const schema = yup
+  .object({
+    email: yup.string().email("Digite um email valido!").required("Um email é necessário!"),
+  })
+  .required()
 
 export default function SignUp() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  })
+
+  const onSubmit = (data) => console.log(data)
+
   return (
     <Container>
       <ContainerHeader>
@@ -29,10 +40,33 @@ export default function SignUp() {
         </ContainerTitle>
       </ContainerHeader>
       <ContainerBody>
-        <ContainerForm >
-          <Input />
+        <ContainerForm>
+          <ContainerInput>
+            <Input
+              placeholder="em@il"
+            />
+          </ContainerInput>
         </ContainerForm>
       </ContainerBody>
+      <View>
+        <Controller
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              placeholder="Email"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+          name="email"
+        />
+        {errors.email && <Text>This is required.</Text>}
+        <Button title="Submit" onPress={handleSubmit(onSubmit)} />
+      </View>
     </Container>
   );
 }

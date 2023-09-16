@@ -75,22 +75,19 @@ export const ContainerSignIn = styled.View`
   background-color: ${(props) => props.theme.colors.lightBlue};
 `;
 export const ButtonSignIn = styled.TouchableHighlight.attrs((props) => ({
-  underlayColor: props.theme.colors.rgba.persianBlue,
+  underlayColor: props.theme.colors.transparent.persianBlue,
 }))`
+  background-color: ${(props) => props.theme.colors.backgroundColor};
+
+  width: 100%;
+  height: 100%;
+
   justify-content: center;
   align-items: center;
 
-  width: 120px;
-  height: 120px;
-
-  border-radius: 59px;
-
+  border-radius: 60px;
   border-width: 4px;
-
-  border-block-color: ${(props) => props.theme.colors.rgba.highlightColor};
-  border-left-color: ${(props) => props.theme.colors.rgba.highlightColor};
-  border-right-color: ${(props) => props.theme.colors.rgba.highlightColor};
-  background-color: ${(props) => props.theme.colors.powderWhite};
+  border-color: ${(props) => props.theme.colors.lightGray};
 `;
 
 export const Title = styled.Text`
@@ -116,23 +113,43 @@ export const ContainerSignUp = styled.View`
   margin-left: 1px;
 `;
 
-export const ButtonSignUp = styled.TouchableHighlight.attrs((props) => ({
-  underlayColor: props.theme.colors.rgba.persianBlue,
-}))`
+export const ButtonBorder = styled.View`
   justify-content: center;
   align-items: center;
 
   width: 120px;
   height: 120px;
 
-  border-radius: 59px;
+  border-radius: 60px;
 
   border-width: 4px;
+  border-color: ${(props) => props.theme.colors.darkGray};
+`;
+export const ButtonBorderSecond = styled.View`
+  width: 100%;
+  height: 100%;
 
-  border-block-color: ${(props) => props.theme.colors.rgba.highlightColor};
-  border-left-color: ${(props) => props.theme.colors.rgba.highlightColor};
-  border-right-color: ${(props) => props.theme.colors.rgba.highlightColor};
+  border-radius: 60px;
+
+  border-width: 4px;
+  border-color: ${(props) => props.theme.colors.silver};
+
   background-color: ${(props) => props.theme.colors.powderWhite};
+`;
+export const ButtonSignUp = styled.TouchableHighlight.attrs((props) => ({
+  underlayColor: props.theme.colors.transparent.persianBlue,
+}))`
+  background-color: ${(props) => props.theme.colors.backgroundColor};
+
+  width: 100%;
+  height: 100%;
+
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 60px;
+  border-width: 4px;
+  border-color: ${(props) => props.theme.colors.lightGray};
 `;
 
 export const TitleButton = styled.Text`

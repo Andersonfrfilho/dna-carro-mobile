@@ -75,7 +75,7 @@ export const ContainerSignIn = styled.View`
   background-color: ${(props) => props.theme.colors.lightBlue};
 `;
 export const ButtonSignIn = styled.TouchableHighlight.attrs((props) => ({
-  underlayColor: props.theme.colors.rgba.persianBlue,
+  underlayColor: props.theme.colors.transparent.persianBlue,
 }))`
   justify-content: center;
   align-items: center;
@@ -87,9 +87,12 @@ export const ButtonSignIn = styled.TouchableHighlight.attrs((props) => ({
 
   border-width: 4px;
 
-  border-block-color: ${(props) => props.theme.colors.rgba.highlightColor};
-  border-left-color: ${(props) => props.theme.colors.rgba.highlightColor};
-  border-right-color: ${(props) => props.theme.colors.rgba.highlightColor};
+  border-block-color: ${(props) =>
+    props.theme.colors.transparent.highlightColor};
+  border-left-color: ${(props) =>
+    props.theme.colors.transparent.highlightColor};
+  border-right-color: ${(props) =>
+    props.theme.colors.transparent.highlightColor};
   background-color: ${(props) => props.theme.colors.powderWhite};
 `;
 
@@ -117,7 +120,7 @@ export const ContainerSignUp = styled.View`
 `;
 
 export const ButtonSignUp = styled.TouchableHighlight.attrs((props) => ({
-  underlayColor: props.theme.colors.rgba.persianBlue,
+  underlayColor: props.theme.colors.transparent.persianBlue,
 }))`
   justify-content: center;
   align-items: center;
@@ -129,9 +132,12 @@ export const ButtonSignUp = styled.TouchableHighlight.attrs((props) => ({
 
   border-width: 4px;
 
-  border-block-color: ${(props) => props.theme.colors.rgba.highlightColor};
-  border-left-color: ${(props) => props.theme.colors.rgba.highlightColor};
-  border-right-color: ${(props) => props.theme.colors.rgba.highlightColor};
+  border-block-color: ${(props) =>
+    props.theme.colors.transparent.highlightColor};
+  border-left-color: ${(props) =>
+    props.theme.colors.transparent.highlightColor};
+  border-right-color: ${(props) =>
+    props.theme.colors.transparent.highlightColor};
   background-color: ${(props) => props.theme.colors.powderWhite};
 `;
 

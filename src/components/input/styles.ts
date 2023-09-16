@@ -2,7 +2,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
 
 export const Container = styled.View`
-  height: 80px;
+  height: 100%;
   width: 100%;
 `;
 export const ContainerBorder = styled.View`
@@ -12,7 +12,7 @@ export const ContainerBorder = styled.View`
 `;
 export const ContainerSecondBorder = styled.View`
   border-width: 5px;
-  border-color: #fff;
+  border-color: ${(props) => props.theme.colors.backgroundColor};
   border-radius: 15px;
 `;
 export const ContainerLabel = styled.View`
@@ -20,14 +20,14 @@ export const ContainerLabel = styled.View`
 `;
 export const ContainerInput = styled.View`
   border-width: 5px;
-  border-color: rgba(0, 0, 0, 0.2);
+  border-color: ${(props) => props.theme.colors.transparent.blackGray};
   border-radius: 10px;
 `;
 
 export const Label = styled.Text``;
 
 export const InputComponent = styled.TextInput.attrs((props) => ({
-  placeholderTextColor: props.theme.colors.secondary,
+  placeholderTextColor: props.theme.colors.gray,
 }))`
   width: 100%;
   height: 100%;

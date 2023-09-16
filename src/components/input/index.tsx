@@ -1,13 +1,16 @@
-import { Text, TextInput, TextInputProps } from 'react-native';
+import { TextInputProps } from 'react-native';
 import { Container, ContainerBorder, ContainerInput, ContainerLabel, ContainerSecondBorder, InputComponent, Label } from './styles';
+import { useTheme } from 'styled-components/native';
 
 interface Props extends TextInputProps {
   messageLabel?: string;
 }
 
 export default function Input({ messageLabel, ...props }: Props) {
+  const theme = useTheme()
+
   const styleSmote = {
-    shadowColor: "#000000",
+    shadowColor: theme.colors.dark,
     shadowOffset: {
       width: 0,
       height: 10,

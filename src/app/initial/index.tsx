@@ -1,9 +1,12 @@
 import { useRouter } from 'expo-router';
-import { ButtonSignIn, ButtonSignUp, Container, ContainerBody, ContainerHeader, ContainerImage, ContainerSignIn, ContainerSignUp, ContainerTitle, LogoImage, Phrase, Title, TitleButton } from './styles';
+import { ButtonBorder, ButtonBorderSecond, ButtonSignIn, ButtonSignUp, Container, ContainerBody, ContainerHeader, ContainerImage, ContainerSignIn, ContainerSignUp, ContainerTitle, LogoImage, Phrase, Title, TitleButton } from './styles';
 import { useEffect, useRef } from 'react';
 import { Animated } from 'react-native';
+import { useTheme } from 'styled-components/native';
 
 export default function Initial() {
+  const theme = useTheme()
+
   const logoAnimated = useRef(new Animated.Value(0)).current;
   const initialInputRangeLogo = useRef(0).current;
   const finallyInputRangeLogo = useRef(100).current;
@@ -12,6 +15,16 @@ export default function Initial() {
   const sequenceOutputRangesOpacityLogo = useRef([0, 1]).current
   const sequenceOutputRangesScaleLogo = useRef([0, 1]).current
   const sequenceOutputRangesRotateLogo = useRef(['0deg', '2deg', '4deg', '2deg', '0deg', '-2deg', '-4deg', '-6deg', '-4deg', '-2deg', '0deg']).current
+  const styleSmote = {
+    shadowColor: theme.colors.dark,
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 11.27,
+    elevation: 14
+  }
   const animationLogo = () => {
     // Will change fadeAnim value to 1 in 5 seconds
     Animated.timing(logoAnimated, {
@@ -77,38 +90,29 @@ export default function Initial() {
         </ContainerImage>
       </ContainerHeader>
       <ContainerBody>
-        <ContainerSignIn
-
-        >
-          <ButtonSignIn
-            onPress={handleSignIn}
-            style={{
-              elevation: 10,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 3 },
-              shadowOpacity: 0.5,
-              shadowRadius: 5,
-            }}
-          >
-            <TitleButton>Login</TitleButton>
-          </ButtonSignIn>
+        <ContainerSignIn>
+          <ButtonBorder style={styleSmote}>
+            <ButtonBorderSecond style={styleSmote}>
+              <ButtonSignIn
+                onPress={handleSignIn}
+                style={styleSmote}
+              >
+                <TitleButton>Login</TitleButton>
+              </ButtonSignIn>
+            </ButtonBorderSecond>
+          </ButtonBorder>
         </ContainerSignIn>
-        <ContainerSignUp
-
-        >
-          <ButtonSignUp
-            onPress={handleSignUp}
-            style={{
-              elevation: 10,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 3 },
-              shadowOpacity: 0.5,
-              shadowRadius: 5,
-            }}
-          >
-
-            <TitleButton>Cadastro</TitleButton>
-          </ButtonSignUp>
+        <ContainerSignUp>
+          <ButtonBorder style={styleSmote}>
+            <ButtonBorderSecond style={styleSmote}>
+              <ButtonSignUp
+                onPress={handleSignUp}
+                style={styleSmote}
+              >
+                <TitleButton>Cadastro</TitleButton>
+              </ButtonSignUp>
+            </ButtonBorderSecond>
+          </ButtonBorder>
         </ContainerSignUp>
       </ContainerBody>
     </Container >

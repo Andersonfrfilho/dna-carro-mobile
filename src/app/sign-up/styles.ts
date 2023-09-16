@@ -25,7 +25,7 @@ export const ContainerTitle = styled.View`
 
 export const Phrase = styled.Text`
   font-family: ${(props) => props.theme.fonts["Roboto-Regular"]};
-  font-size: ${RFPercentage(2)}px;
+  font-size: ${RFPercentage(3)}px;
 `;
 
 export const ContainerLogo = styled.View`
@@ -47,7 +47,9 @@ export const ContainerForm = styled.View`
   padding-left: 15px;
   padding-right: 15px;
 `;
-
+export const ContainerInput = styled.View`
+  height: 80px;
+`;
 export const Title = styled.Text`
   color: ${(props) => props.theme.colors.background};
 

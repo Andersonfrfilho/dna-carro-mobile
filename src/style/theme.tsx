@@ -3,7 +3,12 @@ import { ThemeProvider } from "styled-components";
 
 export const theme = {
   colors: {
+    dark: "#000000",
     primary: "#473D33",
+    lightGray: "#D3D3D3",
+    silver: "#C0C0C0",
+    darkGray: "#A9A9A9",
+    gray: "#808080",
     secondary: "#EA8600",
     powderWhite: "#FFFDF9",
     persianGreen: "#06B49A",
@@ -15,10 +20,12 @@ export const theme = {
     accentColor: '#27ae60', // Verde
     secondaryColor: '#666666', // Cinza
     highlightColor: '#f39c12', // Amarelo ou laranja (cor de destaque)
-    rgba: {
+    transparent: {
       highlightColor: 'rgba(256, 256, 200, 0.8)',
       secondary: 'rgba(234, 134, 0, 0.3)',
-      persianBlue: 'rgba(18, 87, 104, 0.4)'
+      persianBlue: 'rgba(18, 87, 104, 0.4)',
+      onyx: 'rgba(0, 0, 0, 0.8)',
+      blackGray: 'rgba(0, 0, 0, 0.2)'
     }
   },
   fonts: {
