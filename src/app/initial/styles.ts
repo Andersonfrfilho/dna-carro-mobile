@@ -1,7 +1,6 @@
 import styled from "styled-components/native";
 import Constants from "expo-constants";
 import { Image } from "expo-image";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import { Animated } from "react-native";
 
 export const Container = styled.SafeAreaView`
@@ -38,7 +37,7 @@ export const ContainerTitle = styled.View`
 
 export const Phrase = styled.Text`
   font-family: ${(props) => props.theme.fonts["Roboto-Regular"]};
-  font-size: ${RFPercentage(2)}px;
+  font-size: ${(props) => props.theme.fontSizes.medium};
 `;
 
 export const LogoImage = styled(Image).attrs((props) => ({
@@ -74,6 +73,7 @@ export const ContainerSignIn = styled.View`
 
   background-color: ${(props) => props.theme.colors.lightBlue};
 `;
+
 export const ButtonSignIn = styled.TouchableHighlight.attrs((props) => ({
   underlayColor: props.theme.colors.transparent.persianBlue,
 }))`
@@ -95,7 +95,7 @@ export const Title = styled.Text`
 
   font-family: ${(props) => props.theme.fonts["Lato-Black"]};
 
-  font-size: ${RFPercentage(5)}px;
+  font-size: ${(props) => props.theme.fontSizes.title};
 
   text-align: center;
 `;
@@ -154,7 +154,7 @@ export const ButtonSignUp = styled.TouchableHighlight.attrs((props) => ({
 
 export const TitleButton = styled.Text`
   font-family: ${(props) => props.theme.fonts["Lato-Bold"]};
-  font-size: ${RFPercentage(2.5)}px;
+  font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.background};
   text-align: center;
 `;

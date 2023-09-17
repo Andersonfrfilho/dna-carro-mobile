@@ -3,10 +3,10 @@ import { Container, ContainerBorder, ContainerInput, ContainerLabel, ContainerSe
 import { useTheme } from 'styled-components/native';
 
 interface Props extends TextInputProps {
-  messageLabel?: string;
+  error?: string;
 }
 
-export default function Input({ messageLabel, ...props }: Props) {
+export default function Input({ error, ...props }: Props) {
   const theme = useTheme()
 
   const styleSmote = {
@@ -23,13 +23,14 @@ export default function Input({ messageLabel, ...props }: Props) {
   return (
     <Container>
       <ContainerLabel>
-        {!!messageLabel && <Label>{messageLabel}</Label>}
+        <Label>{error ?? ''}</Label>
       </ContainerLabel>
-      <ContainerBorder style={styleSmote}>
-        <ContainerSecondBorder>
-          <ContainerInput style={styleSmote}>
+      <ContainerBorder style={styleSmote} error={error}>
+        <ContainerSecondBorder error={error}>
+          <ContainerInput style={styleSmote} error={error}>
             <InputComponent
               {...props}
+              error={error}
             />
           </ContainerInput>
         </ContainerSecondBorder>

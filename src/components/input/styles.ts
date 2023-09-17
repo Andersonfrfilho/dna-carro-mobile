@@ -1,39 +1,87 @@
-import { RFPercentage } from "react-native-responsive-fontsize";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
+
+interface ErrorProps {
+  error?: string;
+}
+
+interface ContainerBorderProps extends ErrorProps {}
+interface ContainerSecondBorderProps extends ErrorProps {}
+interface InputComponentProps extends ErrorProps {}
+interface ContainerInputProps extends ErrorProps {}
 
 export const Container = styled.View`
   height: 100%;
   width: 100%;
 `;
-export const ContainerBorder = styled.View`
+export const ContainerBorder = styled.View<ContainerBorderProps>`
   border-width: 5px;
-  border-color: rgba(0, 0, 0, 0.2);
   border-radius: 20px;
+  border-color: ${(props) => props.theme.colors.transparent.blackGray};
+
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        border-color: ${props.theme.colors.errors.whiteRed};
+      `
+    );
+  }}
 `;
-export const ContainerSecondBorder = styled.View`
+export const ContainerSecondBorder = styled.View<ContainerSecondBorderProps>`
   border-width: 5px;
   border-color: ${(props) => props.theme.colors.backgroundColor};
   border-radius: 15px;
+
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        border-color: ${props.theme.colors.errors.red};
+      `
+    );
+  }}
 `;
 export const ContainerLabel = styled.View`
   height: 20px;
+
+  padding-left: 15px;
 `;
-export const ContainerInput = styled.View`
+export const ContainerInput = styled.View<ContainerInputProps>`
   border-width: 5px;
   border-color: ${(props) => props.theme.colors.transparent.blackGray};
   border-radius: 10px;
+
+  ${(props) =>
+    !!props.error &&
+    css`
+      border-color: ${props.theme.colors.errors.darkRed};
+    `}
 `;
 
-export const Label = styled.Text``;
+export const Label = styled.Text`
+  color: ${(props) => props.theme.colors.errors.red};
+  text-align: left;
+`;
 
-export const InputComponent = styled.TextInput.attrs((props) => ({
-  placeholderTextColor: props.theme.colors.gray,
-}))`
+export const InputComponent = styled.TextInput.attrs<InputComponentProps>(
+  (props) => ({
+    placeholderTextColor: props.error
+      ? props.theme.colors.errors.red
+      : props.theme.colors.gray,
+  })
+)<InputComponentProps>`
   width: 100%;
   height: 100%;
   color: ${(props) => props.theme.colors.secondary};
   background-color: ${(props) => props.theme.colors.powderWhite};
-  font-size: ${RFPercentage(2)}px;
+  font-size: ${(props) => props.theme.fontSizes.medium};
 
   padding-left: 10px;
+
+  ${(props) =>
+    !!props.error &&
+    css`
+      border-color: ${props.theme.colors.errors.red};
+      color: ${props.theme.colors.errors.red};
+    `}
 `;

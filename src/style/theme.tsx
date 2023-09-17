@@ -1,4 +1,5 @@
 import React from "react";
+import { RFValue } from "react-native-responsive-fontsize";
 import { ThemeProvider } from "styled-components";
 
 export const theme = {
@@ -20,6 +21,16 @@ export const theme = {
     accentColor: '#27ae60', // Verde
     secondaryColor: '#666666', // Cinza
     highlightColor: '#f39c12', // Amarelo ou laranja (cor de destaque)
+    errors: {
+      darkRed: '#cd0000',
+      red: '#FF0000',    // Vermelho
+      whiteRed: '#ff6767',
+      orange: '#FFA500', // Laranja
+      yellow: '#FFFF00', // Amarelo
+      purple: '#800080', // Roxo
+      brown: '#8B4513',  // Marrom
+      darkGray: '#333',  // Cinza Escuro ou Preto
+    },
     transparent: {
       highlightColor: 'rgba(256, 256, 200, 0.8)',
       secondary: 'rgba(234, 134, 0, 0.3)',
@@ -47,9 +58,11 @@ export const theme = {
     'Lato-LightItalic': 'Lato-LightItalic',
   },
   fontSizes: {
-    small: "1em",
-    medium: "2em",
-    large: "3em",
+    small: `${RFValue(12)}px`,
+    medium: `${RFValue(14)}px`,
+    large: `${RFValue(18)}px`,
+    subTitle: `${RFValue(24)}px`,
+    title: `${RFValue(28)}px`,
   },
 };
 
