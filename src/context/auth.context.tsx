@@ -8,6 +8,14 @@ export function AuthProvider(props) {
   const [isLoading, setIsLoading] = useState(false)
   const [session, setSession] = useState('')
 
+  async function verifyEmailToRegister(email: string) {
+    try {
+
+    } catch (error) {
+
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{

@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 
-function responseInterceptor(api: AxiosInstance) {
+export function refreshTokenInterceptor(api: AxiosInstance) {
   api.interceptors.response.use(
     (response) => {
       return response;

@@ -18,16 +18,19 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useTheme } from "styled-components/native";
+import { useSignUp } from "../../context/signup.context";
 
 const schema = yup
   .object({
     email: yup.string().email("Digite um email valido!").required("Um email é necessário!"),
   })
   .required()
-
+interface FormData {
+  email: string
+}
 export default function SignUp() {
   const theme = useTheme();
-
+  const { verifyEmailToRegister } = useSignUp();
   const styleSmote = {
     shadowColor: theme.colors.dark,
     shadowOffset: {
@@ -47,7 +50,9 @@ export default function SignUp() {
     resolver: yupResolver(schema),
   })
 
-  const handleVerifyEmailToRegister = (data) => console.log(data)
+  const handleVerifyEmailToRegister = async (data: FormData) => {
+    await verifyEmailToRegister(data.email)
+  }
 
   return (
     <Container>
