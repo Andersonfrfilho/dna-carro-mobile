@@ -4,6 +4,8 @@ import { AuthProvider } from '../context/auth.context';
 import Theme from '../style/theme.style';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
+import { CommonProvider } from '../context/common.context';
+import { ErrorProvider } from '../context/errors.context';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,11 +40,15 @@ export default function Root() {
 
   return (
     <Theme>
-      <AuthProvider>
-        <OnboardingProvider>
-          <Slot />
-        </OnboardingProvider>
-      </AuthProvider>
-    </Theme>
+      <CommonProvider>
+        <ErrorProvider>
+          <AuthProvider>
+            <OnboardingProvider>
+              <Slot />
+            </OnboardingProvider>
+          </AuthProvider>
+        </ErrorProvider>
+      </CommonProvider>
+    </Theme >
   );
 }

@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
 import { api } from "../services/api/provider.service";
+import { verifyWithoutFlowInfoCache } from "../services/api/services/verify-without-flow-info-cache.service";
+import { useError } from "./errors.context";
 
 interface SignUpContextInterface {
   isLoading: boolean;
@@ -18,17 +20,16 @@ const SignUpContext = React.createContext<SignUpContextInterface | undefined>(
 );
 
 export function SignUpProvider(props: ProviderProps) {
+  const { appErrorVerifyError } = useError()
   const [isLoading, setIsLoading] =
     React.useState<boolean>(false);
 
   async function verifyEmailToRegister(email: string): Promise<void> {
     try {
-      console.log("#############")
-      const { data } = await api.get(`/user/client/cache/${email}/without/flow`)
-      console.log()
-
+      const data = await verifyWithoutFlowInfoCache(email)
+      console.log(data)
     } catch (error) {
-      console.log(JSON.stringify(error, null, 2))
+      appErrorVerifyError(error)
     }
   }
 

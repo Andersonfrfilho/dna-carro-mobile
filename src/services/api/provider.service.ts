@@ -11,6 +11,6 @@ const api = axios.create({
 
 requestInterceptor(api);
 refreshTokenInterceptor(api);
-errorInterceptor(api);
+// errorInterceptor(api);
 
 export { api };
