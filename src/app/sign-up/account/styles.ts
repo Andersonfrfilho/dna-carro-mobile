@@ -1,33 +1,16 @@
 import styled from "styled-components/native";
 import Constants from "expo-constants";
-import { Image } from "expo-image";
-import { RFPercentage } from "react-native-responsive-fontsize";
-import { Animated } from "react-native";
 
 export const Container = styled.SafeAreaView`
   flex: 1;
-  justify-content: space-between;
-  align-items: stretch;
-  background-color: ${(props) => props.theme.colors.lightBlue};
 `;
 
 export const ContainerHeader = styled.View`
-  flex: 5;
+  flex: 1;
   justify-content: space-between;
   align-items: stretch;
   background-color: ${(props) => props.theme.colors.powderWhite};
   padding-top: ${Constants.statusBarHeight + "px"};
-
-  border-bottom-right-radius: 100px;
-  border-bottom-left-radius: 100px;
-`;
-
-export const ContainerImage = styled(Animated.View)`
-  flex: 2;
-  justify-content: center;
-  align-items: center;
-
-  padding-top: 20px;
 `;
 
 export const ContainerTitle = styled.View`
@@ -38,62 +21,26 @@ export const ContainerTitle = styled.View`
 
 export const Phrase = styled.Text`
   font-family: ${(props) => props.theme.fonts["Roboto-Regular"]};
-  font-size: ${RFPercentage(2)}px;
+  font-size: ${(props) => props.theme.fontSizes.medium};
 `;
 
-export const LogoImage = styled(Image).attrs((props) => ({
-  contentFit: "contain",
-}))`
-  flex: 1;
-  width: 60%;
-  height: 60%;
-`;
 export const ContainerLogo = styled.View`
   flex: 1;
 `;
 
 export const ContainerBody = styled.View`
-  height: 150px;
-  flex-direction: row;
-
-  justify-content: center;
-  align-items: stretch;
-
-  background-color: ${(props) => props.theme.colors.powderWhite};
+  flex: 3;
 `;
 
-export const ContainerSignIn = styled.View`
-  flex: 1;
-
-  justify-content: center;
-  align-items: center;
-
-  border-top-right-radius: 100px;
-
-  margin-right: 1px;
-
-  background-color: ${(props) => props.theme.colors.lightBlue};
+export const ContainerForm = styled.ScrollView`
+  padding-left: 15px;
+  padding-right: 15px;
+  background-color: ${(props) => props.theme.colors.gray};
 `;
-export const ButtonSignIn = styled.TouchableHighlight.attrs((props) => ({
-  underlayColor: props.theme.colors.transparent.persianBlue,
-}))`
-  justify-content: center;
-  align-items: center;
 
-  width: 120px;
-  height: 120px;
-
-  border-radius: 59px;
-
-  border-width: 4px;
-
-  border-block-color: ${(props) =>
-    props.theme.colors.transparent.highlightColor};
-  border-left-color: ${(props) =>
-    props.theme.colors.transparent.highlightColor};
-  border-right-color: ${(props) =>
-    props.theme.colors.transparent.highlightColor};
-  background-color: ${(props) => props.theme.colors.powderWhite};
+export const ContainerInput = styled.View`
+  height: 80px;
+  margin-bottom: 20px;
 `;
 
 export const Title = styled.Text`
@@ -101,49 +48,65 @@ export const Title = styled.Text`
 
   font-family: ${(props) => props.theme.fonts["Lato-Black"]};
 
-  font-size: ${RFPercentage(5)}px;
+  font-size: ${(props) => props.theme.fontSizes.title};
 
   text-align: center;
 `;
 
-export const ContainerSignUp = styled.View`
-  flex: 1;
+export const ContainerFooter = styled.View`
+  height: 120px;
 
+  margin-top: 20px;
+  margin-bottom: 20px;
   justify-content: center;
   align-items: center;
-
-  border-top-left-radius: 100px;
-
-  background-color: ${(props) => props.theme.colors.lightBlue};
-
-  margin-left: 1px;
 `;
 
-export const ButtonSignUp = styled.TouchableHighlight.attrs((props) => ({
-  underlayColor: props.theme.colors.transparent.persianBlue,
-}))`
+export const ButtonBorder = styled.View`
   justify-content: center;
   align-items: center;
 
   width: 120px;
   height: 120px;
 
-  border-radius: 59px;
+  border-radius: 60px;
 
   border-width: 4px;
+  border-color: ${(props) => props.theme.colors.darkGray};
+  background-color: ${(props) => props.theme.colors.lightGray};
+`;
 
-  border-block-color: ${(props) =>
-    props.theme.colors.transparent.highlightColor};
-  border-left-color: ${(props) =>
-    props.theme.colors.transparent.highlightColor};
-  border-right-color: ${(props) =>
-    props.theme.colors.transparent.highlightColor};
-  background-color: ${(props) => props.theme.colors.powderWhite};
+export const ButtonBorderSecond = styled.View`
+  width: 100%;
+  height: 100%;
+
+  border-radius: 60px;
+
+  border-width: 4px;
+  border-color: ${(props) => props.theme.colors.silver};
+
+  background-color: ${(props) => props.theme.colors.transparent.highlightColor};
+`;
+
+export const ButtonFirstStep = styled.TouchableHighlight.attrs((props) => ({
+  underlayColor: props.theme.colors.transparent.persianBlue,
+}))`
+  background-color: ${(props) => props.theme.colors.backgroundColor};
+
+  width: 100%;
+  height: 100%;
+
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 60px;
+  border-width: 4px;
+  border-color: ${(props) => props.theme.colors.lightGray};
 `;
 
 export const TitleButton = styled.Text`
   font-family: ${(props) => props.theme.fonts["Lato-Bold"]};
-  font-size: ${RFPercentage(2.5)}px;
+  font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.background};
   text-align: center;
 `;

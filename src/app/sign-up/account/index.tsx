@@ -1,113 +1,210 @@
-import { useRouter } from 'expo-router';
-import { ButtonSignIn, ButtonSignUp, Container, ContainerBody, ContainerHeader, ContainerImage, ContainerSignIn, ContainerSignUp, ContainerTitle, LogoImage, Phrase, Title, TitleButton } from './styles';
-import { useEffect, useRef } from 'react';
-import { Animated } from 'react-native';
+import {
+  ButtonBorder,
+  ButtonBorderSecond,
+  ButtonFirstStep,
+  Container,
+  ContainerBody,
+  ContainerFooter,
+  ContainerForm,
+  ContainerHeader,
+  ContainerInput,
+  ContainerTitle,
+  Phrase,
+  Title,
+  TitleButton,
+} from "./styles";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+import { useTheme } from "styled-components/native";
+import Input from "../../../components/input";
+import { useSignUp } from "../../../context/signup.context";
+import { ScrollView, StatusBar, StyleSheet, Text } from "react-native";
 
-export default function Initial() {
-  const logoAnimated = useRef(new Animated.Value(0)).current;
-  const initialInputRangeLogo = useRef(0).current;
-  const finallyInputRangeLogo = useRef(100).current;
-  const lengthSequence = useRef(10).current;
-  const sequenceInitialFinallyValuesLogo = useRef(new Array(lengthSequence).fill(initialInputRangeLogo).map((element, index) => (element + index) * lengthSequence)).current
-  const sequenceOutputRangesOpacityLogo = useRef([0, 1]).current
-  const sequenceOutputRangesScaleLogo = useRef([0, 1]).current
-  const sequenceOutputRangesRotateLogo = useRef(['0deg', '2deg', '4deg', '2deg', '0deg', '-2deg', '-4deg', '-6deg', '-4deg', '-2deg', '0deg']).current
-  const animationLogo = () => {
-    // Will change fadeAnim value to 1 in 5 seconds
-    Animated.timing(logoAnimated, {
-      toValue: finallyInputRangeLogo,
-      duration: 5000,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  useEffect(() => {
-    animationLogo()
-  }, [])
-  const router = useRouter();
-
-  const handleSignIn = () => {
-    router.push('sign-in')
+const schema = yup
+  .object({
+    name: yup.string().required("Um nome é necessário!"),
+    lastName: yup.string().required("Um sobrenome é necessário!"),
+    email: yup.string().email("Digite um email valido!").required("Um email é necessário!"),
+    document: yup.string().required("Um sobrenome é necessário!"),
+    password: yup.string().required("Um sobrenome é necessário!"),
+    confirmPassword: yup.string().required("Um sobrenome é necessário!"),
+  })
+  .required()
+interface FormData {
+  email: string
+}
+export default function SignUp() {
+  const theme = useTheme();
+  const { verifyEmailToRegister } = useSignUp();
+  const styleSmote = {
+    shadowColor: theme.colors.dark,
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 11.27,
+    elevation: 14
   }
 
-  const handleSignUp = () => {
-    router.push('sign-in')
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  })
+
+  const handleVerifyEmailToRegister = async (data: FormData) => {
+    await verifyEmailToRegister(data.email)
   }
 
-  const animatedOpacityLogo = {
-    opacity: logoAnimated.interpolate({
-      inputRange: [initialInputRangeLogo, finallyInputRangeLogo],
-      outputRange: sequenceOutputRangesOpacityLogo,
-
-    }),
-  }
-  const animatedTransformScaleLogo = {
-    scale: logoAnimated.interpolate({
-      inputRange: [initialInputRangeLogo, finallyInputRangeLogo],
-      outputRange: sequenceOutputRangesScaleLogo,
-
-    }),
-  }
-  const animatedTransformRotateLogo = {
-    rotate: logoAnimated.interpolate({
-      inputRange: [...sequenceInitialFinallyValuesLogo, finallyInputRangeLogo],
-      outputRange: sequenceOutputRangesRotateLogo,
-
-    })
-  }
-
-  const animatedTransformLogo = {
-    transform: [animatedTransformScaleLogo, animatedTransformRotateLogo]
-  }
   return (
     <Container>
       <ContainerHeader>
         <ContainerTitle>
-          <Title>Dna do carro</Title>
-          <Phrase>{`Agende facilmente, \n     deixe seu carro brilhar!`}</Phrase>
+          <Title>Vamos começar</Title>
+          <Phrase>{`Preencha seus dados, \n     Pessoais!`}</Phrase>
         </ContainerTitle>
-        <ContainerImage
-          style={[
-            animatedOpacityLogo,
-            animatedTransformLogo]}
-        >
-        </ContainerImage>
       </ContainerHeader>
       <ContainerBody>
-        <ContainerSignIn
-
-        >
-          <ButtonSignIn
-            onPress={handleSignIn}
-            style={{
-              elevation: 10,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 3 },
-              shadowOpacity: 0.5,
-              shadowRadius: 5,
-            }}
-          >
-            <TitleButton>Login</TitleButton>
-          </ButtonSignIn>
-        </ContainerSignIn>
-        <ContainerSignUp
-
-        >
-          <ButtonSignUp
-            onPress={handleSignUp}
-            style={{
-              elevation: 10,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 3 },
-              shadowOpacity: 0.5,
-              shadowRadius: 5,
-            }}
-          >
-
-            <TitleButton>Cadastro</TitleButton>
-          </ButtonSignUp>
-        </ContainerSignUp>
+        <ContainerForm>
+          <ContainerInput>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Nome"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors?.email?.message}
+                />
+              )}
+              name="name"
+            />
+          </ContainerInput>
+          <ContainerInput>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Sobrenome"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors?.email?.message}
+                />
+              )}
+              name="lastName"
+            />
+          </ContainerInput>
+          <ContainerInput>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Em@il"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors?.email?.message}
+                />
+              )}
+              name="email"
+            />
+          </ContainerInput>
+          <ContainerInput>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Documento"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors?.email?.message}
+                />
+              )}
+              name="document"
+            />
+          </ContainerInput>
+          <ContainerInput>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Senha"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors?.email?.message}
+                />
+              )}
+              name="password"
+            />
+          </ContainerInput>
+          <ContainerInput>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  placeholder="Confirme senha"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  error={errors?.email?.message}
+                />
+              )}
+              name="confirmPassword"
+            />
+          </ContainerInput>
+          <ContainerFooter>
+            <ButtonBorder style={styleSmote}>
+              <ButtonBorderSecond style={styleSmote}>
+                <ButtonFirstStep
+                  onPress={handleSubmit(handleVerifyEmailToRegister)}
+                  style={styleSmote}
+                >
+                  <TitleButton>Prosseguir</TitleButton>
+                </ButtonFirstStep>
+              </ButtonBorderSecond>
+            </ButtonBorder>
+          </ContainerFooter>
+        </ContainerForm>
       </ContainerBody>
-    </Container >
+    </Container>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: StatusBar.currentHeight,
+  },
+  scrollView: {
+    backgroundColor: 'pink',
+    marginHorizontal: 20,
+  },
+  text: {
+    fontSize: 42,
+  },
+});

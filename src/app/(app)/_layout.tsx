@@ -17,7 +17,7 @@ export default function AppLayout() {
   if (true) {
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
-    return <Redirect href="/initial" />;
+    return <Redirect href="/sign-up/account" />;
   }
   console.log("########## - Auth")
   // This layout can be deferred because it's not the root layout.

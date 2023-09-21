@@ -154,7 +154,7 @@ export const ButtonSignUp = styled.TouchableHighlight.attrs((props) => ({
 
 export const TitleButton = styled.Text`
   font-family: ${(props) => props.theme.fonts["Lato-Bold"]};
-  font-size: ${(props) => props.theme.fontSizes.median};
+  font-size: ${(props) => props.theme.fontSizes.small};
   color: ${(props) => props.theme.colors.background};
   text-align: center;
 `;

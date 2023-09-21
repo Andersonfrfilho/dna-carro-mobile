@@ -8,7 +8,12 @@ export async function verifyWithoutFlowInfoCache(
 ): Promise<ServiceGetResponse> {
   try {
     const { data } = await api.get<ServiceGetResponse>(
-      `/user/client/cache/${email}/without/flow`
+      `/user/client/cache/${email}/without/flow`,
+      {
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+        },
+      }
     );
     return data;
   } catch (error) {
