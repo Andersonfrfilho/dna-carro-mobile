@@ -8,6 +8,7 @@ import {
   ContainerTitle,
   Phrase,
   Title,
+  ContainerModal,
 } from "./styles";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -15,13 +16,14 @@ import * as yup from "yup"
 import Input from "../../../components/input";
 import { useSignUp } from "../../../context/signup.context";
 import InputCheck from "../../../components/inputCheck";
-import ButtonCircleBorder from "../../../components/button";
-import { useCallback, useEffect, useState } from "react";
+import ButtonCircleBorder from "../../../components/button-circle";
+import { useEffect, useState } from "react";
 import { validateCPF } from "../../../utils/validateCpf.util";
 import { validateCNPJ } from "../../../utils/validateCnpj.util";
 import InputPassword from "../../../components/inputPassword";
 import { DOCUMENT_TYPES } from "../../../constants/account";
-import Select from "../../../components/select";
+import ButtonRectangleBorder from "../../../components/button-rectangle";
+import SearchItems, { DataListProps } from "../../../components/searchItems";
 
 const schema = yup
   .object({
@@ -60,6 +62,10 @@ export default function SignUp() {
   const [cnpjDocumentSelect, setCnpjDocumentSelect] = useState<boolean>(false)
   const [cnpjDocumentDisable, setCnpjDocumentDisable] = useState<boolean>(false)
 
+
+  const [isVisibleModalGender, setIsVisibleModalGender] = useState<boolean>(false)
+
+  const [selectItemGender, setSelectItemGender] = useState<DataListProps>({ id: '', value: '', label: 'selecione o gênero' } as any)
 
   useEffect(() => {
     setFocus('name')
@@ -137,10 +143,11 @@ export default function SignUp() {
     setFocus('document')
     setValue('documentType', DOCUMENT_TYPES.CNPJ)
   }
-  console.log((cpfDocumentSelect || cnpjDocumentSelect))
-  const data = [{ value: 'value-1', label: 'aparece-1' }, { value: 'value-1', label: 'aparece-1' }, { value: 'value-1', label: 'aparece-1' }]
+
+  const data = [{ id: '1', value: 'value-2', label: 'aparece-2' }, { id: '2', value: 'value-3', label: 'aparece-1' }, { id: '3', value: 'value-4', label: 'aparece-3' }]
   return (
     <Container>
+      <SearchItems title="Selecione o genero" data={data} onSelectItem={setSelectItemGender} onChangeVisible={setIsVisibleModalGender} visible={isVisibleModalGender} />
       <ContainerHeader>
         <ContainerTitle>
           <Title>Vamos começar</Title>
@@ -248,7 +255,7 @@ export default function SignUp() {
                 required: true,
               }}
               render={({ field: { onChange, onBlur, value, ref } }) => (
-                <Select title={'selecione o gênero'} data={data} />
+                <ButtonRectangleBorder title={selectItemGender.label} onPress={() => setIsVisibleModalGender(true)} disabled={false} />
               )}
               name="gender"
             />

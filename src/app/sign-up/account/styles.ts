@@ -5,6 +5,10 @@ export const Container = styled.SafeAreaView`
   flex: 1;
 `;
 
+export const ContainerModal = styled.Modal`
+  flex: 1;
+`;
+
 export const ContainerHeader = styled.View`
   flex: 1;
   justify-content: space-between;

@@ -1,5 +1,10 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
+import { DataListProps } from ".";
+
+export const ModalContainer = styled.Modal`
+  flex: 1;
+`;
 
 export const Container = styled.SafeAreaView`
   flex: 1;
