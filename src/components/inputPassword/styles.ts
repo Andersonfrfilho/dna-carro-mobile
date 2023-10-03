@@ -10,7 +10,6 @@ interface ContainerBorderProps extends ErrorProps {}
 interface ContainerSecondBorderProps extends ErrorProps {}
 interface InputComponentProps extends ErrorProps {}
 interface ContainerInputProps extends ErrorProps {}
-interface ButtonIconProps extends SelectProps {}
 interface IconProps extends SelectProps {}
 interface TitleIconProps extends SelectProps {}
 
@@ -69,24 +68,15 @@ export const ContainerButtonIcon = styled.View<ContainerInputProps>`
     `}
 `;
 
-export const ButtonIcon = styled.TouchableHighlight<ButtonIconProps>`
+export const ButtonIcon = styled.TouchableHighlight`
   flex: 1;
 
   background-color: ${(props) => props.theme.colors.powderWhite};
 
   justify-content: center;
   align-items: center;
-
-  ${(props) =>
-    !!props.select &&
-    css`
-      background-color: ${(props) => props.theme.colors.whiteGreenColor};
-    `}
 `;
 
-export const ContainerIconTitle = styled.View`
-  flex: 1;
-`;
 export const ContainerIcon = styled.View`
   flex: 1;
 
@@ -111,14 +101,10 @@ export const IconTitle = styled.Text<TitleIconProps>`
     `}
 `;
 
-export const Icon = styled(MaterialCommunityIcons).attrs<IconProps>(
-  (props) => ({
-    size: 28,
-    color: props.select
-      ? props.theme.colors.powderWhite
-      : props.theme.colors.gray,
-  })
-)<typeof MaterialCommunityIcons & IconProps>``;
+export const Icon = styled(MaterialCommunityIcons).attrs((props) => ({
+  size: 38,
+  color: props.theme.colors.gray,
+}))<typeof MaterialCommunityIcons & IconProps>``;
 
 export const ContainerInput = styled.View<ContainerInputProps>`
   flex: 3;
@@ -126,11 +112,6 @@ export const ContainerInput = styled.View<ContainerInputProps>`
   border-color: ${(props) => props.theme.colors.transparent.blackGray};
   border-radius: 10px;
   margin-left: 1.5px;
-  ${(props) =>
-    !!props.error &&
-    css`
-      border-color: ${props.theme.colors.errors.darkRed};
-    `}
 `;
 
 export const Label = styled.Text`

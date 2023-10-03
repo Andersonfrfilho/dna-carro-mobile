@@ -1,7 +1,4 @@
 import {
-  ButtonBorder,
-  ButtonBorderSecond,
-  ButtonFirstStep,
   Container,
   ContainerBody,
   ContainerFooter,
@@ -11,55 +8,137 @@ import {
   ContainerTitle,
   Phrase,
   Title,
-  TitleButton,
 } from "./styles";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
-import { useTheme } from "styled-components/native";
 import Input from "../../../components/input";
 import { useSignUp } from "../../../context/signup.context";
-import { ScrollView, StatusBar, StyleSheet, Text } from "react-native";
+import InputCheck from "../../../components/inputCheck";
+import ButtonCircleBorder from "../../../components/button";
+import { useCallback, useEffect, useState } from "react";
+import { validateCPF } from "../../../utils/validateCpf.util";
+import { validateCNPJ } from "../../../utils/validateCnpj.util";
+import InputPassword from "../../../components/inputPassword";
+import { DOCUMENT_TYPES } from "../../../constants/account";
+import Select from "../../../components/select";
 
 const schema = yup
   .object({
     name: yup.string().required("Um nome é necessário!"),
     lastName: yup.string().required("Um sobrenome é necessário!"),
     email: yup.string().email("Digite um email valido!").required("Um email é necessário!"),
-    document: yup.string().required("Um sobrenome é necessário!"),
-    password: yup.string().required("Um sobrenome é necessário!"),
-    confirmPassword: yup.string().required("Um sobrenome é necessário!"),
+    document: yup.string().test("cpf-cnpj-validation", "documento inválido", (value) => {
+      // Remove caracteres não numéricos
+      const cleanValue = value.replace(/\D/g, "");
+      // Verifica se é um CPF ou CNPJ válido
+      return cleanValue.length === 11 ? validateCPF(cleanValue) : validateCNPJ(cleanValue);
+    }),
+    documentType: yup.string().oneOf(Object.values(DOCUMENT_TYPES), "Tipo de documento invalido").required("Selecione um tipo de documento!"),
+    gender: yup.string(),
+    dateBirth: yup.string(),
+    password: yup.string().min(6).required("Um password é necessário!"),
+    confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Senha precisa ser idêntica').required("Preencha a confirmação de senha"),
   })
   .required()
+
 interface FormData {
   email: string
 }
+
+type iconName = 'checkbox-blank-outline' | 'checkbox-outline'
+
 export default function SignUp() {
-  const theme = useTheme();
-  const { verifyEmailToRegister } = useSignUp();
-  const styleSmote = {
-    shadowColor: theme.colors.dark,
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 11.27,
-    elevation: 14
-  }
+  const { isSignUpLoading } = useSignUp();
+  const [buttonDisable, setButtonDisable] = useState(false)
+
+  const [cpfIconName, setCpfIconName] = useState<iconName>("checkbox-blank-outline")
+  const [cpfDocumentSelect, setCpfDocumentSelect] = useState<boolean>(false)
+  const [cpfDocumentDisable, setCpfDocumentDisable] = useState<boolean>(false)
+
+  const [cnpjIconName, setCnpjIconName] = useState<iconName>("checkbox-blank-outline")
+  const [cnpjDocumentSelect, setCnpjDocumentSelect] = useState<boolean>(false)
+  const [cnpjDocumentDisable, setCnpjDocumentDisable] = useState<boolean>(false)
+
+
+  useEffect(() => {
+    setFocus('name')
+  }, [])
 
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setFocus,
+    setValue
   } = useForm({
     resolver: yupResolver(schema),
   })
 
-  const handleVerifyEmailToRegister = async (data: FormData) => {
-    await verifyEmailToRegister(data.email)
+  const handleAccountPreparedToRegister = async (data: FormData) => {
+    console.log(data)
   }
 
+  useEffect(() => {
+    const errorContent = Object.keys(errors).length === 0 && errors.constructor === Object
+
+    setButtonDisable(isSignUpLoading || !errorContent)
+  }, [isSignUpLoading, errors])
+
+  const formatCPF = (text) => {
+    // Remove todos os caracteres não numéricos
+    const cleanedText = text.replace(/\D/g, "");
+
+    // Aplica a máscara de CPF (XXX.XXX.XXX-XX)
+    const formattedText =
+      cleanedText.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+
+    return formattedText;
+  };
+
+  const formatCNPJ = (text) => {
+    // Remove todos os caracteres não numéricos
+    const cleanedText = text.replace(/\D/g, "");
+
+    // Aplica a máscara de CNPJ (XX.XXX.XXX/XXXX-XX)
+    const formattedText = cleanedText.replace(
+      /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+      "$1.$2.$3/$4-$5"
+    );
+
+    return formattedText;
+  };
+  const handleTextChange = (text) => {
+    // Formata o texto enquanto o usuário digita
+    const formattedText = cpfDocumentSelect ? formatCPF(text) : formatCNPJ(text);
+    setValue('document', formattedText)
+  };
+
+  const handleSelectDocumentTypeCpf = () => {
+    setCpfIconName('checkbox-outline')
+    setCpfDocumentSelect(true)
+    setCpfDocumentDisable(true)
+    setCnpjIconName('checkbox-blank-outline')
+    setCnpjDocumentSelect(false)
+    setCnpjDocumentDisable(false)
+    setValue('document', '')
+    setFocus('document')
+    setValue('documentType', DOCUMENT_TYPES.CPF)
+  }
+
+  const handleSelectDocumentTypeCnpj = () => {
+    setCnpjIconName('checkbox-outline')
+    setCnpjDocumentSelect(true)
+    setCnpjDocumentDisable(true)
+    setCpfIconName('checkbox-blank-outline')
+    setCpfDocumentSelect(false)
+    setCpfDocumentDisable(false)
+    setValue('document', '')
+    setFocus('document')
+    setValue('documentType', DOCUMENT_TYPES.CNPJ)
+  }
+  console.log((cpfDocumentSelect || cnpjDocumentSelect))
+  const data = [{ value: 'value-1', label: 'aparece-1' }, { value: 'value-1', label: 'aparece-1' }, { value: 'value-1', label: 'aparece-1' }]
   return (
     <Container>
       <ContainerHeader>
@@ -76,13 +155,15 @@ export default function SignUp() {
               rules={{
                 required: true,
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { onChange, onBlur, value, ref } }) => (
                 <Input
+                  reference={ref}
                   placeholder="Nome"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  error={errors?.email?.message}
+                  error={errors?.name?.message}
+                  onSubmitEditing={() => setFocus('lastName')}
                 />
               )}
               name="name"
@@ -94,13 +175,15 @@ export default function SignUp() {
               rules={{
                 required: true,
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { onChange, onBlur, value, ref } }) => (
                 <Input
                   placeholder="Sobrenome"
+                  reference={ref}
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  error={errors?.email?.message}
+                  error={errors?.lastName?.message}
+                  onSubmitEditing={() => setFocus("document")}
                 />
               )}
               name="lastName"
@@ -112,9 +195,10 @@ export default function SignUp() {
               rules={{
                 required: true,
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { onChange, onBlur, value, ref } }) => (
                 <Input
                   placeholder="Em@il"
+                  reference={ref}
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
@@ -130,13 +214,28 @@ export default function SignUp() {
               rules={{
                 required: true,
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <InputCheck
                   placeholder="Documento"
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={handleTextChange}
                   value={value}
-                  error={errors?.email?.message}
+                  error={errors?.document?.message}
+                  onSubmitEditing={() => setFocus('password')}
+                  referenceInput={ref}
+                  leftIconButtonDisabled={cpfDocumentDisable}
+                  leftIconButtonOnPress={handleSelectDocumentTypeCpf}
+                  leftIconButtonSelect={cpfDocumentSelect}
+                  leftIconName={cpfIconName}
+                  leftIconTitle="CPF"
+                  rightIconButtonDisabled={cnpjDocumentDisable}
+                  rightIconButtonOnPress={handleSelectDocumentTypeCnpj}
+                  rightIconButtonSelect={cnpjDocumentSelect}
+                  rightIconName={cnpjIconName}
+                  rightIconTitle="CNPJ"
+                  inputEditable={true}
+                  maxLength={cpfDocumentSelect ? 14 : 18}
+                  keyboardType={"numeric"}
                 />
               )}
               name="document"
@@ -148,13 +247,27 @@ export default function SignUp() {
               rules={{
                 required: true,
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <Select title={'selecione o gênero'} data={data} />
+              )}
+              name="gender"
+            />
+          </ContainerInput>
+          <ContainerInput>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <InputPassword
                   placeholder="Senha"
+                  referenceInput={ref}
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  error={errors?.email?.message}
+                  error={errors?.password?.message}
+                  onSubmitEditing={() => setFocus('confirmPassword')}
                 />
               )}
               name="password"
@@ -166,45 +279,28 @@ export default function SignUp() {
               rules={{
                 required: true,
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  placeholder="Confirme senha"
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <InputPassword
+                  placeholder="Senha"
+                  referenceInput={ref}
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  error={errors?.email?.message}
+                  error={errors?.confirmPassword?.message}
                 />
               )}
               name="confirmPassword"
             />
           </ContainerInput>
           <ContainerFooter>
-            <ButtonBorder style={styleSmote}>
-              <ButtonBorderSecond style={styleSmote}>
-                <ButtonFirstStep
-                  onPress={handleSubmit(handleVerifyEmailToRegister)}
-                  style={styleSmote}
-                >
-                  <TitleButton>Prosseguir</TitleButton>
-                </ButtonFirstStep>
-              </ButtonBorderSecond>
-            </ButtonBorder>
+            <ButtonCircleBorder
+              title={"Prosseguir"}
+              onPress={handleSubmit(handleAccountPreparedToRegister)}
+              disabled={buttonDisable}
+            />
           </ContainerFooter>
         </ContainerForm>
       </ContainerBody>
-    </Container>
+    </Container >
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: StatusBar.currentHeight,
-  },
-  scrollView: {
-    backgroundColor: 'pink',
-    marginHorizontal: 20,
-  },
-  text: {
-    fontSize: 42,
-  },
-});

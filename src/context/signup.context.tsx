@@ -4,10 +4,12 @@ import { verifyWithoutFlowInfoCache } from "../services/api/services/verify-with
 import { useError } from "./errors.context";
 import { SignUpErrors } from "../error/constants/signup.constant.error";
 import { useRouter } from "expo-router";
+import { CreateUserInfoCacheContextPropsDto } from "./signup.types";
+import { CreateUserInfoCacheServicePropsDto } from "../services/api/services/create-user-info-cache.service";
 
 interface SignUpContextInterface {
-  isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  isSignUpLoading: boolean;
+  setIsSignUpLoading: React.Dispatch<React.SetStateAction<boolean>>;
   verifyEmailToRegister: (email: string) => Promise<void>;
 }
 
@@ -24,8 +26,24 @@ const SignUpContext = React.createContext<SignUpContextInterface | undefined>(
 export function SignUpProvider(props: ProviderProps) {
   const router = useRouter()
   const { appErrorVerifyError } = useError()
-  const [isLoading, setIsLoading] =
+  const [isSignUpLoading, setIsSignUpLoading] =
     React.useState<boolean>(false);
+
+  async function createUserInfoCache(data: CreateUserInfoCacheContextPropsDto) {
+    const { document, documentType, email, lastName, name, password } = data;
+    const formatInfos: CreateUserInfoCacheServicePropsDto = {
+      user: {
+        birthDate,
+        document,
+        documentType,
+        email,
+        gender,
+        lastName,
+        name,
+        password
+      }
+    }
+  }
 
   async function verifyEmailToRegister(email: string): Promise<void> {
     try {
@@ -62,8 +80,8 @@ export function SignUpProvider(props: ProviderProps) {
   return (
     <SignUpContext.Provider
       value={{
-        isLoading,
-        setIsLoading,
+        isSignUpLoading,
+        setIsSignUpLoading,
         verifyEmailToRegister
       }}
     >

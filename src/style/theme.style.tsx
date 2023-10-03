@@ -19,6 +19,7 @@ export const theme = {
     primaryColor: '#3498db', // Azul
     backgroundColor: '#ffffff', // Branco
     accentColor: '#27ae60', // Verde
+    whiteGreenColor: '#5eb875', // Verde
     secondaryColor: '#666666', // Cinza
     highlightColor: '#f39c12', // Amarelo ou laranja (cor de destaque)
     errors: {
@@ -65,6 +66,16 @@ export const theme = {
     subTitle: `${RFValue(24)}px`,
     title: `${RFValue(28)}px`,
   },
+  shadow: {
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 11.27,
+    elevation: 14
+  }
 };
 
 const darkTheme = {
