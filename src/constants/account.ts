@@ -4,6 +4,11 @@ export const DOCUMENT_TYPES = {
 };
 
 export const GENDER_TYPES = {
-  MASC: "cpf",
-  FEMALE: "cnpj",
+  MALE: "male",
+  FEMALE: "female",
 };
+
+export const GENDER_ITEMS_TYPE = [
+  { id: GENDER_TYPES.FEMALE, value: GENDER_TYPES.FEMALE, label: "feminino" },
+  { id: GENDER_TYPES.MALE, value: GENDER_TYPES.MALE, label: "masculino" },
+];

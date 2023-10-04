@@ -3,6 +3,7 @@ import { Container, ContainerOption, ButtonBorder, ButtonTitle, ContainerHeader,
 import { useTheme } from 'styled-components/native';
 import { RefCallBack } from 'react-hook-form';
 import { useState } from 'react';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 export interface DataListProps {
   label: string;
@@ -44,19 +45,21 @@ export default function SearchItems({ error, reference, onSelectItem, title, dat
           <ContainerButtonClosed>
             <ButtonIcon onPress={handleClosedSelectItem}>
               <Icon
+                size={theme.fontSizeWithoutPixel.title}
                 name="close-thick"
+
               />
             </ButtonIcon>
           </ContainerButtonClosed>
           <ContainerInputIconSearch>
             <ContainerInputSearch>
               <InputSearch
-                placeholder='magnify'
+                placeholder='busca'
                 onChangeText={setFilter}
               />
             </ContainerInputSearch>
             <ContainerIconSearch>
-              <Icon name="magnify" style={{ transform: [{ rotateY: '180deg' }] }} />
+              <Icon name="magnify" style={{ transform: [{ rotateY: '180deg' }] }} size={theme.fontSizeWithoutPixel.title} />
             </ContainerIconSearch>
           </ContainerInputIconSearch>
         </ContainerHeader>

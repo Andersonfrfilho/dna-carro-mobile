@@ -45,6 +45,15 @@ export const ContainerInput = styled.View`
   height: 80px;
   margin-bottom: 20px;
 `;
+export const ContainerButtonGender = styled.View`
+  height: 80px;
+  margin-top: 20px;
+`;
+
+export const ContainerBirthDate = styled.View`
+  height: 80px;
+  margin-top: 20px;
+`;
 
 export const Title = styled.Text`
   color: ${(props) => props.theme.colors.background};

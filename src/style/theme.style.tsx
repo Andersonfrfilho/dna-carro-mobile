@@ -66,6 +66,14 @@ export const theme = {
     subTitle: `${RFValue(24)}px`,
     title: `${RFValue(28)}px`,
   },
+  fontSizeWithoutPixel: {
+    small: RFValue(12),
+    median: RFValue(13),
+    medium: RFValue(14),
+    large: RFValue(18),
+    subTitle: RFValue(24),
+    title: RFValue(28),
+  },
   shadow: {
     shadowColor: "#000000",
     shadowOffset: {

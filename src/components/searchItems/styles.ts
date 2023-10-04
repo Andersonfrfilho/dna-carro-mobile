@@ -13,13 +13,11 @@ export const ContainerHeader = styled.View`
   flex-direction: row;
 
   height: 80px;
-
-  background-color: ${(props) => props.theme.colors.darkGray};
 `;
 export const ContainerButtonClosed = styled.View`
   flex: 1;
 
-  background-color: ${(props) => props.theme.colors.lightBlue};
+  background-color: ${(props) => props.theme.colors.powderWhite};
 `;
 export const ButtonIcon = styled.TouchableOpacity`
   flex: 1;
@@ -52,10 +50,14 @@ export const InputSearch = styled.TextInput`
   text-align: left;
 
   padding-left: 10px;
+
+  font-size: ${(props) => props.theme.fontSizes.medium};
 `;
 
 export const ContainerBody = styled.View`
   flex: 1;
+
+  padding: 10px;
 `;
 
 export const List = styled.FlatList`
@@ -73,13 +75,16 @@ export const ContainerOption = styled.View`
   border-width: 4px;
   border-color: ${(props) => props.theme.colors.darkGray};
   background-color: ${(props) => props.theme.colors.lightGray};
+
+  margin-top: 5px;
+  margin-bottom: 5px;
 `;
 
 export const ButtonBorder = styled.View`
   width: 100%;
   height: 100%;
 
-  border-radius: 60px;
+  border-radius: 12px;
 
   border-width: 4px;
   border-color: ${(props) => props.theme.colors.silver};
@@ -98,7 +103,7 @@ export const Button = styled.TouchableHighlight.attrs((props) => ({
   justify-content: center;
   align-items: center;
 
-  border-radius: 60px;
+  border-radius: 14px;
   border-width: 4px;
   border-color: ${(props) => props.theme.colors.lightGray};
 `;
@@ -111,6 +116,6 @@ export const ButtonTitle = styled.Text`
 `;
 
 export const Icon = styled(MaterialCommunityIcons).attrs((props) => ({
-  size: 28,
+  size: props.size ?? 28,
   color: props.theme.colors.gray,
 }))``;

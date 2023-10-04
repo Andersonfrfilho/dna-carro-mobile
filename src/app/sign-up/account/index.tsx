@@ -8,7 +8,7 @@ import {
   ContainerTitle,
   Phrase,
   Title,
-  ContainerModal,
+  ContainerButtonGender,
 } from "./styles";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -21,9 +21,12 @@ import { useEffect, useState } from "react";
 import { validateCPF } from "../../../utils/validateCpf.util";
 import { validateCNPJ } from "../../../utils/validateCnpj.util";
 import InputPassword from "../../../components/inputPassword";
-import { DOCUMENT_TYPES } from "../../../constants/account";
+import { DOCUMENT_TYPES, GENDER_ITEMS_TYPE } from "../../../constants/account";
 import ButtonRectangleBorder from "../../../components/button-rectangle";
 import SearchItems, { DataListProps } from "../../../components/searchItems";
+import InputDateButton from "../../../components/inputDateButton";
+import { DATE_TYPE_MODE_PICKER } from "../../../constants/date";
+import { formatDateInDDMMYYYYString } from "../../../utils/formatDate.util";
 
 const schema = yup
   .object({
@@ -64,6 +67,8 @@ export default function SignUp() {
 
 
   const [isVisibleModalGender, setIsVisibleModalGender] = useState<boolean>(false)
+
+  const [datePicker, setDatePicker] = useState<Date>(new Date());
 
   const [selectItemGender, setSelectItemGender] = useState<DataListProps>({ id: '', value: '', label: 'selecione o gênero' } as any)
 
@@ -144,10 +149,16 @@ export default function SignUp() {
     setValue('documentType', DOCUMENT_TYPES.CNPJ)
   }
 
-  const data = [{ id: '1', value: 'value-2', label: 'aparece-2' }, { id: '2', value: 'value-3', label: 'aparece-1' }, { id: '3', value: 'value-4', label: 'aparece-3' }]
+  const handleDatePickerSelectDate = (param: Date) => {
+    setDatePicker(param)
+    const dateFormat = formatDateInDDMMYYYYString(param)
+    setValue('dateBirth', dateFormat)
+  }
+
+
   return (
     <Container>
-      <SearchItems title="Selecione o genero" data={data} onSelectItem={setSelectItemGender} onChangeVisible={setIsVisibleModalGender} visible={isVisibleModalGender} />
+      <SearchItems title="Selecione o gênero" data={GENDER_ITEMS_TYPE} onSelectItem={setSelectItemGender} onChangeVisible={setIsVisibleModalGender} visible={isVisibleModalGender} />
       <ContainerHeader>
         <ContainerTitle>
           <Title>Vamos começar</Title>
@@ -248,7 +259,7 @@ export default function SignUp() {
               name="document"
             />
           </ContainerInput>
-          <ContainerInput>
+          <ContainerButtonGender>
             <Controller
               control={control}
               rules={{
@@ -258,6 +269,28 @@ export default function SignUp() {
                 <ButtonRectangleBorder title={selectItemGender.label} onPress={() => setIsVisibleModalGender(true)} disabled={false} />
               )}
               name="gender"
+            />
+          </ContainerButtonGender>
+          <ContainerInput>
+            <Controller
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({ field: { onChange, onBlur, value, ref } }) => (
+                <InputDateButton
+                  placeholder="Data Nascimento"
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  datePickerValue={datePicker}
+                  onChangeDatePicker={handleDatePickerSelectDate}
+                  value={value}
+                  mode={DATE_TYPE_MODE_PICKER.DATE}
+                  error={errors?.email?.message}
+                  keyboardType="number-pad"
+                />
+              )}
+              name="dateBirth"
             />
           </ContainerInput>
           <ContainerInput>

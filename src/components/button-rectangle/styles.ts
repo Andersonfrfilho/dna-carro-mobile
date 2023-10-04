@@ -4,10 +4,7 @@ export const Container = styled.View`
   justify-content: center;
   align-items: center;
 
-  width: 120px;
-  height: 120px;
-
-  border-radius: 60px;
+  border-radius: 20px;
 
   border-width: 4px;
   border-color: ${(props) => props.theme.colors.darkGray};
@@ -18,7 +15,7 @@ export const ButtonBorder = styled.View`
   width: 100%;
   height: 100%;
 
-  border-radius: 60px;
+  border-radius: 22px;
 
   border-width: 4px;
   border-color: ${(props) => props.theme.colors.silver};
@@ -37,7 +34,7 @@ export const Button = styled.TouchableHighlight.attrs((props) => ({
   justify-content: center;
   align-items: center;
 
-  border-radius: 60px;
+  border-radius: 24px;
   border-width: 4px;
   border-color: ${(props) => props.theme.colors.lightGray};
 `;
