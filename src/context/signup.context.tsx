@@ -1,16 +1,18 @@
 import React, { useContext } from "react";
 import { api } from "../services/api/provider.service";
-import { verifyWithoutFlowInfoCache } from "../services/api/services/verify-without-flow-info-cache.service";
+import { verifyWithoutFlowInfoCacheByEmailService } from "../services/api/services/verify-without-flow-info-cache-by-email.service";
 import { useError } from "./errors.context";
 import { SignUpErrors } from "../error/constants/signup.constant.error";
 import { useRouter } from "expo-router";
 import { CreateUserInfoCacheContextPropsDto } from "./signup.types";
 import { CreateUserInfoCacheServicePropsDto } from "../services/api/services/create-user-info-cache.service";
+import { verifyWithoutFlowInfoCacheByPhoneService } from "../services/api/services/verify-without-flow-info-cache-by-phone.service";
 
 interface SignUpContextInterface {
   isSignUpLoading: boolean;
   setIsSignUpLoading: React.Dispatch<React.SetStateAction<boolean>>;
   verifyEmailToRegister: (email: string) => Promise<void>;
+  verifyPhoneToRegister: (phone: string) => Promise<void>;
 }
 
 // Define the Provider component
@@ -47,7 +49,7 @@ export function SignUpProvider(props: ProviderProps) {
 
   async function verifyEmailToRegister(email: string): Promise<void> {
     try {
-      const data = await verifyWithoutFlowInfoCache(email)
+      const data = await verifyWithoutFlowInfoCacheByEmailService(email)
     } catch (error) {
       if (appErrorVerifyErrorLocal({ ...error, email })) {
         return;
@@ -55,6 +57,18 @@ export function SignUpProvider(props: ProviderProps) {
       appErrorVerifyError(error)
     }
   }
+
+  async function verifyPhoneToRegister(phone: string): Promise<void> {
+    try {
+      const data = await verifyWithoutFlowInfoCacheByPhoneService(phone)
+    } catch (error) {
+      if (appErrorVerifyErrorLocal({ ...error, phone })) {
+        return;
+      }
+      appErrorVerifyError(error)
+    }
+  }
+
   function appErrorVerifyErrorLocal(error: any): boolean {
     const code = error?.response?.data?.code
     const codes = Object.keys(SignUpErrors)
@@ -66,11 +80,7 @@ export function SignUpProvider(props: ProviderProps) {
     }
 
     if (code === SignUpErrors[1031].code) {
-      router.push({
-        pathname: 'sign-up/account', params: {
-          email: error.email
-        }
-      })
+      router.push('sign-up/account')
       return true;
     }
 
@@ -82,7 +92,8 @@ export function SignUpProvider(props: ProviderProps) {
       value={{
         isSignUpLoading,
         setIsSignUpLoading,
-        verifyEmailToRegister
+        verifyEmailToRegister,
+        verifyPhoneToRegister
       }}
     >
       {props.children}

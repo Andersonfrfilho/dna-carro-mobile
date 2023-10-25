@@ -19,18 +19,27 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useTheme } from "styled-components/native";
 import { useSignUp } from "../../context/signup.context";
+import { validatePhone } from "../../utils/validatePhoneNumber.utils";
+import { useState } from "react";
+import { formatPhone } from "../../utils/formatPhone.util";
 
 const schema = yup
   .object({
-    email: yup.string().email("Digite um email valido!").required("Um email é necessário!"),
+    phone: yup.string().test("phone-validation", "Digite um telefone valido", (value) => {
+      // Remove caracteres não numéricos
+      const cleanValue = value.replace(/\D/g, "");
+      // Verifica se é um CPF ou CNPJ válido
+      return validatePhone(cleanValue)
+    }).required("Um telefone é necessário!"),
   })
   .required()
 interface FormData {
-  email: string
+  phone: string
 }
 export default function SignUp() {
   const theme = useTheme();
-  const { verifyEmailToRegister } = useSignUp();
+  const { verifyPhoneToRegister } = useSignUp();
+  const [phoneLocal, setPhoneLocal] = useState('')
   const styleSmote = {
     shadowColor: theme.colors.dark,
     shadowOffset: {
@@ -46,20 +55,29 @@ export default function SignUp() {
     control,
     handleSubmit,
     formState: { errors },
+    setValue
   } = useForm({
     resolver: yupResolver(schema),
   })
 
-  const handleVerifyEmailToRegister = async (data: FormData) => {
-    await verifyEmailToRegister(data.email)
+  const handleVerifyPhoneToRegister = async (data: FormData) => {
+    await verifyPhoneToRegister(data.phone)
   }
+
+  const handleTextChange = (text: string) => {
+    // Formata o texto enquanto o usuário digita
+    const formattedText = formatPhone(text)
+    setPhoneLocal(formattedText)
+    const cleanValue = formattedText.replace(/\D/g, "");
+    setValue('phone', cleanValue)
+  };
 
   return (
     <Container>
       <ContainerHeader>
         <ContainerTitle>
           <Title>Faça seu cadastro</Title>
-          <Phrase>{`Vamos começar, \n     digite seu email!`}</Phrase>
+          <Phrase>{`Vamos começar, \n     digite seu telefone!`}</Phrase>
         </ContainerTitle>
       </ContainerHeader>
       <ContainerBody>
@@ -70,16 +88,16 @@ export default function SignUp() {
               rules={{
                 required: true,
               }}
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { onBlur } }) => (
                 <Input
-                  placeholder="Em@il"
+                  placeholder="(##) # ####-####"
                   onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={errors?.email?.message}
+                  value={phoneLocal}
+                  onChangeText={handleTextChange}
+                  error={errors?.phone?.message}
                 />
               )}
-              name="email"
+              name="phone"
             />
           </ContainerInput>
         </ContainerForm>
@@ -88,7 +106,7 @@ export default function SignUp() {
         <ButtonBorder style={styleSmote}>
           <ButtonBorderSecond style={styleSmote}>
             <ButtonFirstStep
-              onPress={handleSubmit(handleVerifyEmailToRegister)}
+              onPress={handleSubmit(handleVerifyPhoneToRegister)}
               style={styleSmote}
             >
               <TitleButton>Prosseguir</TitleButton>

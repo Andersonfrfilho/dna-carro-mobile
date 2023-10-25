@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useError } from './errors.context';
-import { verifyWithoutFlowInfoCache } from '../services/api/services/verify-without-flow-info-cache.service';
+import { verifyWithoutFlowInfoCacheByEmailService } from '../services/api/services/verify-without-flow-info-cache-by-email.service';
 
 const AuthContext = React.createContext<{ signIn: () => void; signOut: () => void; session?: string | null, isLoading: boolean } | null>(null);
 
