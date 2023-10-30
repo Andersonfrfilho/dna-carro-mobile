@@ -1,5 +1,11 @@
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Constants from "expo-constants";
+
+interface ErrorProps {
+  error?: string;
+}
+
+interface ContainerBorderProps extends ErrorProps {}
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -45,9 +51,18 @@ export const ContainerInput = styled.View`
   height: 80px;
   margin-bottom: 20px;
 `;
-export const ContainerButtonGender = styled.View`
+export const ContainerButtonGender = styled.View<ContainerBorderProps>`
   height: 80px;
   margin-top: 20px;
+
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        margin-bottom: 20px;
+      `
+    );
+  }}
 `;
 
 export const ContainerBirthDate = styled.View`

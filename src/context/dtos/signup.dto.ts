@@ -1,0 +1,16 @@
+export interface UserInfoCacheUser {
+  name: string;
+  lastName: string;
+  document: string;
+  documentType: string;
+  email: string;
+  gender: string;
+  details?: any;
+  birthDate: string;
+  password: string;
+}
+
+export interface CreateUserInfoCacheContextParamsDto {
+  user: UserInfoCacheUser;
+  phone: string;
+}

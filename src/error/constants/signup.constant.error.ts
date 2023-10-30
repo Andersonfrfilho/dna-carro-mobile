@@ -1,6 +1,7 @@
 import { HttpStatusCode } from "axios";
 
-const CACHE_GET_ERROR = 1031;
+export const CACHE_GET_ERROR = 1031;
+
 export const SignUpErrors = {
   [CACHE_GET_ERROR]: {
     code: CACHE_GET_ERROR,

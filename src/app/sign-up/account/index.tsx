@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { validateCPF } from "../../../utils/validateCpf.util";
 import { validateCNPJ } from "../../../utils/validateCnpj.util";
 import InputPassword from "../../../components/inputPassword";
-import { DOCUMENT_TYPES, GENDER_ITEMS_TYPE } from "../../../constants/account";
+import { DOCUMENT_TYPES, GENDER_ITEMS_TYPE, GENDER_TYPES } from "../../../constants/account";
 import ButtonRectangleBorder from "../../../components/button-rectangle";
 import SearchItems, { DataListProps } from "../../../components/searchItems";
 import InputDateButton from "../../../components/inputDateButton";
@@ -29,6 +29,10 @@ import { DATE_TYPE_MODE_PICKER } from "../../../constants/date";
 import { formatDateInDDMMYYYYString } from "../../../utils/formatDate.util";
 import { formatCPF } from "../../../utils/formatCpf.util";
 import { formatCNPJ } from "../../../utils/formatCnpj.util";
+import { useLocalSearchParams } from "expo-router";
+import { validateDateFormatBR } from "../../../utils/validDateFormat.util";
+import { validateMajority } from "../../../utils/validateMajority.util";
+import { formatBirthDate } from "../../../utils/formatDateBirth.util";
 
 const schema = yup
   .object({
@@ -42,21 +46,34 @@ const schema = yup
       return cleanValue.length === 11 ? validateCPF(cleanValue) : validateCNPJ(cleanValue);
     }),
     documentType: yup.string().oneOf(Object.values(DOCUMENT_TYPES), "Tipo de documento invalido").required("Selecione um tipo de documento!"),
-    gender: yup.string(),
-    dateBirth: yup.string(),
+    gender: yup.string().oneOf(Object.values(GENDER_TYPES), "Tipo de gênero invalido").required("Selecione um tipo de gênero!"),
+    birthDate: yup.string().required("Selecione ou digite uma data valida!"),
     password: yup.string().min(6).required("Um password é necessário!"),
     confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Senha precisa ser idêntica').required("Preencha a confirmação de senha"),
   })
   .required()
 
 interface FormData {
-  email: string
+  name: string;
+  lastName: string;
+  email: string;
+  document: string;
+  documentType: string;
+  gender: string;
+  birthDate: string;
+  password: string;
+  confirmPassword: string;
 }
 
 type iconName = 'checkbox-blank-outline' | 'checkbox-outline'
 
+type PropsRouteParams = {
+  phone: string;
+}
+
 export default function SignUp() {
-  const { isSignUpLoading } = useSignUp();
+  const params = useLocalSearchParams<PropsRouteParams>();
+  const { isSignUpLoading, createUserInfoCacheAccount } = useSignUp();
   const [buttonDisable, setButtonDisable] = useState(false)
 
   const [cpfIconName, setCpfIconName] = useState<iconName>("checkbox-blank-outline")
@@ -71,7 +88,7 @@ export default function SignUp() {
   const [isVisibleModalGender, setIsVisibleModalGender] = useState<boolean>(false)
 
   const [datePicker, setDatePicker] = useState<Date>(new Date());
-
+  const [birthDate, setBirthDate] = useState("")
   const [selectItemGender, setSelectItemGender] = useState<DataListProps>({ id: '', value: '', label: 'selecione o gênero' } as any)
 
   useEffect(() => {
@@ -83,13 +100,18 @@ export default function SignUp() {
     handleSubmit,
     formState: { errors },
     setFocus,
-    setValue
+    setValue,
+    clearErrors,
+    setError
   } = useForm({
     resolver: yupResolver(schema),
   })
-
   const handleAccountPreparedToRegister = async (data: FormData) => {
-    console.log(data)
+
+    await createUserInfoCacheAccount({
+      user: data,
+      phone: params.phone
+    })
   }
 
   useEffect(() => {
@@ -98,12 +120,32 @@ export default function SignUp() {
     setButtonDisable(isSignUpLoading || !errorContent)
   }, [isSignUpLoading, errors])
 
-
-
-  const handleTextChange = (text) => {
-    // Formata o texto enquanto o usuário digita
+  const handleDocumentChange = (text: string) => {
     const formattedText = cpfDocumentSelect ? formatCPF(text) : formatCNPJ(text);
     setValue('document', formattedText)
+  };
+
+  const handleBirthDateChange = (text: string) => {
+    const formattedText = formatBirthDate(text);
+
+    const isValideDate = validateDateFormatBR(formattedText)
+    if (!isValideDate) {
+      setError('birthDate', {
+        message: 'Data de nascimento invalida'
+      })
+    }
+
+    const isMajorAge = validateMajority(formattedText)
+
+    if (!isMajorAge) {
+      setError('birthDate', {
+        message: 'Voce pode se cadastrar tendo 18 anos de idade'
+      })
+    }
+
+    setValue('birthDate', formattedText)
+    clearErrors('birthDate')
+    setBirthDate(formattedText)
   };
 
   const handleSelectDocumentTypeCpf = () => {
@@ -131,15 +173,22 @@ export default function SignUp() {
   }
 
   const handleDatePickerSelectDate = (param: Date) => {
-    setDatePicker(param)
     const dateFormat = formatDateInDDMMYYYYString(param)
-    setValue('dateBirth', dateFormat)
+    setDatePicker(param)
+    setValue('birthDate', dateFormat)
+    setBirthDate(dateFormat)
   }
 
+  const handleSelectItemGender = (param: DataListProps) => {
+    setSelectItemGender(param);
+    setValue('gender', param.value)
+    clearErrors('gender')
+    setFocus('password')
+  }
 
   return (
     <Container>
-      <SearchItems title="Selecione o gênero" data={GENDER_ITEMS_TYPE} onSelectItem={setSelectItemGender} onChangeVisible={setIsVisibleModalGender} visible={isVisibleModalGender} />
+      <SearchItems title="Selecione o gênero" data={GENDER_ITEMS_TYPE} onSelectItem={handleSelectItemGender} onChangeVisible={setIsVisibleModalGender} visible={isVisibleModalGender} />
       <ContainerHeader>
         <ContainerTitle>
           <Title>Vamos começar</Title>
@@ -182,7 +231,7 @@ export default function SignUp() {
                   onChangeText={onChange}
                   value={value}
                   error={errors?.lastName?.message}
-                  onSubmitEditing={() => setFocus("document")}
+                  onSubmitEditing={() => setFocus("email")}
                 />
               )}
               name="lastName"
@@ -202,6 +251,7 @@ export default function SignUp() {
                   onChangeText={onChange}
                   value={value}
                   error={errors?.email?.message}
+                  onSubmitEditing={() => setFocus("document")}
                 />
               )}
               name="email"
@@ -213,11 +263,11 @@ export default function SignUp() {
               rules={{
                 required: true,
               }}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
+              render={({ field: { onBlur, value, ref } }) => (
                 <InputCheck
                   placeholder="Documento"
                   onBlur={onBlur}
-                  onChangeText={handleTextChange}
+                  onChangeText={handleDocumentChange}
                   value={value}
                   error={errors?.document?.message}
                   onSubmitEditing={() => setFocus('password')}
@@ -240,15 +290,16 @@ export default function SignUp() {
               name="document"
             />
           </ContainerInput>
-          <ContainerButtonGender>
+          <ContainerButtonGender error={errors?.gender?.message}>
             <Controller
               control={control}
               rules={{
                 required: true,
               }}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <ButtonRectangleBorder title={selectItemGender.label} onPress={() => setIsVisibleModalGender(true)} disabled={false} />
+              render={() => (
+                <ButtonRectangleBorder error={errors?.gender?.message} title={selectItemGender.label} onPress={() => setIsVisibleModalGender(true)} disabled={false} />
               )}
+
               name="gender"
             />
           </ContainerButtonGender>
@@ -262,16 +313,16 @@ export default function SignUp() {
                 <InputDateButton
                   placeholder="Data Nascimento"
                   onBlur={onBlur}
-                  onChangeText={onChange}
+                  onChangeText={handleBirthDateChange}
                   datePickerValue={datePicker}
                   onChangeDatePicker={handleDatePickerSelectDate}
-                  value={value}
+                  value={birthDate}
                   mode={DATE_TYPE_MODE_PICKER.DATE}
-                  error={errors?.email?.message}
+                  error={errors?.birthDate?.message}
                   keyboardType="number-pad"
                 />
               )}
-              name="dateBirth"
+              name="birthDate"
             />
           </ContainerInput>
           <ContainerInput>

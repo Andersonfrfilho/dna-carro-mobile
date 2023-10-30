@@ -1,26 +1,60 @@
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
+
+interface ErrorProps {
+  error?: string;
+}
+
+interface ContainerBorderProps extends ErrorProps {}
 
 export const Container = styled.View`
-  justify-content: center;
-  align-items: center;
-
-  border-radius: 20px;
-
-  border-width: 4px;
-  border-color: ${(props) => props.theme.colors.darkGray};
-  background-color: ${(props) => props.theme.colors.lightGray};
+  height: 100%;
+  width: 100%;
 `;
 
-export const ButtonBorder = styled.View`
+export const ContainerBorder = styled.View<ContainerBorderProps>`
+  border-width: 5px;
+  border-radius: 20px;
+  border-color: ${(props) => props.theme.colors.transparent.blackGray};
+
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        border-color: ${props.theme.colors.errors.whiteRed};
+      `
+    );
+  }}
+`;
+
+export const ContainerLabel = styled.View`
+  height: 20px;
+
+  padding-left: 15px;
+`;
+
+export const Label = styled.Text`
+  color: ${(props) => props.theme.colors.errors.red};
+  text-align: left;
+`;
+
+export const ButtonBorder = styled.View<ContainerBorderProps>`
   width: 100%;
   height: 100%;
 
-  border-radius: 22px;
-
-  border-width: 4px;
-  border-color: ${(props) => props.theme.colors.silver};
+  border-width: 5px;
+  border-color: ${(props) => props.theme.colors.backgroundColor};
+  border-radius: 15px;
 
   background-color: ${(props) => props.theme.colors.transparent.highlightColor};
+
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        border-color: ${props.theme.colors.errors.red};
+      `
+    );
+  }}
 `;
 
 export const Button = styled.TouchableHighlight.attrs((props) => ({

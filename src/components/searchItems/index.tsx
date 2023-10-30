@@ -3,7 +3,6 @@ import { Container, ContainerOption, ButtonBorder, ButtonTitle, ContainerHeader,
 import { useTheme } from 'styled-components/native';
 import { RefCallBack } from 'react-hook-form';
 import { useState } from 'react';
-import { RFValue } from 'react-native-responsive-fontsize';
 
 export interface DataListProps {
   label: string;

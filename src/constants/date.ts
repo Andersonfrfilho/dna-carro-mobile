@@ -8,3 +8,5 @@ export enum DATE_TYPE_MODE_PICKER {
 export const FORMAT_DATE = {
   DAY_MONTH_YEAR: "DD/MM/YYYY",
 };
+
+export const UTC_OFF_SET = -3;
