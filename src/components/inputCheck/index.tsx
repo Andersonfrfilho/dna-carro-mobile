@@ -36,25 +36,14 @@ export default function InputCheck({ error,
   ...props }: Props) {
   const theme = useTheme()
 
-  const styleSmote = {
-    shadowColor: theme.colors.dark,
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 11.27,
-    elevation: 14
-  }
-
   return (
     <Container>
       <ContainerLabel>
         <Label>{error ?? ''}</Label>
       </ContainerLabel>
-      <ContainerBorder style={styleSmote} error={error}>
+      <ContainerBorder style={theme.shadow} error={error}>
         <ContainerSecondBorder error={error}>
-          <ContainerButtonIcon style={styleSmote} error={error}>
+          <ContainerButtonIcon style={theme.shadow} error={error}>
             <ButtonIcon
               onPress={leftIconButtonOnPress}
               select={leftIconButtonSelect}
@@ -77,7 +66,7 @@ export default function InputCheck({ error,
               </ContainerIconTitle>
             </ButtonIcon>
           </ContainerButtonIcon>
-          <ContainerButtonIcon style={styleSmote} error={error}>
+          <ContainerButtonIcon style={theme.shadow} error={error}>
             <ButtonIcon
               onPress={rightIconButtonOnPress}
               select={rightIconButtonSelect}
@@ -97,7 +86,7 @@ export default function InputCheck({ error,
               </ContainerIconTitle>
             </ButtonIcon>
           </ContainerButtonIcon>
-          <ContainerInput style={styleSmote} error={error}>
+          <ContainerInput style={theme.shadow} error={error}>
             <InputComponent
               {...props}
               ref={referenceInput}

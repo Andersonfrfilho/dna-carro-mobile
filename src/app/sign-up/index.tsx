@@ -40,16 +40,7 @@ export default function SignUp() {
   const theme = useTheme();
   const { verifyPhoneToRegister } = useSignUp();
   const [phoneLocal, setPhoneLocal] = useState('')
-  const styleSmote = {
-    shadowColor: theme.colors.dark,
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 11.27,
-    elevation: 14
-  }
+
 
   const {
     control,
@@ -103,11 +94,11 @@ export default function SignUp() {
         </ContainerForm>
       </ContainerBody>
       <ContainerFooter>
-        <ButtonBorder style={styleSmote}>
-          <ButtonBorderSecond style={styleSmote}>
+        <ButtonBorder style={theme.shadow}>
+          <ButtonBorderSecond style={theme.shadow}>
             <ButtonFirstStep
               onPress={handleSubmit(handleVerifyPhoneToRegister)}
-              style={styleSmote}
+              style={theme.shadow}
             >
               <TitleButton>Prosseguir</TitleButton>
             </ButtonFirstStep>

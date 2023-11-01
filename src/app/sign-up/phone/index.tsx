@@ -4,6 +4,7 @@ import {
   ButtonFirstStep,
   Container,
   ContainerBody,
+  ContainerButton,
   ContainerFooter,
   ContainerForm,
   ContainerHeader,
@@ -17,11 +18,14 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useTheme } from "styled-components/native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { validatePhone } from "../../../utils/validatePhoneNumber.utils";
 import { useSignUp } from "../../../context/signup.context";
 import { formatPhone } from "../../../utils/formatPhone.util";
 import Input from "../../../components/input";
+import { useLocalSearchParams } from "expo-router";
+import ButtonRectangleBorder from "../../../components/button-rectangle";
+import ModalPhoneConfirmation from "../../../components/modal-phone-confirmation";
 
 const schema = yup
   .object({
@@ -36,20 +40,24 @@ const schema = yup
 interface FormData {
   phone: string
 }
-export default function SignUp() {
+
+
+type Phone = {
+  countryCode: "55";
+  ddd: string;
+  number: string;
+}
+
+type RouteParamsDto = {
+  phone: string
+}
+
+export default function SignUpPhone() {
   const theme = useTheme();
+  const params = useLocalSearchParams<RouteParamsDto>();
   const { verifyPhoneToRegister } = useSignUp();
   const [phoneLocal, setPhoneLocal] = useState('')
-  const styleSmote = {
-    shadowColor: theme.colors.dark,
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 11.27,
-    elevation: 14
-  }
+
 
   const {
     control,
@@ -72,12 +80,19 @@ export default function SignUp() {
     setValue('phone', cleanValue)
   };
 
+  useEffect(() => {
+    if (!!params.phone) {
+      setValue('phone', params.phone)
+    }
+  }, [])
+
   return (
     <Container>
+      <ModalPhoneConfirmation />
       <ContainerHeader>
         <ContainerTitle>
           <Title>Faça seu cadastro</Title>
-          <Phrase>{`Vamos começar, \n     digite seu telefone!`}</Phrase>
+          <Phrase>{`Cadastrar telefone, \n     digite seu telefone!`}</Phrase>
         </ContainerTitle>
       </ContainerHeader>
       <ContainerBody>
@@ -100,19 +115,27 @@ export default function SignUp() {
               name="phone"
             />
           </ContainerInput>
+          <ContainerButton>
+            <ButtonRectangleBorder
+              title="Confirmar"
+              onPress={() => {
+                console.log("oloco")
+              }}
+            />
+          </ContainerButton>
         </ContainerForm>
       </ContainerBody>
       <ContainerFooter>
-        <ButtonBorder style={styleSmote}>
-          <ButtonBorderSecond style={styleSmote}>
+        {/* <ButtonBorder style={theme.shadow}>
+          <ButtonBorderSecond style={theme.shadow}>
             <ButtonFirstStep
               onPress={handleSubmit(handleVerifyPhoneToRegister)}
-              style={styleSmote}
+              style={theme.shadow}
             >
               <TitleButton>Prosseguir</TitleButton>
             </ButtonFirstStep>
           </ButtonBorderSecond>
-        </ButtonBorder>
+        </ButtonBorder> */}
       </ContainerFooter>
     </Container>
   );

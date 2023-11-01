@@ -71,7 +71,7 @@ type PropsRouteParams = {
   phone: string;
 }
 
-export default function SignUp() {
+export default function SignUpAccount() {
   const params = useLocalSearchParams<PropsRouteParams>();
   const { isSignUpLoading, createUserInfoCacheAccount } = useSignUp();
   const [buttonDisable, setButtonDisable] = useState(false)

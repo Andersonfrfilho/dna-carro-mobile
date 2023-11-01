@@ -31,16 +31,7 @@ interface FormData {
 export default function InternalServerError() {
   const router = useRouter()
   const theme = useTheme();
-  const styleSmote = {
-    shadowColor: theme.colors.dark,
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 11.27,
-    elevation: 14
-  }
+
 
   return (
     <Container>
@@ -54,11 +45,11 @@ export default function InternalServerError() {
         <LottieView style={{ width: '100%', height: '100%' }} source={require("../../../assets/animations/errors/internalServerError.json")} autoPlay />
       </ContainerBody>
       <ContainerFooter>
-        <ButtonBorder style={styleSmote}>
-          <ButtonBorderSecond style={styleSmote}>
+        <ButtonBorder style={theme.shadow}>
+          <ButtonBorderSecond style={theme.shadow}>
             <ButtonFirstStep
               onPress={() => router.replace('initial')}
-              style={styleSmote}
+              style={theme.shadow}
             >
               <TitleButton>Prosseguir</TitleButton>
             </ButtonFirstStep>

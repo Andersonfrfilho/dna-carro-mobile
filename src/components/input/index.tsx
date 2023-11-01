@@ -11,25 +11,15 @@ interface Props extends TextInputProps {
 export default function Input({ error, reference, ...props }: Props) {
   const theme = useTheme()
 
-  const styleSmote = {
-    shadowColor: theme.colors.dark,
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 11.27,
-    elevation: 14
-  }
 
   return (
     <Container>
       <ContainerLabel>
         <Label>{error ?? ''}</Label>
       </ContainerLabel>
-      <ContainerBorder style={styleSmote} error={error}>
+      <ContainerBorder style={theme.shadow} error={error}>
         <ContainerSecondBorder error={error}>
-          <ContainerInput style={styleSmote} error={error}>
+          <ContainerInput style={theme.shadow} error={error}>
             <InputComponent
               {...props}
               error={error}

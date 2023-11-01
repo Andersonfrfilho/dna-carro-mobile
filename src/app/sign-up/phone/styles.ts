@@ -49,6 +49,11 @@ export const ContainerForm = styled.View`
 
 export const ContainerInput = styled.View`
   height: 80px;
+  margin-bottom: 30px;
+`;
+
+export const ContainerButton = styled.View`
+  height: 80px;
 `;
 
 export const Title = styled.Text`

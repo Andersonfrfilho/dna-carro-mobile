@@ -15,16 +15,7 @@ export default function Initial() {
   const sequenceOutputRangesOpacityLogo = useRef([0, 1]).current
   const sequenceOutputRangesScaleLogo = useRef([0, 1]).current
   const sequenceOutputRangesRotateLogo = useRef(['0deg', '2deg', '4deg', '2deg', '0deg', '-2deg', '-4deg', '-6deg', '-4deg', '-2deg', '0deg']).current
-  const styleSmote = {
-    shadowColor: theme.colors.dark,
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 11.27,
-    elevation: 14
-  }
+
   const animationLogo = () => {
     // Will change fadeAnim value to 1 in 5 seconds
     Animated.timing(logoAnimated, {
@@ -91,11 +82,11 @@ export default function Initial() {
       </ContainerHeader>
       <ContainerBody>
         <ContainerSignIn>
-          <ButtonBorder style={styleSmote}>
-            <ButtonBorderSecond style={styleSmote}>
+          <ButtonBorder style={theme.shadow}>
+            <ButtonBorderSecond style={theme.shadow}>
               <ButtonSignIn
                 onPress={handleSignIn}
-                style={styleSmote}
+                style={theme.shadow}
               >
                 <TitleButton>Login</TitleButton>
               </ButtonSignIn>
@@ -103,11 +94,11 @@ export default function Initial() {
           </ButtonBorder>
         </ContainerSignIn>
         <ContainerSignUp>
-          <ButtonBorder style={styleSmote}>
-            <ButtonBorderSecond style={styleSmote}>
+          <ButtonBorder style={theme.shadow}>
+            <ButtonBorderSecond style={theme.shadow}>
               <ButtonSignUp
                 onPress={handleSignUp}
-                style={styleSmote}
+                style={theme.shadow}
               >
                 <TitleButton>Cadastro</TitleButton>
               </ButtonSignUp>
