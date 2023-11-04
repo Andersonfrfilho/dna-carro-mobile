@@ -1,14 +1,14 @@
 import { TextInputProps } from 'react-native';
-import { ButtonIcon, Container, ContainerBorder, ContainerButtonIcon, ContainerIcon, ContainerInput, ContainerLabel, ContainerSecondBorder, Icon, InputComponent, Label } from './styles';
+import { ButtonIcon, Container, ContainerBorder, ContainerButtonIcon, ContainerInput, ContainerLabel, ContainerSecondBorder, Icon, InputComponent, Label } from './styles';
 import { useTheme } from 'styled-components/native';
 import { RefCallBack } from 'react-hook-form';
 import { useCallback, useState } from 'react';
 
 interface Props extends TextInputProps {
-  error?: string;
-  referenceInput?: RefCallBack;
-  inputEditable?: boolean;
-  visibleValue?: boolean;
+  readonly error?: string;
+  readonly referenceInput?: RefCallBack;
+  readonly inputEditable?: boolean;
+  readonly visibleValue?: boolean;
 }
 
 type IconName = 'eye-outline' | 'eye-off-outline'
@@ -22,7 +22,6 @@ export default function InputPassword({ error,
   const [iconName, setIconName] = useState<IconName>('eye-off-outline')
 
   const handleVisibleContent = useCallback(() => {
-    console.log("#####", iconName, secret)
     if (secret) {
       setSecret(false)
       setIconName('eye-off-outline')
@@ -54,6 +53,7 @@ export default function InputPassword({ error,
             >
               <Icon
                 name={iconName}
+                error={error}
               />
             </ButtonIcon>
           </ContainerButtonIcon>

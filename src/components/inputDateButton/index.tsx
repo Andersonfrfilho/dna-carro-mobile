@@ -1,5 +1,5 @@
 import { Platform, TextInputProps } from 'react-native';
-import { ButtonIcon, Container, ContainerBorder, ContainerButtonIcon, ContainerInput, ContainerLabel, ContainerSecondBorder, DatePicker, Icon, InputComponent, Label } from './styles';
+import { ButtonIcon, Container, ContainerBorder, ContainerButtonIcon, ContainerInput, ContainerLabel, ContainerSecondBorder, Icon, InputComponent, Label } from './styles';
 import { useTheme } from 'styled-components/native';
 import { RefCallBack } from 'react-hook-form';
 import { useState } from 'react';
@@ -7,13 +7,13 @@ import DateTimePicker, { DateTimePickerAndroid, DateTimePickerEvent } from '@rea
 import { DATE_TYPE_MODE_PICKER } from '../../constants/date';
 
 interface Props extends TextInputProps {
-  error?: string;
-  referenceInput?: RefCallBack;
-  inputEditable?: boolean;
-  visibleValue?: boolean;
-  mode?: DATE_TYPE_MODE_PICKER;
-  datePickerValue?: Date;
-  onChangeDatePicker?: React.Dispatch<React.SetStateAction<Date>>;
+  readonly error?: string;
+  readonly referenceInput?: RefCallBack;
+  readonly inputEditable?: boolean;
+  readonly visibleValue?: boolean;
+  readonly mode?: DATE_TYPE_MODE_PICKER;
+  readonly datePickerValue?: Date;
+  readonly onChangeDatePicker?: React.Dispatch<React.SetStateAction<Date>>;
 }
 
 enum DatePickerNativeEventType {
@@ -80,6 +80,7 @@ export default function InputDateButton({ error,
             >
               <Icon
                 name={"calendar-range"}
+                error={error}
               />
             </ButtonIcon>
           </ContainerButtonIcon>

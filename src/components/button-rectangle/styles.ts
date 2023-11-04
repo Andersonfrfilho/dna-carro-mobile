@@ -33,7 +33,7 @@ export const ContainerLabel = styled.View`
 `;
 
 export const Label = styled.Text`
-  color: ${(props) => props.theme.colors.errors.red};
+  color: ${(props) => props.theme.colors.errors.darkRed};
   text-align: left;
 `;
 
@@ -59,7 +59,7 @@ export const ButtonBorder = styled.View<ContainerBorderProps>`
 
 export const Button = styled.TouchableHighlight.attrs((props) => ({
   underlayColor: props.theme.colors.transparent.persianBlue,
-}))`
+}))<ContainerBorderProps>`
   background-color: ${(props) => props.theme.colors.backgroundColor};
 
   width: 100%;
@@ -68,14 +68,32 @@ export const Button = styled.TouchableHighlight.attrs((props) => ({
   justify-content: center;
   align-items: center;
 
-  border-radius: 24px;
+  border-radius: 12px;
   border-width: 4px;
   border-color: ${(props) => props.theme.colors.lightGray};
+
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        border-color: ${props.theme.colors.errors.darkRed};
+      `
+    );
+  }}
 `;
 
-export const Title = styled.Text`
+export const Title = styled.Text<ContainerBorderProps>`
   font-family: ${(props) => props.theme.fonts["Lato-Bold"]};
   font-size: ${(props) => props.theme.fontSizes.medium};
   color: ${(props) => props.theme.colors.background};
   text-align: center;
+
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        color: ${props.theme.colors.errors.darkRed};
+      `
+    );
+  }}
 `;

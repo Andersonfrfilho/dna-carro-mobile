@@ -74,6 +74,14 @@ export const theme = {
     subTitle: RFValue(24),
     title: RFValue(28),
   },
+  icon: {
+    size: {
+      small: RFValue(12, 400),
+      median: RFValue(13, 400),
+      medium: RFValue(14, 400),
+      large: RFValue(18, 400),
+    }
+  },
   shadow: {
     shadowColor: "#000000",
     shadowOffset: {

@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { DefaultTheme } from "styled-components";
 interface ErrorProps {
   error?: string;
 }
@@ -11,8 +12,23 @@ interface ContainerSecondBorderProps extends ErrorProps {}
 interface InputComponentProps extends ErrorProps {}
 interface ContainerInputProps extends ErrorProps {}
 interface ButtonIconProps extends SelectProps {}
-interface IconProps extends SelectProps {}
-interface TitleIconProps extends SelectProps {}
+interface IconProps extends SelectProps, ErrorProps {}
+interface TitleIconProps extends SelectProps, ErrorProps {}
+
+const getColorIconSelect = ({
+  select,
+  error,
+  theme,
+}: IconProps & { theme: DefaultTheme }) => {
+  if (error) {
+    return theme.colors.errors.darkRed;
+  }
+  if (select) {
+    return theme.colors.powderWhite;
+  }
+
+  return theme.colors.gray;
+};
 
 export const Container = styled.View`
   height: 100%;
@@ -109,16 +125,24 @@ export const IconTitle = styled.Text<TitleIconProps>`
     css`
       color: ${(props) => props.theme.colors.powderWhite};
     `}
+
+  ${(props) =>
+    !!props.error &&
+    css`
+      color: ${(props) => props.theme.colors.errors.darkRed};
+    `}
 `;
 
 export const Icon = styled(MaterialCommunityIcons).attrs<IconProps>(
   (props) => ({
-    size: 28,
-    color: props.select
-      ? props.theme.colors.powderWhite
-      : props.theme.colors.gray,
+    size: props.theme.icon.size.median,
+    color: getColorIconSelect({
+      select: props.select,
+      error: props.error,
+      theme: props.theme,
+    }),
   })
-)<typeof MaterialCommunityIcons & IconProps>``;
+)<IconProps>``;
 
 export const ContainerInput = styled.View<ContainerInputProps>`
   flex: 3;
@@ -134,14 +158,14 @@ export const ContainerInput = styled.View<ContainerInputProps>`
 `;
 
 export const Label = styled.Text`
-  color: ${(props) => props.theme.colors.errors.red};
+  color: ${(props) => props.theme.colors.errors.darkRed};
   text-align: left;
 `;
 
 export const InputComponent = styled.TextInput.attrs<InputComponentProps>(
   (props) => ({
     placeholderTextColor: props.error
-      ? props.theme.colors.errors.red
+      ? props.theme.colors.errors.darkRed
       : props.theme.colors.gray,
   })
 )<InputComponentProps>`

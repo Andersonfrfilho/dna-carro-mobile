@@ -19,3 +19,9 @@ export interface PhoneVerifyCodeConfirmationCreateClientParamsDto {
   phone: string;
   code: string;
 }
+
+export interface GetTermsResponseDto {
+  id: string;
+  version: string;
+  text: string;
+}

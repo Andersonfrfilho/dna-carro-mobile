@@ -1,19 +1,16 @@
 import styled, { css } from "styled-components/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { RFValue } from "react-native-responsive-fontsize";
 
 interface ErrorProps {
   error?: string;
 }
-interface SelectProps {
-  select: boolean;
-}
+
 interface ContainerBorderProps extends ErrorProps {}
 interface ContainerSecondBorderProps extends ErrorProps {}
 interface InputComponentProps extends ErrorProps {}
 interface ContainerInputProps extends ErrorProps {}
-interface IconProps extends SelectProps {}
-interface TitleIconProps extends SelectProps {}
+interface IconProps extends ErrorProps {}
 
 export const Container = styled.View`
   height: 100%;
@@ -79,34 +76,14 @@ export const ButtonIcon = styled.TouchableHighlight`
   align-items: center;
 `;
 
-export const ContainerIcon = styled.View`
-  flex: 1;
-
-  justify-content: center;
-  align-items: center;
-`;
-export const ContainerTitle = styled.View`
-  flex: 1;
-
-  justify-content: center;
-  align-items: center;
-`;
-
-export const IconTitle = styled.Text<TitleIconProps>`
-  color: ${(props) => props.theme.colors.gray};
-  text-align: left;
-
-  ${(props) =>
-    !!props.select &&
-    css`
-      color: ${(props) => props.theme.colors.powderWhite};
-    `}
-`;
-
-export const Icon = styled(MaterialCommunityIcons).attrs((props) => ({
-  size: 38,
-  color: props.theme.colors.gray,
-}))<typeof MaterialCommunityIcons & IconProps>``;
+export const Icon = styled(MaterialCommunityIcons).attrs<IconProps>(
+  (props) => ({
+    size: props.theme.icon.size.large,
+    color: props.error
+      ? props.theme.colors.errors.darkRed
+      : props.theme.colors.gray,
+  })
+)<IconProps>``;
 
 export const ContainerInput = styled.View<ContainerInputProps>`
   flex: 3;
@@ -114,17 +91,23 @@ export const ContainerInput = styled.View<ContainerInputProps>`
   border-color: ${(props) => props.theme.colors.transparent.blackGray};
   border-radius: 10px;
   margin-left: 1.5px;
+
+  ${(props) =>
+    !!props.error &&
+    css`
+      border-color: ${props.theme.colors.errors.darkRed};
+    `}
 `;
 
 export const Label = styled.Text`
-  color: ${(props) => props.theme.colors.errors.red};
+  color: ${(props) => props.theme.colors.errors.darkRed};
   text-align: left;
 `;
 
 export const InputComponent = styled.TextInput.attrs<InputComponentProps>(
   (props) => ({
     placeholderTextColor: props.error
-      ? props.theme.colors.errors.red
+      ? props.theme.colors.errors.darkRed
       : props.theme.colors.gray,
   })
 )<InputComponentProps>`
@@ -143,4 +126,3 @@ export const InputComponent = styled.TextInput.attrs<InputComponentProps>(
       color: ${props.theme.colors.errors.red};
     `}
 `;
-export const DatePicker = styled(DateTimePicker)``;

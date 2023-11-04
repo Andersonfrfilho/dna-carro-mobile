@@ -5,19 +5,19 @@ import { RefCallBack } from 'react-hook-form';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface Props extends TextInputProps {
-  error?: string;
-  referenceInput?: RefCallBack;
-  leftIconName?: keyof typeof MaterialCommunityIcons.glyphMap;
-  leftIconButtonOnPress: () => void;
-  leftIconButtonDisabled: boolean;
-  leftIconButtonSelect: boolean;
-  leftIconTitle?: string;
-  rightIconName?: keyof typeof MaterialCommunityIcons.glyphMap;
-  rightIconButtonOnPress: () => void;
-  rightIconButtonDisabled: boolean;
-  rightIconButtonSelect: boolean;
-  rightIconTitle?: string;
-  inputEditable?: boolean;
+  readonly error?: string;
+  readonly referenceInput?: RefCallBack;
+  readonly leftIconName?: keyof typeof MaterialCommunityIcons.glyphMap;
+  readonly leftIconButtonOnPress: () => void;
+  readonly leftIconButtonDisabled: boolean;
+  readonly leftIconButtonSelect: boolean;
+  readonly leftIconTitle?: string;
+  readonly rightIconName?: keyof typeof MaterialCommunityIcons.glyphMap;
+  readonly rightIconButtonOnPress: () => void;
+  readonly rightIconButtonDisabled: boolean;
+  readonly rightIconButtonSelect: boolean;
+  readonly rightIconTitle?: string;
+  readonly inputEditable?: boolean;
 }
 
 export default function InputCheck({ error,
@@ -54,12 +54,13 @@ export default function InputCheck({ error,
                   <Icon
                     name={leftIconName}
                     select={leftIconButtonSelect}
+                    error={error}
                   />
-
                 </ContainerIcon>}
-                {leftIconTitle && <ContainerTitle>
+                {!!leftIconTitle && <ContainerTitle>
                   <IconTitle
                     select={leftIconButtonSelect}
+                    error={error}
                   >{leftIconTitle}
                   </IconTitle>
                 </ContainerTitle>}
@@ -77,11 +78,12 @@ export default function InputCheck({ error,
                   <Icon
                     name={rightIconName}
                     select={rightIconButtonSelect}
+                    error={error}
                   />
 
                 </ContainerIcon>}
-                {rightIconTitle && <ContainerTitle>
-                  <IconTitle select={rightIconButtonSelect}>{rightIconTitle}</IconTitle>
+                {!!rightIconTitle && <ContainerTitle>
+                  <IconTitle error={error} select={rightIconButtonSelect}>{rightIconTitle}</IconTitle>
                 </ContainerTitle>}
               </ContainerIconTitle>
             </ButtonIcon>

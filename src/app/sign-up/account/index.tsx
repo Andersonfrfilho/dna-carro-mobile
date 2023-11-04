@@ -9,6 +9,7 @@ import {
   Phrase,
   Title,
   ContainerButtonGender,
+  ContainerLoading,
 } from "./styles";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -33,18 +34,28 @@ import { useLocalSearchParams } from "expo-router";
 import { validateDateFormatBR } from "../../../utils/validDateFormat.util";
 import { validateMajority } from "../../../utils/validateMajority.util";
 import { formatBirthDate } from "../../../utils/formatDateBirth.util";
+import ModalTerms from "../../../components/modal-terms";
+import Loading from "../../../components/loading";
+import { GetTermsResponseDto } from "../../../context/dtos/signup.dto";
 
 const schema = yup
   .object({
     name: yup.string().required("Um nome é necessário!"),
     lastName: yup.string().required("Um sobrenome é necessário!"),
     email: yup.string().email("Digite um email valido!").required("Um email é necessário!"),
-    document: yup.string().test("cpf-cnpj-validation", "documento inválido", (value) => {
+    document: yup.string().test("cpf-cnpj-validation", "documento inválido", (value?: string) => {
       // Remove caracteres não numéricos
+      if (!value) {
+        return false;
+      }
       const cleanValue = value.replace(/\D/g, "");
       // Verifica se é um CPF ou CNPJ válido
       return cleanValue.length === 11 ? validateCPF(cleanValue) : validateCNPJ(cleanValue);
     }),
+    term: yup.object({
+      accept: yup.boolean().required("Aceite os termos!"),
+      id: yup.string().required("Aceite os termos!"),
+    }).required("Aceite os termos!"),
     documentType: yup.string().oneOf(Object.values(DOCUMENT_TYPES), "Tipo de documento invalido").required("Selecione um tipo de documento!"),
     gender: yup.string().oneOf(Object.values(GENDER_TYPES), "Tipo de gênero invalido").required("Selecione um tipo de gênero!"),
     birthDate: yup.string().required("Selecione ou digite uma data valida!"),
@@ -53,6 +64,10 @@ const schema = yup
   })
   .required()
 
+interface Term {
+  version: string;
+  accept: boolean;
+}
 interface FormData {
   name: string;
   lastName: string;
@@ -63,6 +78,7 @@ interface FormData {
   birthDate: string;
   password: string;
   confirmPassword: string;
+  term: Term;
 }
 
 type iconName = 'checkbox-blank-outline' | 'checkbox-outline'
@@ -73,7 +89,7 @@ type PropsRouteParams = {
 
 export default function SignUpAccount() {
   const params = useLocalSearchParams<PropsRouteParams>();
-  const { isSignUpLoading, createUserInfoCacheAccount } = useSignUp();
+  const { isSignUpLoading, createUserInfoCacheAccount, getLastTerm, loadingSignUp } = useSignUp();
   const [buttonDisable, setButtonDisable] = useState(false)
 
   const [cpfIconName, setCpfIconName] = useState<iconName>("checkbox-blank-outline")
@@ -86,13 +102,23 @@ export default function SignUpAccount() {
 
 
   const [isVisibleModalGender, setIsVisibleModalGender] = useState<boolean>(false)
+  const [isVisibleModalTerm, setIsVisibleModalTerm] = useState<boolean>(false)
 
   const [datePicker, setDatePicker] = useState<Date>(new Date());
   const [birthDate, setBirthDate] = useState("")
-  const [selectItemGender, setSelectItemGender] = useState<DataListProps>({ id: '', value: '', label: 'selecione o gênero' } as any)
+  const [selectItemGender, setSelectItemGender] = useState<DataListProps>({ id: '', value: '', label: 'Selecione o gênero' } as any)
+
+  const [term, setTerm] = useState<GetTermsResponseDto>({
+    id: '',
+    text: '',
+    version: '',
+  })
 
   useEffect(() => {
     setFocus('name')
+    getLastTerm().then((term) => {
+      setTerm(term)
+    })
   }, [])
 
   const {
@@ -107,7 +133,6 @@ export default function SignUpAccount() {
     resolver: yupResolver(schema),
   })
   const handleAccountPreparedToRegister = async (data: FormData) => {
-
     await createUserInfoCacheAccount({
       user: data,
       phone: params.phone
@@ -123,6 +148,7 @@ export default function SignUpAccount() {
   const handleDocumentChange = (text: string) => {
     const formattedText = cpfDocumentSelect ? formatCPF(text) : formatCNPJ(text);
     setValue('document', formattedText)
+    clearErrors('document')
   };
 
   const handleBirthDateChange = (text: string) => {
@@ -158,6 +184,7 @@ export default function SignUpAccount() {
     setValue('document', '')
     setFocus('document')
     setValue('documentType', DOCUMENT_TYPES.CPF)
+    clearErrors('document')
   }
 
   const handleSelectDocumentTypeCnpj = () => {
@@ -170,6 +197,7 @@ export default function SignUpAccount() {
     setValue('document', '')
     setFocus('document')
     setValue('documentType', DOCUMENT_TYPES.CNPJ)
+    clearErrors('document')
   }
 
   const handleDatePickerSelectDate = (param: Date) => {
@@ -183,12 +211,28 @@ export default function SignUpAccount() {
     setSelectItemGender(param);
     setValue('gender', param.value)
     clearErrors('gender')
-    setFocus('password')
+    setFocus('birthDate')
+  }
+
+  const handleAcceptTerm = () => {
+    setIsVisibleModalTerm(false)
+    setValue('term', {
+      accept: true,
+      id: term.id,
+    })
+    clearErrors('term')
+  }
+
+  if (loadingSignUp) {
+    return (<ContainerLoading>
+      <Loading />
+    </ContainerLoading>)
   }
 
   return (
     <Container>
       <SearchItems title="Selecione o gênero" data={GENDER_ITEMS_TYPE} onSelectItem={handleSelectItemGender} onChangeVisible={setIsVisibleModalGender} visible={isVisibleModalGender} />
+      <ModalTerms onClosed={() => setIsVisibleModalTerm(false)} show={isVisibleModalTerm} term={term.text} onConfirm={handleAcceptTerm} />
       <ContainerHeader>
         <ContainerTitle>
           <Title>Vamos começar</Title>
@@ -270,7 +314,7 @@ export default function SignUpAccount() {
                   onChangeText={handleDocumentChange}
                   value={value}
                   error={errors?.document?.message}
-                  onSubmitEditing={() => setFocus('password')}
+                  onSubmitEditing={() => setIsVisibleModalGender(true)}
                   referenceInput={ref}
                   leftIconButtonDisabled={cpfDocumentDisable}
                   leftIconButtonOnPress={handleSelectDocumentTypeCpf}
@@ -291,17 +335,7 @@ export default function SignUpAccount() {
             />
           </ContainerInput>
           <ContainerButtonGender error={errors?.gender?.message}>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={() => (
-                <ButtonRectangleBorder error={errors?.gender?.message} title={selectItemGender.label} onPress={() => setIsVisibleModalGender(true)} disabled={false} />
-              )}
-
-              name="gender"
-            />
+            <ButtonRectangleBorder error={errors?.gender?.message} title={selectItemGender.label} onPress={() => setIsVisibleModalGender(true)} disabled={false} />
           </ContainerButtonGender>
           <ContainerInput>
             <Controller
@@ -309,9 +343,10 @@ export default function SignUpAccount() {
               rules={{
                 required: true,
               }}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
+              render={({ field: { onBlur, ref } }) => (
                 <InputDateButton
-                  placeholder="Data Nascimento"
+                  referenceInput={ref}
+                  placeholder="Data de nascimento"
                   onBlur={onBlur}
                   onChangeText={handleBirthDateChange}
                   datePickerValue={datePicker}
@@ -320,6 +355,7 @@ export default function SignUpAccount() {
                   mode={DATE_TYPE_MODE_PICKER.DATE}
                   error={errors?.birthDate?.message}
                   keyboardType="number-pad"
+                  onSubmitEditing={() => setFocus("password")}
                 />
               )}
               name="birthDate"
@@ -359,11 +395,15 @@ export default function SignUpAccount() {
                   onChangeText={onChange}
                   value={value}
                   error={errors?.confirmPassword?.message}
+                  onSubmitEditing={() => setIsVisibleModalTerm(true)}
                 />
               )}
               name="confirmPassword"
             />
           </ContainerInput>
+          <ContainerButtonGender error={errors?.term?.message}>
+            <ButtonRectangleBorder error={errors?.term?.message || errors?.term?.id?.message || errors?.term?.accept?.message} title={"Termos"} onPress={() => setIsVisibleModalTerm(true)} disabled={false} />
+          </ContainerButtonGender>
           <ContainerFooter>
             <ButtonCircleBorder
               title={"Prosseguir"}

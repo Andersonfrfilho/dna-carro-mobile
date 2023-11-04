@@ -1,7 +1,7 @@
 import { api } from "../provider.service";
 
 interface ServiceResponse {
-  expiration: string;
+  expirationInMilliseconds: string;
 }
 type ParamsDto = {
   countryCode: "55";

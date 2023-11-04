@@ -15,6 +15,10 @@ export const ContainerModal = styled.Modal`
   flex: 1;
 `;
 
+export const ContainerLoading = styled.View`
+  flex: 1;
+`;
+
 export const ContainerHeader = styled.View`
   flex: 1;
   justify-content: space-between;

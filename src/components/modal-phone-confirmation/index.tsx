@@ -40,10 +40,11 @@ interface FormData {
 }
 
 interface ParamsDto {
-  onClosed: () => {}
+  onClosed: () => void;
+  show: boolean;
 }
 export default function ModalPhoneConfirmation({
-  onClosed
+  onClosed, show
 }: ParamsDto) {
   const theme = useTheme();
   const { verifyPhoneToRegister } = useSignUp();
@@ -92,7 +93,7 @@ export default function ModalPhoneConfirmation({
 
 
   return (
-    <ContainerModal visible={true}>
+    <ContainerModal visible={show}>
       <Container>
         <ContainerHeader>
           <ContainerToolbar>

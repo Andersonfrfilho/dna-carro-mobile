@@ -59,14 +59,14 @@ export const ContainerInput = styled.View<ContainerInputProps>`
 `;
 
 export const Label = styled.Text`
-  color: ${(props) => props.theme.colors.errors.red};
+  color: ${(props) => props.theme.colors.errors.darkRed};
   text-align: left;
 `;
 
 export const InputComponent = styled.TextInput.attrs<InputComponentProps>(
   (props) => ({
     placeholderTextColor: props.error
-      ? props.theme.colors.errors.red
+      ? props.theme.colors.errors.darkRed
       : props.theme.colors.gray,
   })
 )<InputComponentProps>`

@@ -25,25 +25,6 @@ export const Container = styled.SafeAreaView`
   background-color: ${(props) => props.theme.colors.lightBlue};
 `;
 
-export const ContainerToolbar = styled.View`
-  flex-direction: row;
-
-  justify-content: flex-end;
-
-  height: 60px;
-`;
-
-export const ContainerIconClosed = styled.TouchableOpacity`
-  justify-content: center;
-  align-items: center;
-  width: 48px;
-`;
-
-export const IconClosed = styled(MaterialCommunityIcons).attrs((props) => ({
-  size: props.theme.icon.size.large,
-  color: props.theme.colors.gray,
-}))<typeof MaterialCommunityIcons>``;
-
 export const ContainerHeader = styled.View`
   flex: 1;
   padding-left: 15px;
@@ -66,11 +47,8 @@ export const Phrase = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.medium};
 `;
 
-export const ContainerBody = styled.View`
-  flex: 1;
-
-  justify-content: center;
-  align-items: stretch;
+export const ContainerBody = styled.ScrollView`
+  flex: 5;
 
   background-color: ${(props) => props.theme.colors.powderWhite};
 `;

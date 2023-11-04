@@ -3,8 +3,8 @@ import { Container, ButtonBorder, Title, Button, ContainerLabel, Label, Containe
 import { useTheme } from 'styled-components/native';
 
 interface Props extends TouchableHighlightProps {
-  error?: string;
-  title: string;
+  readonly error?: string;
+  readonly title: string;
 }
 
 export default function ButtonRectangleBorder({ error, title, ...props }: Props) {
@@ -12,7 +12,7 @@ export default function ButtonRectangleBorder({ error, title, ...props }: Props)
 
   return (
     <Container>
-      {error && <ContainerLabel>
+      {!!error && <ContainerLabel>
         <Label>{error ?? ''}</Label>
       </ContainerLabel>}
       <ContainerBorder error={error}>
@@ -20,8 +20,9 @@ export default function ButtonRectangleBorder({ error, title, ...props }: Props)
           <Button
             {...props}
             style={theme.shadow}
+            error={error}
           >
-            <Title>{title}</Title>
+            <Title error={error}>{title}</Title>
           </Button>
         </ButtonBorder>
       </ContainerBorder>

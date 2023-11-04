@@ -53,11 +53,9 @@ type RouteParamsDto = {
 }
 
 export default function SignUpPhone() {
-  const theme = useTheme();
   const params = useLocalSearchParams<RouteParamsDto>();
-  const { verifyPhoneToRegister } = useSignUp();
+  const { phoneSendCodeConfirmationCreateClient, closeModalCodeConfirmation, showModalCodeConfirmation } = useSignUp();
   const [phoneLocal, setPhoneLocal] = useState('')
-
 
   const {
     control,
@@ -69,7 +67,7 @@ export default function SignUpPhone() {
   })
 
   const handleVerifyPhoneToRegister = async (data: FormData) => {
-    await verifyPhoneToRegister(data.phone)
+    await phoneSendCodeConfirmationCreateClient(data.phone)
   }
 
   const handleTextChange = (text: string) => {
@@ -88,7 +86,7 @@ export default function SignUpPhone() {
 
   return (
     <Container>
-      <ModalPhoneConfirmation />
+      <ModalPhoneConfirmation onClosed={closeModalCodeConfirmation} show={showModalCodeConfirmation} />
       <ContainerHeader>
         <ContainerTitle>
           <Title>Faça seu cadastro</Title>
@@ -118,9 +116,7 @@ export default function SignUpPhone() {
           <ContainerButton>
             <ButtonRectangleBorder
               title="Confirmar"
-              onPress={() => {
-                console.log("oloco")
-              }}
+              onPress={handleSubmit(handleVerifyPhoneToRegister)}
             />
           </ContainerButton>
         </ContainerForm>

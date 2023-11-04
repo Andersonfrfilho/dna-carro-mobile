@@ -1,7 +1,8 @@
+import { NameCacheKeyFlow } from "../enums/account.enum";
 import { api } from "../provider.service";
 
 interface ServiceGetResponse {
-  missingCacheInfo: Array<string>;
+  missingCacheInfo: Array<NameCacheKeyFlow>;
 }
 export async function verifyWithoutFlowInfoCacheByPhoneService(
   phone: string
