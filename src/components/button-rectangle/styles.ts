@@ -70,7 +70,7 @@ export const Button = styled.TouchableHighlight.attrs((props) => ({
 
   border-radius: 12px;
   border-width: 4px;
-  border-color: ${(props) => props.theme.colors.lightGray};
+  border-color: ${(props) => props.theme.colors.darkGray};
 
   ${(props) => {
     return (

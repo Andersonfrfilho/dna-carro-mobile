@@ -19,16 +19,40 @@ export interface PhoneUserInfoCacheUser {
   number: string;
 }
 
-export interface CreateUserInfoCacheServicePropsDto {
+export interface UserClientCacheUserServicePropsDto {
   user: CreateUserInfoCacheUser;
   phone: PhoneUserInfoCacheUser;
 }
 
-export async function createUserInfoCacheService(
-  params: CreateUserInfoCacheServicePropsDto
+export async function userClientCacheUser(
+  params: UserClientCacheUserServicePropsDto
 ): Promise<void> {
   try {
     await api.post(`/user/client/cache/user`, params, {
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
+export interface CreateTermInfoCacheUser {
+  id: string;
+  accept: boolean;
+}
+
+export interface UserClientCacheTermServicePropsDto {
+  term: CreateTermInfoCacheUser;
+  phone: PhoneUserInfoCacheUser;
+}
+
+export async function userClientCacheTermService(
+  params: UserClientCacheTermServicePropsDto
+): Promise<void> {
+  try {
+    await api.post(`/user/client/cache/term`, params, {
       headers: {
         "Content-Type": "application/json; charset=utf-8",
       },

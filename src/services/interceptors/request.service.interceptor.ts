@@ -3,7 +3,6 @@ import axios, { AxiosInstance } from "axios";
 export function requestInterceptor(api: AxiosInstance) {
   axios.interceptors.request.use(
     (config) => {
-      console.log("#######==>");
       // const token = localStorageService.getAccessToken();
       // if (token) {
       //   config.headers["Authorization"] = "Bearer " + token;

@@ -1,5 +1,5 @@
 interface SeparatePhoneInComponentResult {
-  countryCode: "55";
+  countryCode: string;
   ddd: string;
   number: string;
 }
@@ -7,15 +7,19 @@ interface SeparatePhoneInComponentResult {
 export const separatePhoneInComponent = (
   text: string
 ): SeparatePhoneInComponentResult => {
-  // Remove todos os caracteres não numéricos
   const cleanedText = text.replace(/\D/g, "");
-
-  // Aplica a máscara de CNPJ (XX.XXX.XXX/XXXX-XX)
-  const ddd = cleanedText.replace(/^(\d{2})$/, "$1");
-  const number = cleanedText.replace(/^(\d{2})(\d{4})(\d{4})$/, "$2$3");
+  const INDEX_COUNTRY_CODE = 0;
+  const LENGTH_COUNTRY_CODE = 2;
+  const countryCode = text.substring(INDEX_COUNTRY_CODE, LENGTH_COUNTRY_CODE);
+  const INDEX_DDD = 2;
+  const LENGTH_DDD = 4;
+  const ddd = cleanedText.substring(INDEX_DDD, LENGTH_DDD);
+  const INDEX_NUMBER = 4;
+  const LENGTH_NUMBER = cleanedText.length - 1;
+  const number = cleanedText.substring(INDEX_NUMBER, LENGTH_NUMBER);
 
   return {
-    countryCode: "55",
+    countryCode,
     ddd,
     number,
   };

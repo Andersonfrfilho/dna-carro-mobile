@@ -10,9 +10,14 @@ export interface UserInfoCacheUser {
   password: string;
 }
 
+interface Term {
+  id: string;
+  accept: boolean;
+}
 export interface CreateUserInfoCacheContextParamsDto {
   user: UserInfoCacheUser;
   phone: string;
+  term: Term;
 }
 
 export interface PhoneVerifyCodeConfirmationCreateClientParamsDto {

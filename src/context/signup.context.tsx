@@ -3,12 +3,10 @@ import { verifyWithoutFlowInfoCacheByEmailService } from "../services/api/servic
 import { useError } from "./errors.context";
 import { CACHE_GET_ERROR, SignUpErrors } from "../error/constants/signup.constant.error";
 import { useRouter } from "expo-router";
-import { CreateUserInfoCacheServicePropsDto, createUserInfoCacheService } from "../services/api/services/create-user-info-cache.service";
+import { UserClientCacheUserServicePropsDto, userClientCacheTermService, userClientCacheUser } from "../services/api/services/create-user-info-cache.service";
 import { verifyWithoutFlowInfoCacheByPhoneService } from "../services/api/services/verify-without-flow-info-cache-by-phone.service";
 import { CreateUserInfoCacheContextParamsDto, GetTermsResponseDto, PhoneVerifyCodeConfirmationCreateClientParamsDto } from "./dtos/signup.dto";
 import { separatePhoneInComponent } from "../utils/separatePhoneInComponent.util";
-import { setInfoCache } from "../providers/cache/cache";
-import { CREATE_USER_INFO_CACHE } from "../storage/keys/signup.keys";
 
 import { getDateUnix } from "../utils/getDate.util";
 import { DOCUMENT_TYPES, GENDER_TYPES } from "../constants/account";
@@ -17,6 +15,7 @@ import { phoneResendCodeConfirmationCreateClientService } from "../services/api/
 import { phoneVerifyCodeConfirmationCreateClientService } from "../services/api/services/phone-verify-code-confirmation-create-client.service";
 import { NameCacheKeyFlow } from "../services/api/enums/account.enum";
 import { getLastTermService } from "../services/api/services/get-last-terms.service";
+import { COUNTRY_CODE } from "./constants/account.constant";
 
 interface SignUpContextInterface {
   isSignUpLoading: boolean;
@@ -54,7 +53,7 @@ export function SignUpProvider(props: ProviderProps) {
   const [loadingSignUp, setLoadingSignUp] = useState(false)
 
   async function createUserInfoCacheAccount(data: CreateUserInfoCacheContextParamsDto) {
-    const { user, phone } = data;
+    const { user, phone, term } = data;
     const {
       document,
       documentType,
@@ -68,7 +67,7 @@ export function SignUpProvider(props: ProviderProps) {
 
     const separatePhone = separatePhoneInComponent(phone)
 
-    const formatInfos: CreateUserInfoCacheServicePropsDto = {
+    const formatInfos: UserClientCacheUserServicePropsDto = {
       user: {
         details: null,
         birthDate,
@@ -82,17 +81,16 @@ export function SignUpProvider(props: ProviderProps) {
       },
       phone: separatePhone
     }
-    const term = {
+    const termData = {
       phone: separatePhone,
       term: {
-        "id": 1,
-        accept: true
+        id: term.id,
+        accept: term.accept
       }
     }
     try {
-      await createUserInfoCacheService(formatInfos)
-      // await createUserInfoCacheService()
-      await setInfoCache<CreateUserInfoCacheServicePropsDto>({ key: CREATE_USER_INFO_CACHE, data: formatInfos })
+      await userClientCacheUser(formatInfos)
+      await userClientCacheTermService(termData)
 
       router.push({
         pathname: 'sign-up/phone',
@@ -174,7 +172,7 @@ export function SignUpProvider(props: ProviderProps) {
       router.push({
         pathname: 'sign-up/account',
         params: {
-          // phone: `${COUNTRY_CODE}${error.phone}`
+          phone: `${COUNTRY_CODE}${error.phone}`
         }
       })
       return true;

@@ -65,7 +65,7 @@ const schema = yup
   .required()
 
 interface Term {
-  version: string;
+  id: string;
   accept: boolean;
 }
 interface FormData {
@@ -132,10 +132,12 @@ export default function SignUpAccount() {
   } = useForm({
     resolver: yupResolver(schema),
   })
+
   const handleAccountPreparedToRegister = async (data: FormData) => {
     await createUserInfoCacheAccount({
       user: data,
-      phone: params.phone
+      phone: params.phone,
+      term: data.term
     })
   }
 
@@ -157,7 +159,7 @@ export default function SignUpAccount() {
     const isValideDate = validateDateFormatBR(formattedText)
     if (!isValideDate) {
       setError('birthDate', {
-        message: 'Data de nascimento invalida'
+        message: 'Data de nascimento invalida!'
       })
     }
 
@@ -165,7 +167,7 @@ export default function SignUpAccount() {
 
     if (!isMajorAge) {
       setError('birthDate', {
-        message: 'Voce pode se cadastrar tendo 18 anos de idade'
+        message: 'Voce pode se cadastrar tendo 18 anos de idade!'
       })
     }
 

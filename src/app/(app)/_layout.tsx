@@ -8,7 +8,6 @@ export default function AppLayout() {
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (false) {
-    console.log("########## - loading")
     return <Text>Loading...</Text>;
   }
 
@@ -23,7 +22,6 @@ export default function AppLayout() {
 
     // return <Redirect href="/sign-up/account" />;
   }
-  console.log("########## - Auth")
   // This layout can be deferred because it's not the root layout.
   return <Stack />;
 }

@@ -42,7 +42,7 @@ export const ContainerIconClosed = styled.TouchableOpacity`
 export const IconClosed = styled(MaterialCommunityIcons).attrs((props) => ({
   size: props.theme.icon.size.large,
   color: props.theme.colors.gray,
-}))<typeof MaterialCommunityIcons>``;
+}))``;
 
 export const ContainerHeader = styled.View`
   flex: 1;
@@ -173,7 +173,7 @@ export const TitleCode = styled.Text`
   text-align: center;
 `;
 
-export const InputTextComponent = styled.TextInput<InputComponentProps>`
+export const InputTextComponent = styled.TextInput`
   position: absolute;
   width: 100%;
   height: 90px;
