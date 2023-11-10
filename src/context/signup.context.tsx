@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { verifyWithoutFlowInfoCacheByEmailService } from "../services/api/services/verify-without-flow-info-cache-by-email.service";
 import { useError } from "./errors.context";
-import { CACHE_GET_ERROR, SignUpErrors } from "../error/constants/signup.constant.error";
+import { CACHE_DATA_CONFIRMATION_PHONE_NOT_FOUND, CACHE_GET_ERROR, PHONE_NUMBER_CODE_CONFIRMATION_INCORRECT, SignUpErrors } from "../error/constants/signup.constant.error";
 import { useRouter } from "expo-router";
-import { UserClientCacheUserServicePropsDto, userClientCacheTermService, userClientCacheUser } from "../services/api/services/create-user-info-cache.service";
+import { UserClientCachePhoneServicePropsDto, UserClientCacheUserServicePropsDto, userClientCachePhoneService, userClientCacheTermService, userClientCacheUser } from "../services/api/services/create-user-info-cache.service";
 import { verifyWithoutFlowInfoCacheByPhoneService } from "../services/api/services/verify-without-flow-info-cache-by-phone.service";
-import { CreateUserInfoCacheContextParamsDto, GetTermsResponseDto, PhoneVerifyCodeConfirmationCreateClientParamsDto } from "./dtos/signup.dto";
+import { CreateUserInfoCacheContextParamsDto, CreateUserInfoCachePhoneContextParamsDto, GetTermsResponseDto, PhoneVerifyCodeConfirmationCreateClientParamsDto } from "./dtos/signup.dto";
 import { separatePhoneInComponent } from "../utils/separatePhoneInComponent.util";
 
 import { getDateUnix } from "../utils/getDate.util";
@@ -23,7 +23,7 @@ interface SignUpContextInterface {
   showModalCodeConfirmation: boolean;
   expirationTimeCodeConfirmationPhone: string;
   verifyEmailToRegister: (email: string) => Promise<void>;
-  verifyPhoneToRegister: (phone: string) => Promise<void>;
+  verifyAndCreatePhoneToRegister: (phone: string) => Promise<void>;
   createUserInfoCacheAccount: (data: CreateUserInfoCacheContextParamsDto) => Promise<void>;
   phoneSendCodeConfirmationCreateClient: (phone: string) => Promise<void>;
   phoneResendCodeConfirmationCreateClient: (phone: string) => Promise<void>;
@@ -31,11 +31,14 @@ interface SignUpContextInterface {
   closeModalCodeConfirmation: () => void;
   getLastTerm: () => Promise<GetTermsResponseDto>;
   loadingSignUp: boolean;
+  setExpirationTimeCodeConfirmationPhone: React.Dispatch<React.SetStateAction<string>>;
+  errorConfirmationCodeLocal: string;
+  setErrorConfirmationCodeLocal: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // Define the Provider component
 interface ProviderProps {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 // Create the AuthContext
@@ -48,9 +51,10 @@ export function SignUpProvider(props: ProviderProps) {
   const { appErrorVerifyError } = useError()
   const [isSignUpLoading, setIsSignUpLoading] =
     React.useState<boolean>(false);
-  const [expirationTimeCodeConfirmationPhone, setExpirationTimeCodeConfirmationPhone] = useState('');
+  const [expirationTimeCodeConfirmationPhone, setExpirationTimeCodeConfirmationPhone] = useState('00:00');
   const [showModalCodeConfirmation, setShowModalCodeConfirmation] = useState(false)
   const [loadingSignUp, setLoadingSignUp] = useState(false)
+  const [errorConfirmationCodeLocal, setErrorConfirmationCodeLocal] = useState<string>('')
 
   async function createUserInfoCacheAccount(data: CreateUserInfoCacheContextParamsDto) {
     const { user, phone, term } = data;
@@ -99,7 +103,28 @@ export function SignUpProvider(props: ProviderProps) {
         }
       })
     } catch (error) {
-      if (appErrorVerifyErrorLocal({ ...error, phone })) {
+      const isLocalError = await appErrorVerifyErrorLocal({ ...error, phone });
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    }
+  }
+
+  async function createUserInfoCachePhone(data: CreateUserInfoCachePhoneContextParamsDto) {
+    const { phone } = data;
+
+    const separatePhone = separatePhoneInComponent(phone)
+
+    const formatInfos: UserClientCachePhoneServicePropsDto = {
+      phone: separatePhone
+    }
+
+    try {
+      await userClientCachePhoneService(formatInfos)
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal({ ...error, phone });
+      if (isLocalError) {
         return;
       }
       appErrorVerifyError(error)
@@ -117,15 +142,38 @@ export function SignUpProvider(props: ProviderProps) {
     }
   }
 
-  async function verifyPhoneToRegister(phone: string): Promise<void> {
+  async function verifyAndCreatePhoneToRegister(phone: string): Promise<void> {
+    const phoneWithCountryCodeFormat = `55${phone}`
+    const separatePhone = separatePhoneInComponent(phoneWithCountryCodeFormat)
+    const stringPhoneSeparated = JSON.stringify(separatePhone)
     try {
-      const phoneFormat = `55${phone}`
-      const { missingCacheInfo } = await verifyWithoutFlowInfoCacheByPhoneService(phoneFormat)
+      const { missingCacheInfo } = await verifyWithoutFlowInfoCacheByPhoneService(phoneWithCountryCodeFormat)
+
       if (missingCacheInfo.includes(NameCacheKeyFlow.phone)) {
         router.push({
-          pathname: 'sign-up/account/phone',
+          pathname: 'sign-up',
           params: {
-            phone: phoneFormat
+            phone: stringPhoneSeparated
+          }
+        })
+        return;
+      }
+
+      if (missingCacheInfo.includes(NameCacheKeyFlow.user || NameCacheKeyFlow.term)) {
+        router.push({
+          pathname: 'sign-up/account',
+          params: {
+            phone: stringPhoneSeparated
+          }
+        })
+        return;
+      }
+
+      if (missingCacheInfo.includes(NameCacheKeyFlow.phoneConfirmation)) {
+        router.push({
+          pathname: 'sign-up/phone',
+          params: {
+            phone: stringPhoneSeparated
           }
         })
         return;
@@ -133,9 +181,9 @@ export function SignUpProvider(props: ProviderProps) {
 
       if (missingCacheInfo.includes(NameCacheKeyFlow.address)) {
         router.push({
-          pathname: 'sign-up/account/address',
+          pathname: 'sign-up/address',
           params: {
-            phone: phoneFormat
+            phone: stringPhoneSeparated
           }
         })
         return;
@@ -143,53 +191,69 @@ export function SignUpProvider(props: ProviderProps) {
 
       if (missingCacheInfo.includes(NameCacheKeyFlow.image)) {
         router.push({
-          pathname: 'sign-up/account/image',
+          pathname: 'sign-up/image',
           params: {
-            phone: phoneFormat
+            phone: stringPhoneSeparated
           }
         })
         return;
       }
     } catch (error) {
-      if (appErrorVerifyErrorLocal({ ...error, phone })) {
+      const isLocalError = await appErrorVerifyErrorLocal({ ...error, phone });
+      if (isLocalError) {
         return;
       }
       appErrorVerifyError(error)
     }
   }
 
-  function appErrorVerifyErrorLocal(error: any): boolean {
+  async function appErrorVerifyErrorLocal(error: any): Promise<boolean> {
     const code = error?.response?.data?.code
     const codes = Object.keys(SignUpErrors)
-
 
     const existCodeInCodes = codes.includes(code.toString());
     if (!existCodeInCodes) {
       return true;
     }
 
+    if (code === SignUpErrors[CACHE_DATA_CONFIRMATION_PHONE_NOT_FOUND].code) {
+      router.replace('sign-up')
+      return true
+    }
+
     if (code === SignUpErrors[CACHE_GET_ERROR].code) {
+      const phone = `${COUNTRY_CODE}${error.phone}`
+      await createUserInfoCachePhone({
+        phone
+      })
+
       router.push({
         pathname: 'sign-up/account',
         params: {
-          phone: `${COUNTRY_CODE}${error.phone}`
+          phone
         }
       })
       return true;
+    }
+
+    if (code === SignUpErrors[PHONE_NUMBER_CODE_CONFIRMATION_INCORRECT].code) {
+      setErrorConfirmationCodeLocal("Código invalido! Tente novamente.")
     }
 
     return false;
   }
 
   async function phoneSendCodeConfirmationCreateClient(phone: string) {
-    const separatePhone = separatePhoneInComponent(phone)
+    const phoneWithCountryCode = `${COUNTRY_CODE}${phone}`
+    const separatePhone = separatePhoneInComponent(phoneWithCountryCode)
     try {
       const { expirationInMilliseconds } = await phoneSendCodeConfirmationCreateClientService(separatePhone)
 
       setExpirationTimeCodeConfirmationPhone(expirationInMilliseconds)
       setShowModalCodeConfirmation(true)
     } catch (error) {
-      if (appErrorVerifyErrorLocal({ ...error, phone })) {
+      const isLocalError = await appErrorVerifyErrorLocal({ ...error, phone });
+      if (isLocalError) {
         return;
       }
       appErrorVerifyError(error)
@@ -210,10 +274,19 @@ export function SignUpProvider(props: ProviderProps) {
 
   async function phoneVerifyCodeConfirmationCreateClient({ code, phone }: PhoneVerifyCodeConfirmationCreateClientParamsDto) {
     const separatePhone = separatePhoneInComponent(phone)
+    const stringPhoneSeparated = JSON.stringify(separatePhone)
     try {
       await phoneVerifyCodeConfirmationCreateClientService({ ...separatePhone, code })
+      setShowModalCodeConfirmation(false)
+      router.push({
+        pathname: 'sign-up/address',
+        params: {
+          phone: stringPhoneSeparated
+        }
+      })
+      return;
     } catch (error) {
-      if (appErrorVerifyErrorLocal({ ...error, phone })) {
+      if (await appErrorVerifyErrorLocal({ ...error, phone })) {
         return;
       }
       appErrorVerifyError(error)
@@ -235,30 +308,50 @@ export function SignUpProvider(props: ProviderProps) {
       setLoadingSignUp(false)
     }
   }
+
+  const contextValue = useMemo(() => ({
+    isSignUpLoading,
+    setIsSignUpLoading,
+    verifyEmailToRegister,
+    verifyAndCreatePhoneToRegister,
+    createUserInfoCacheAccount,
+    phoneSendCodeConfirmationCreateClient,
+    phoneResendCodeConfirmationCreateClient,
+    phoneVerifyCodeConfirmationCreateClient,
+    showModalCodeConfirmation,
+    expirationTimeCodeConfirmationPhone,
+    closeModalCodeConfirmation,
+    getLastTerm,
+    loadingSignUp,
+    setExpirationTimeCodeConfirmationPhone,
+    errorConfirmationCodeLocal,
+    setErrorConfirmationCodeLocal
+  }), [
+    isSignUpLoading,
+    verifyEmailToRegister,
+    verifyAndCreatePhoneToRegister,
+    createUserInfoCacheAccount,
+    phoneSendCodeConfirmationCreateClient,
+    phoneResendCodeConfirmationCreateClient,
+    phoneVerifyCodeConfirmationCreateClient,
+    showModalCodeConfirmation,
+    expirationTimeCodeConfirmationPhone,
+    closeModalCodeConfirmation,
+    getLastTerm,
+    loadingSignUp,
+    setExpirationTimeCodeConfirmationPhone,
+    errorConfirmationCodeLocal,
+    setErrorConfirmationCodeLocal
+  ]);
   return (
     <SignUpContext.Provider
-      value={{
-        isSignUpLoading,
-        setIsSignUpLoading,
-        verifyEmailToRegister,
-        verifyPhoneToRegister,
-        createUserInfoCacheAccount,
-        phoneSendCodeConfirmationCreateClient,
-        phoneResendCodeConfirmationCreateClient,
-        phoneVerifyCodeConfirmationCreateClient,
-        showModalCodeConfirmation,
-        expirationTimeCodeConfirmationPhone,
-        closeModalCodeConfirmation,
-        getLastTerm,
-        loadingSignUp
-      }}
+      value={contextValue}
     >
       {props.children}
     </SignUpContext.Provider>
   );
 }
 
-// Define the useAuth hook
 export const useSignUp = () => {
   const signUpContext = useContext(SignUpContext);
 

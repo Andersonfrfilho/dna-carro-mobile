@@ -1,7 +1,4 @@
 import {
-  ButtonBorder,
-  ButtonBorderSecond,
-  ButtonFirstStep,
   Container,
   ContainerBody,
   ContainerButton,
@@ -12,12 +9,10 @@ import {
   ContainerTitle,
   Phrase,
   Title,
-  TitleButton,
 } from "./styles";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
-import { useTheme } from "styled-components/native";
 import { useEffect, useState } from "react";
 import { validatePhone } from "../../../utils/validatePhoneNumber.utils";
 import { useSignUp } from "../../../context/signup.context";
@@ -79,14 +74,18 @@ export default function SignUpPhone() {
   };
 
   useEffect(() => {
-    if (!!params.phone) {
-      setValue('phone', params.phone)
+    if (params.phone) {
+      const { ddd, number } = JSON.parse(params.phone)
+      const phoneValue = `${ddd}${number}`
+      const formattedFormat = formatPhone(phoneValue)
+      setPhoneLocal(formattedFormat)
+      setValue('phone', phoneValue)
     }
   }, [])
 
   return (
     <Container>
-      <ModalPhoneConfirmation onClosed={closeModalCodeConfirmation} show={showModalCodeConfirmation} />
+      <ModalPhoneConfirmation onClosed={closeModalCodeConfirmation} show={showModalCodeConfirmation} phone={params.phone} />
       <ContainerHeader>
         <ContainerTitle>
           <Title>Faça seu cadastro</Title>

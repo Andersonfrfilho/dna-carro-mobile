@@ -19,6 +19,9 @@ export interface CreateUserInfoCacheContextParamsDto {
   phone: string;
   term: Term;
 }
+export interface CreateUserInfoCachePhoneContextParamsDto {
+  phone: string;
+}
 
 export interface PhoneVerifyCodeConfirmationCreateClientParamsDto {
   phone: string;

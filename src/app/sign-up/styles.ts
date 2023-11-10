@@ -97,9 +97,7 @@ export const ButtonBorderSecond = styled.View`
   background-color: ${(props) => props.theme.colors.transparent.highlightColor};
 `;
 
-export const ButtonFirstStep = styled.TouchableHighlight.attrs((props) => ({
-  underlayColor: props.theme.colors.transparent.persianBlue,
-}))`
+export const ButtonFirstStep = styled.TouchableOpacity`
   background-color: ${(props) => props.theme.colors.backgroundColor};
 
   width: 100%;

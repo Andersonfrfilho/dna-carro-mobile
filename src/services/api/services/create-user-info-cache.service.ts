@@ -61,3 +61,21 @@ export async function userClientCacheTermService(
     throw error;
   }
 }
+
+export interface UserClientCachePhoneServicePropsDto {
+  phone: PhoneUserInfoCacheUser;
+}
+
+export async function userClientCachePhoneService(
+  params: UserClientCachePhoneServicePropsDto
+): Promise<void> {
+  try {
+    await api.post(`/user/client/cache/phone`, params, {
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+}

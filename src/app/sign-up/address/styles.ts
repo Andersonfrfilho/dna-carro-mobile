@@ -1,11 +1,22 @@
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Constants from "expo-constants";
+
+interface ErrorProps {
+  error?: string;
+}
+
+interface ContainerBorderProps extends ErrorProps {}
 
 export const Container = styled.SafeAreaView`
   flex: 1;
-  justify-content: space-between;
-  align-items: stretch;
-  background-color: ${(props) => props.theme.colors.lightBlue};
+`;
+
+export const ContainerModal = styled.Modal`
+  flex: 1;
+`;
+
+export const ContainerLoading = styled.View`
+  flex: 1;
 `;
 
 export const ContainerHeader = styled.View`
@@ -27,29 +38,40 @@ export const Phrase = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.medium};
 `;
 
-export const ContainerBody = styled.View`
+export const ContainerLogo = styled.View`
   flex: 1;
-
-  justify-content: center;
-  align-items: stretch;
-
-  background-color: ${(props) => props.theme.colors.powderWhite};
 `;
 
-export const ContainerForm = styled.View`
-  flex: 1;
+export const ContainerBody = styled.View`
+  flex: 4;
+`;
 
+export const ContainerForm = styled.ScrollView`
   padding-left: 15px;
   padding-right: 15px;
 `;
 
 export const ContainerInput = styled.View`
   height: 80px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+`;
+export const ContainerButtonGender = styled.View<ContainerBorderProps>`
+  height: 80px;
+  margin-top: 20px;
+
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        margin-bottom: 20px;
+      `
+    );
+  }}
 `;
 
-export const ContainerButton = styled.View`
+export const ContainerBirthDate = styled.View`
   height: 80px;
+  margin-top: 20px;
 `;
 
 export const Title = styled.Text`
@@ -63,11 +85,10 @@ export const Title = styled.Text`
 `;
 
 export const ContainerFooter = styled.View`
-  height: 150px;
-  flex-direction: row;
+  height: 120px;
 
+  margin-top: 20px;
+  margin-bottom: 20px;
   justify-content: center;
-  align-items: stretch;
-
-  background-color: ${(props) => props.theme.colors.powderWhite};
+  align-items: center;
 `;

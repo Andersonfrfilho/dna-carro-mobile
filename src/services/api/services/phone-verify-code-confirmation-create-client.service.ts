@@ -1,7 +1,7 @@
 import { api } from "../provider.service";
 
 type ParamsDto = {
-  countryCode: "55";
+  countryCode: string;
   ddd: string;
   number: string;
   code: string;

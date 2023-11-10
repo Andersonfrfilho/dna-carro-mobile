@@ -14,11 +14,13 @@ interface Props extends TextInputProps {
   readonly mode?: DATE_TYPE_MODE_PICKER;
   readonly datePickerValue?: Date;
   readonly onChangeDatePicker?: React.Dispatch<React.SetStateAction<Date>>;
+  readonly maxDate?: Date;
+  readonly minimumDate?: Date;
 }
 
 enum DatePickerNativeEventType {
   set = 'set',
-  dismissed = 'dismissed'
+  dismissed = 'dismissed',
 }
 
 
@@ -28,6 +30,8 @@ export default function InputDateButton({ error,
   mode,
   onChangeDatePicker,
   datePickerValue,
+  maxDate = new Date(),
+  minimumDate = new Date(0),
   ...props }: Props) {
   const theme = useTheme()
   const [isVisibleDatePicker, setIsVisibleDatePicker] = useState(false)
@@ -55,10 +59,16 @@ export default function InputDateButton({ error,
     <Container>
       {isVisibleDatePicker ? (
         <DateTimePicker
+          timeZoneOffsetInMinutes={-3 * 60}
+          is24Hour={true}
+          locale='pt-BR'
+          maximumDate={maxDate}
+          minimumDate={minimumDate}
           value={datePickerValue}
           mode={mode}
           onChange={(item, dateParam) => handleSetDateToCalendar(item, dateParam)}
           onTouchCancel={() => onCancelDate()}
+          timeZoneName={'America/Fortaleza'}
         />
       ) : null}
       <ContainerLabel>

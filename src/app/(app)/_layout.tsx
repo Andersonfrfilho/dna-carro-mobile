@@ -17,8 +17,10 @@ export default function AppLayout() {
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
     // return <Redirect href="/sign-up/account" />;
-    return <Redirect href="/sign-up" />;
+    // return <Redirect href="/sign-up" />;
     // return <Redirect href="/sign-up/phone" />;
+    return <Redirect href="/sign-up/address" />;
+
 
     // return <Redirect href="/sign-up/account" />;
   }

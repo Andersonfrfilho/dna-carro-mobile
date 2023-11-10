@@ -38,7 +38,7 @@ interface FormData {
 }
 export default function SignUp() {
   const theme = useTheme();
-  const { verifyPhoneToRegister } = useSignUp();
+  const { verifyAndCreatePhoneToRegister } = useSignUp();
   const [phoneLocal, setPhoneLocal] = useState('')
 
 
@@ -46,13 +46,15 @@ export default function SignUp() {
     control,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
+    formState: { isValid }
   } = useForm({
     resolver: yupResolver(schema),
+    mode: "onChange",
   })
 
   const handleVerifyPhoneToRegister = async (data: FormData) => {
-    await verifyPhoneToRegister(data.phone)
+    await verifyAndCreatePhoneToRegister(data.phone)
   }
 
   const handleTextChange = (text: string) => {

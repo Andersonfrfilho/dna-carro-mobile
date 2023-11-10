@@ -61,6 +61,8 @@ export const ContainerTitle = styled.View`
   align-items: center;
 `;
 
+export const ButtonPhrase = styled.TouchableOpacity``;
+
 export const Phrase = styled.Text`
   font-family: ${(props) => props.theme.fonts["Roboto-Regular"]};
   font-size: ${(props) => props.theme.fontSizes.medium};
@@ -73,6 +75,17 @@ export const ContainerBody = styled.View`
   align-items: stretch;
 
   background-color: ${(props) => props.theme.colors.powderWhite};
+`;
+
+export const Label = styled.Text`
+  color: ${(props) => props.theme.colors.errors.darkRed};
+  text-align: left;
+`;
+
+export const ContainerLabel = styled.View`
+  height: 20px;
+
+  padding-left: 15px;
 `;
 
 export const ContainerForm = styled.View`

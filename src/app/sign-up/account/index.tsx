@@ -90,7 +90,6 @@ type PropsRouteParams = {
 export default function SignUpAccount() {
   const params = useLocalSearchParams<PropsRouteParams>();
   const { isSignUpLoading, createUserInfoCacheAccount, getLastTerm, loadingSignUp } = useSignUp();
-  const [buttonDisable, setButtonDisable] = useState(false)
 
   const [cpfIconName, setCpfIconName] = useState<iconName>("checkbox-blank-outline")
   const [cpfDocumentSelect, setCpfDocumentSelect] = useState<boolean>(false)
@@ -143,14 +142,13 @@ export default function SignUpAccount() {
 
   useEffect(() => {
     const errorContent = Object.keys(errors).length === 0 && errors.constructor === Object
-
-    setButtonDisable(isSignUpLoading || !errorContent)
   }, [isSignUpLoading, errors])
 
   const handleDocumentChange = (text: string) => {
     const formattedText = cpfDocumentSelect ? formatCPF(text) : formatCNPJ(text);
     setValue('document', formattedText)
     clearErrors('document')
+    clearErrors('documentType')
   };
 
   const handleBirthDateChange = (text: string) => {
@@ -187,6 +185,7 @@ export default function SignUpAccount() {
     setFocus('document')
     setValue('documentType', DOCUMENT_TYPES.CPF)
     clearErrors('document')
+    clearErrors('documentType')
   }
 
   const handleSelectDocumentTypeCnpj = () => {
@@ -200,6 +199,7 @@ export default function SignUpAccount() {
     setFocus('document')
     setValue('documentType', DOCUMENT_TYPES.CNPJ)
     clearErrors('document')
+    clearErrors('documentType')
   }
 
   const handleDatePickerSelectDate = (param: Date) => {
@@ -297,7 +297,13 @@ export default function SignUpAccount() {
                   onChangeText={onChange}
                   value={value}
                   error={errors?.email?.message}
-                  onSubmitEditing={() => setFocus("document")}
+                  onSubmitEditing={() => {
+                    if (!cpfDocumentSelect && !cnpjDocumentSelect) {
+                      handleSelectDocumentTypeCpf()
+                    }
+
+                    setFocus("document")
+                  }}
                 />
               )}
               name="email"
@@ -410,7 +416,6 @@ export default function SignUpAccount() {
             <ButtonCircleBorder
               title={"Prosseguir"}
               onPress={handleSubmit(handleAccountPreparedToRegister)}
-              disabled={buttonDisable}
             />
           </ContainerFooter>
         </ContainerForm>
