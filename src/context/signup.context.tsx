@@ -261,11 +261,14 @@ export function SignUpProvider(props: ProviderProps) {
   }
 
   async function phoneResendCodeConfirmationCreateClient(phone: string) {
-    const separatePhone = separatePhoneInComponent(phone)
+    const phoneWithCountryCode = `${COUNTRY_CODE}${phone}`
+    const separatePhone = separatePhoneInComponent(phoneWithCountryCode)
     try {
-      await phoneResendCodeConfirmationCreateClientService(separatePhone)
+      const { expirationInMilliseconds } = await phoneSendCodeConfirmationCreateClientService(separatePhone)
+
+      setExpirationTimeCodeConfirmationPhone(expirationInMilliseconds)
     } catch (error) {
-      if (appErrorVerifyErrorLocal({ ...error, phone })) {
+      if (await appErrorVerifyErrorLocal({ ...error, phone })) {
         return;
       }
       appErrorVerifyError(error)

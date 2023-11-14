@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components/native";
 import Constants from "expo-constants";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface ErrorProps {
   error?: string;
@@ -46,15 +47,46 @@ export const ContainerBody = styled.View`
   flex: 4;
 `;
 
-export const ContainerForm = styled.ScrollView`
+export const ContainerForm = styled.View`
+  flex: 1;
+
   padding-left: 15px;
   padding-right: 15px;
 `;
 
-export const ContainerInput = styled.View`
-  height: 80px;
-  margin-bottom: 20px;
+export const ContainerInputLocation = styled.View`
+  flex: 1;
+
+  flex-direction: row;
 `;
+
+export const ContainerButtonLocation = styled.TouchableOpacity`
+  flex: 1;
+  height: 80px;
+
+  justify-content: center;
+  align-items: center;
+`;
+
+export const Icon = styled(MaterialCommunityIcons).attrs((props) => ({
+  size: props.theme.icon.size.median,
+}))``;
+
+export const ContainerMapView = styled.View`
+  flex: 4;
+`;
+
+export const ContainerInput = styled.View`
+  flex: 4;
+
+  justify-content: center;
+  align-items: stretch;
+
+  /* border-width: 4px; */
+  /* border-color: ${(props) => props.theme.colors.darkGray}; */
+  /* background-color: ${(props) => props.theme.colors.lightGray}; */
+`;
+
 export const ContainerButtonGender = styled.View<ContainerBorderProps>`
   height: 80px;
   margin-top: 20px;

@@ -16,6 +16,12 @@
     <string>6.0</string>
     <key>CFBundleName</key>
     <string>$(PRODUCT_NAME)</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Permitir $(PRODUCT_NAME) usar sua localizacao</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Permitir $(PRODUCT_NAME) usar sua localizacao</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Permitir $(PRODUCT_NAME) usar sua localizacao</string>
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>

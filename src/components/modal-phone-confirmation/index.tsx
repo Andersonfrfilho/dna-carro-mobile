@@ -53,7 +53,7 @@ export default function ModalPhoneConfirmation({
   onClosed, show, phone
 }: ParamsDto) {
   const theme = useTheme();
-  const { errorConfirmationCodeLocal, setErrorConfirmationCodeLocal, phoneVerifyCodeConfirmationCreateClient, expirationTimeCodeConfirmationPhone, setExpirationTimeCodeConfirmationPhone } = useSignUp();
+  const { errorConfirmationCodeLocal, setErrorConfirmationCodeLocal, phoneVerifyCodeConfirmationCreateClient, expirationTimeCodeConfirmationPhone, setExpirationTimeCodeConfirmationPhone, phoneResendCodeConfirmationCreateClient } = useSignUp();
   const [codeText, setCodeText] = useState('');
   const [codeFirst, setCodeFirst] = useState('');
   const [codeSecond, setCodeSecond] = useState('');
@@ -68,7 +68,8 @@ export default function ModalPhoneConfirmation({
     formState: { errors },
     setFocus,
     setValue,
-    setError
+    setError,
+    clearErrors
   } = useForm({
     resolver: yupResolver(schema),
   })
@@ -78,6 +79,21 @@ export default function ModalPhoneConfirmation({
     const phoneValue = `${countryCode}${ddd}${number}`
     await phoneVerifyCodeConfirmationCreateClient({ code: data.code, phone: phoneValue })
   }
+
+  const handleResendCode = async () => {
+    const { ddd, number, countryCode } = JSON.parse(phone)
+    const phoneValue = `${countryCode}${ddd}${number}`
+    await phoneResendCodeConfirmationCreateClient(phoneValue)
+    setFocus('code')
+    setValue('code', '')
+    setCodeFirst('')
+    setCodeSecond('')
+    setCodeThird('')
+    setCodeFour('')
+    setCodeText('')
+    clearErrors()
+  }
+
   useEffect(() => {
     setFocus('code')
     setValue('code', '')
@@ -153,6 +169,7 @@ export default function ModalPhoneConfirmation({
 
     if (codeText.length === LENGTH_CODE) {
       setValue('code', codeText)
+      setErrorConfirmationCodeLocal('')
     }
   }, [codeText])
 
@@ -233,7 +250,9 @@ export default function ModalPhoneConfirmation({
 
           </ContainerForm>
           <ContainerTitle>
-            {expirationTimeCodeConfirmationPhone === INITIAL_TIME_EXPIRATION && (<ButtonPhrase>
+            {expirationTimeCodeConfirmationPhone === INITIAL_TIME_EXPIRATION && (<ButtonPhrase
+              onPress={handleResendCode}
+            >
               <Phrase>
                 Reenviar
               </Phrase>

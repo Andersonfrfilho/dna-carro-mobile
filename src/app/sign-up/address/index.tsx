@@ -1,28 +1,21 @@
 import {
   Container,
   ContainerBody,
-  ContainerFooter,
   ContainerForm,
   ContainerHeader,
   ContainerInput,
   ContainerTitle,
   Phrase,
   Title,
-  ContainerButtonGender,
   ContainerLoading,
+  ContainerButtonLocation,
+  ContainerMapView,
+  ContainerInputLocation,
+  Icon,
 } from "./styles";
-import { Controller, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
-import Input from "../../../components/input";
-import { useSignUp } from "../../../context/signup.context";
-import { useEffect } from "react";
-
-import { useLocalSearchParams } from "expo-router";
-
-import Loading from "../../../components/loading";
-import { StyleSheet, View } from "react-native";
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import { StyleSheet, View } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -32,52 +25,20 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  formContainer: {
+    position: 'absolute',
+    zIndex: 10, // Coloque um valor alto para que o formulário de entrada fique na frente do mapa
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: 250,
+  },
 });
 
-const schema = yup
-  .object({
-    addresses: yup.string().required("Um endereço é necessário!"),
-  })
-  .required()
-
-type PropsRouteParams = {
-  phone: string;
-}
+// Resto do seu código...
 
 export default function SignUpAccount() {
-  const params = useLocalSearchParams<PropsRouteParams>();
-  const { isSignUpLoading, createUserInfoCacheAccount, getLastTerm, loadingSignUp } = useSignUp();
-
-  useEffect(() => {
-    setFocus('addresses')
-  }, [])
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setFocus,
-    setValue,
-    clearErrors,
-    setError
-  } = useForm({
-    resolver: yupResolver(schema),
-  })
-
-  const handleAddressPreparedToRegister = async (data: FormData) => {
-    await createUserInfoCacheAddress({
-      user: data,
-      phone: params.phone,
-      term: data.term
-    })
-  }
-
-
-  if (loadingSignUp) {
-    return (<ContainerLoading>
-      <Loading />
-    </ContainerLoading>)
-  }
+  // ...
 
   return (
     <Container>
@@ -88,36 +49,41 @@ export default function SignUpAccount() {
         </ContainerTitle>
       </ContainerHeader>
       <ContainerBody>
-        <ContainerForm>
-          <ContainerInput>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({ field: { onChange, onBlur, value, ref } }) => (
-                <Input
-                  reference={ref}
-                  placeholder="Endereço"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  error={errors?.addresses?.message}
+        {/* Contêiner do formulário de entrada (GooglePlacesAutocomplete) */}
+        <View style={styles.formContainer}>
+          <ContainerForm>
+            <ContainerInputLocation>
+              <ContainerInput>
+                <GooglePlacesAutocomplete
+                  placeholder='Search'
+                  onPress={(data, details = null) => {
+                    //console.log(data, details);
+                  }}
+                  query={{
+                    key: 'AIzaSyAvGAswSGzD6YNDCgjHHhea7G6JVVimDhQ', // Substitua pelo seu próprio API Key
+                    language: 'pt-BR',
+                  }}
+                  styles={{
+                    // Seus estilos personalizados para o formulário de entrada
+                  }}
                 />
-              )}
-              name="addresses"
-            />
-          </ContainerInput>
-        </ContainerForm>
-        <View style={styles.container}>
+              </ContainerInput>
+              <ContainerButtonLocation>
+                <Icon name={"location-enter"} />
+              </ContainerButtonLocation>
+            </ContainerInputLocation>
+          </ContainerForm>
+        </View>
+        {/* Contêiner do mapa */}
+        <ContainerMapView>
           <MapView style={styles.map} provider={PROVIDER_GOOGLE} region={{
             latitude: 37.78825,
             longitude: -122.4324,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121,
           }} />
-        </View>
+        </ContainerMapView>
       </ContainerBody>
-    </Container >
+    </Container>
   );
 }
