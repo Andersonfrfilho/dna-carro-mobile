@@ -1,22 +1,17 @@
 import styled, { css } from "styled-components/native";
 import Constants from "expo-constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 interface ErrorProps {
   error?: string;
 }
 
+interface PropsInputAutoCompleteSelect {
+  selectAddress: boolean;
+}
 interface ContainerBorderProps extends ErrorProps {}
-
 export const Container = styled.SafeAreaView`
-  flex: 1;
-`;
-
-export const ContainerModal = styled.Modal`
-  flex: 1;
-`;
-
-export const ContainerLoading = styled.View`
   flex: 1;
 `;
 
@@ -39,71 +34,46 @@ export const Phrase = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.medium};
 `;
 
-export const ContainerLogo = styled.View`
-  flex: 1;
-`;
-
 export const ContainerBody = styled.View`
   flex: 4;
 `;
 
-export const ContainerForm = styled.View`
+export const ContainerForm = styled.TouchableHighlight<PropsInputAutoCompleteSelect>`
   flex: 1;
 
   padding-left: 15px;
   padding-right: 15px;
+  position: absolute;
+  z-index: 10;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  padding-top: 15px;
+  background-color: ${(props) => props.theme.colors.transparent.onyx};
+
+  ${(props) =>
+    !props.selectAddress &&
+    css`
+      height: 20%;
+      background-color: transparent;
+    `}
 `;
 
 export const ContainerInputLocation = styled.View`
   flex: 1;
-
-  flex-direction: row;
 `;
-
-export const ContainerButtonLocation = styled.TouchableOpacity`
-  flex: 1;
-  height: 80px;
-
-  justify-content: center;
-  align-items: center;
-`;
-
-export const Icon = styled(MaterialCommunityIcons).attrs((props) => ({
-  size: props.theme.icon.size.median,
-}))``;
 
 export const ContainerMapView = styled.View`
   flex: 4;
+
+  justify-content: flex-end;
 `;
-
-export const ContainerInput = styled.View`
-  flex: 4;
-
-  justify-content: center;
-  align-items: stretch;
-
-  /* border-width: 4px; */
-  /* border-color: ${(props) => props.theme.colors.darkGray}; */
-  /* background-color: ${(props) => props.theme.colors.lightGray}; */
-`;
-
-export const ContainerButtonGender = styled.View<ContainerBorderProps>`
-  height: 80px;
-  margin-top: 20px;
-
-  ${(props) => {
-    return (
-      !!props.error &&
-      css`
-        margin-bottom: 20px;
-      `
-    );
-  }}
-`;
-
-export const ContainerBirthDate = styled.View`
-  height: 80px;
-  margin-top: 20px;
+export const ComponentMapView = styled(MapView).attrs({
+  provider: PROVIDER_GOOGLE,
+})`
+  width: 100%;
+  height: 100%;
 `;
 
 export const Title = styled.Text`
@@ -121,6 +91,67 @@ export const ContainerFooter = styled.View`
 
   margin-top: 20px;
   margin-bottom: 20px;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ContainerBorder = styled.View<ContainerBorderProps>`
+  flex: 1;
+  border-width: 5px;
+  border-radius: 20px;
+  border-color: ${(props) => props.theme.colors.transparent.blackGray};
+`;
+export const ContainerSecondBorder = styled.View`
+  flex: 1;
+  border-width: 5px;
+  border-color: ${(props) => props.theme.colors.backgroundColor};
+  border-radius: 15px;
+`;
+
+export const ContainerLabelDescription = styled.View`
+  flex: 1;
+
+  background-color: ${(props) => props.theme.colors.powderWhite};
+
+  padding: 5px;
+
+  border-width: 5px;
+  border-color: ${(props) => props.theme.colors.transparent.blackGray};
+  border-radius: 10px;
+`;
+
+export const LabelAddressDescription = styled.Text`
+  text-align: center;
+
+  font-family: ${(props) => props.theme.fonts["Roboto-Regular"]};
+  font-size: ${(props) => props.theme.fontSizes.small};
+  color: ${(props) => props.theme.colors.background};
+`;
+
+export const ContainerButtons = styled.View`
+  top: calc(100%-150px);
+  position: absolute;
+
+  height: 150px;
+  width: 100%;
+
+  flex-direction: row;
+`;
+
+export const ContainerEditableButton = styled.TouchableHighlight`
+  flex: 1;
+
+  justify-content: center;
+  align-items: center;
+
+  padding: 5px;
+
+  border-radius: 40px;
+`;
+
+export const ContainerConfirmButton = styled.TouchableHighlight`
+  flex: 1;
+
   justify-content: center;
   align-items: center;
 `;

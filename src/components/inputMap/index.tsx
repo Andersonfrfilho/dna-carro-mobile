@@ -4,13 +4,12 @@ import { useTheme } from 'styled-components/native';
 import { RefCallBack } from 'react-hook-form';
 
 interface Props extends TextInputProps {
-  error?: string;
-  reference?: RefCallBack;
+  readonly error?: string;
+  readonly reference?: RefCallBack;
 }
 
 export default function InputMap({ error, reference, ...props }: Props) {
   const theme = useTheme()
-
 
   return (
     <Container>

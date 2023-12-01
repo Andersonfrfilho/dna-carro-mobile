@@ -11,13 +11,13 @@ export interface DataListProps {
 }
 
 interface Props extends TextInputProps {
-  error?: string;
-  reference?: RefCallBack;
-  title: string;
-  data: Array<DataListProps>;
-  onSelectItem: (data: DataListProps) => void;
-  visible: boolean;
-  onChangeVisible: (data: boolean) => void;
+  readonly error?: string;
+  readonly reference?: RefCallBack;
+  readonly title: string;
+  readonly data: Array<DataListProps>;
+  readonly onSelectItem: (data: DataListProps) => void;
+  readonly visible: boolean;
+  readonly onChangeVisible: (data: boolean) => void;
 }
 
 export default function SearchItems({ error, reference, onSelectItem, title, data, visible, onChangeVisible, ...props }: Props) {
@@ -33,7 +33,7 @@ export default function SearchItems({ error, reference, onSelectItem, title, dat
     onChangeVisible(false)
   }
 
-  function handleClosedSelectItem(item: DataListProps) {
+  function handleClosedSelectItem() {
     onChangeVisible(false)
   }
 

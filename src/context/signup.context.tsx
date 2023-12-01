@@ -3,19 +3,20 @@ import { verifyWithoutFlowInfoCacheByEmailService } from "../services/api/servic
 import { useError } from "./errors.context";
 import { CACHE_DATA_CONFIRMATION_PHONE_NOT_FOUND, CACHE_GET_ERROR, PHONE_NUMBER_CODE_CONFIRMATION_INCORRECT, SignUpErrors } from "../error/constants/signup.constant.error";
 import { useRouter } from "expo-router";
-import { UserClientCachePhoneServicePropsDto, UserClientCacheUserServicePropsDto, userClientCachePhoneService, userClientCacheTermService, userClientCacheUser } from "../services/api/services/create-user-info-cache.service";
+import { UserClientCacheAddressServicePropsDto, UserClientCacheImageServicePropsDto, UserClientCachePhoneServicePropsDto, UserClientCacheUserServicePropsDto, createUserInfoCacheAddressService, createUserInfoCacheImageService, userClientCachePhoneService, userClientCacheTermService, userClientCacheUser } from "../services/api/services/create-user-info-cache.service";
 import { verifyWithoutFlowInfoCacheByPhoneService } from "../services/api/services/verify-without-flow-info-cache-by-phone.service";
-import { CreateUserInfoCacheContextParamsDto, CreateUserInfoCachePhoneContextParamsDto, GetTermsResponseDto, PhoneVerifyCodeConfirmationCreateClientParamsDto } from "./dtos/signup.dto";
+import { AddressFindGeocodingReverseParamsDto, AddressFindGeocodingReverseResult, CreateUserAddressInfoCacheContextParamsDto, CreateUserImageInfoCacheContextParamsDto, CreateUserInfoCacheContextParamsDto, CreateUserInfoCachePhoneContextParamsDto, GetTermsResponseDto, PhoneVerifyCodeConfirmationCreateClientParamsDto } from "./dtos/signup.dto";
 import { separatePhoneInComponent } from "../utils/separatePhoneInComponent.util";
 
 import { getDateUnix } from "../utils/getDate.util";
 import { DOCUMENT_TYPES, GENDER_TYPES } from "../constants/account";
 import { phoneSendCodeConfirmationCreateClientService } from "../services/api/services/phone-send-code-confirmation-create-client.service";
-import { phoneResendCodeConfirmationCreateClientService } from "../services/api/services/phone-resend-code-confirmation-create-client.service";
 import { phoneVerifyCodeConfirmationCreateClientService } from "../services/api/services/phone-verify-code-confirmation-create-client.service";
 import { NameCacheKeyFlow } from "../services/api/enums/account.enum";
 import { getLastTermService } from "../services/api/services/get-last-terms.service";
 import { COUNTRY_CODE } from "./constants/account.constant";
+import { addressFindGeocodingReverseService } from "../services/api/services/address-find-geocoding-reverse.service";
+import { createUserClientService } from "../services/api/services/create-user-client.service";
 
 interface SignUpContextInterface {
   isSignUpLoading: boolean;
@@ -34,6 +35,9 @@ interface SignUpContextInterface {
   setExpirationTimeCodeConfirmationPhone: React.Dispatch<React.SetStateAction<string>>;
   errorConfirmationCodeLocal: string;
   setErrorConfirmationCodeLocal: React.Dispatch<React.SetStateAction<string>>;
+  addressFindGeocodingReverse(data: AddressFindGeocodingReverseParamsDto): Promise<AddressFindGeocodingReverseResult>;
+  createUserInfoCacheAddress(data: CreateUserAddressInfoCacheContextParamsDto): Promise<void>;
+  createUserInfoCacheImage(data: CreateUserImageInfoCacheContextParamsDto): Promise<void>;
 }
 
 // Define the Provider component
@@ -70,7 +74,6 @@ export function SignUpProvider(props: ProviderProps) {
     const birthDate = getDateUnix(user.birthDate)
 
     const separatePhone = separatePhoneInComponent(phone)
-
     const formatInfos: UserClientCacheUserServicePropsDto = {
       user: {
         details: null,
@@ -122,6 +125,64 @@ export function SignUpProvider(props: ProviderProps) {
 
     try {
       await userClientCachePhoneService(formatInfos)
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal({ ...error, phone });
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    }
+  }
+
+
+  async function createUserInfoCacheAddress(data: CreateUserAddressInfoCacheContextParamsDto): Promise<void> {
+    const { phone } = data;
+
+    const separatePhone = separatePhoneInComponent(phone)
+
+    const formatInfos: UserClientCacheAddressServicePropsDto = {
+      phone: separatePhone,
+      address: data.address
+    }
+
+    try {
+      await createUserInfoCacheAddressService(formatInfos)
+      router.push({
+        pathname: 'sign-up/image',
+        params: {
+          phone: JSON.stringify(separatePhone)
+        }
+      })
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal({ ...error, phone });
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    }
+  }
+
+  async function createUserInfoCacheImage(data: CreateUserImageInfoCacheContextParamsDto): Promise<void> {
+    const { phone } = data;
+
+    const separatePhone = separatePhoneInComponent(phone)
+
+    const formatInfos: UserClientCacheImageServicePropsDto = {
+      phone: separatePhone,
+      image: data.image
+    }
+
+    try {
+      await createUserInfoCacheImageService(formatInfos)
+      await createUserClientService({
+        phone: separatePhone
+      })
+      router.push({
+        pathname: 'sign-in',
+        params: {
+          phone: JSON.stringify(separatePhone)
+        }
+      })
     } catch (error) {
       const isLocalError = await appErrorVerifyErrorLocal({ ...error, phone });
       if (isLocalError) {
@@ -296,6 +357,18 @@ export function SignUpProvider(props: ProviderProps) {
     }
   }
 
+  async function addressFindGeocodingReverse(data: AddressFindGeocodingReverseParamsDto): Promise<AddressFindGeocodingReverseResult> {
+    try {
+      const result = await addressFindGeocodingReverseService(data)
+      return result;
+    } catch (error) {
+      if (await appErrorVerifyErrorLocal({ ...error, phone: '' })) {
+        return;
+      }
+      appErrorVerifyError(error)
+    }
+  }
+
   function closeModalCodeConfirmation() {
     setShowModalCodeConfirmation(false)
   }
@@ -328,7 +401,10 @@ export function SignUpProvider(props: ProviderProps) {
     loadingSignUp,
     setExpirationTimeCodeConfirmationPhone,
     errorConfirmationCodeLocal,
-    setErrorConfirmationCodeLocal
+    setErrorConfirmationCodeLocal,
+    addressFindGeocodingReverse,
+    createUserInfoCacheAddress,
+    createUserInfoCacheImage
   }), [
     isSignUpLoading,
     verifyEmailToRegister,
@@ -344,7 +420,10 @@ export function SignUpProvider(props: ProviderProps) {
     loadingSignUp,
     setExpirationTimeCodeConfirmationPhone,
     errorConfirmationCodeLocal,
-    setErrorConfirmationCodeLocal
+    setErrorConfirmationCodeLocal,
+    addressFindGeocodingReverse,
+    createUserInfoCacheAddress,
+    createUserInfoCacheImage
   ]);
   return (
     <SignUpContext.Provider

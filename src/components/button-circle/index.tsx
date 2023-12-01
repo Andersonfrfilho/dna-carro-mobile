@@ -1,10 +1,10 @@
-import { TouchableHighlightProps } from 'react-native';
+import { Text, TouchableHighlightProps } from 'react-native';
 import { Container, ButtonBorder, Title, Button } from './styles';
 import { useTheme } from 'styled-components/native';
 
 interface Props extends TouchableHighlightProps {
-  error?: string;
-  title: string;
+  readonly error?: string;
+  readonly title: string;
 }
 
 export default function ButtonCircleBorder({ error, title, ...props }: Props) {

@@ -1,3 +1,4 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 
 export const Container = styled.View`
@@ -42,9 +43,7 @@ export const Button = styled.TouchableHighlight.attrs((props) => ({
   border-color: ${(props) => props.theme.colors.lightGray};
 `;
 
-export const Title = styled.Text`
-  /* font-family: ${(props) => props.theme.fonts["Lato-Bold"]}; */
-  font-size: ${(props) => props.theme.fontSizes.medium};
-  color: ${(props) => props.theme.colors.background};
-  text-align: center;
-`;
+export const Icon = styled(MaterialCommunityIcons).attrs((props) => ({
+  size: props.theme.icon.size.median,
+  color: props.theme.colors.silver,
+}))``;

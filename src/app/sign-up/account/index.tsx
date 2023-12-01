@@ -17,12 +17,11 @@ import * as yup from "yup"
 import Input from "../../../components/input";
 import { useSignUp } from "../../../context/signup.context";
 import InputCheck from "../../../components/inputCheck";
-import ButtonCircleBorder from "../../../components/button-circle";
 import { useEffect, useState } from "react";
 import { validateCPF } from "../../../utils/validateCpf.util";
 import { validateCNPJ } from "../../../utils/validateCnpj.util";
 import InputPassword from "../../../components/inputPassword";
-import { DOCUMENT_TYPES, GENDER_ITEMS_TYPE, GENDER_TYPES } from "../../../constants/account";
+import { CNPJ_KEY, CPF_KEY, DOCUMENT_TYPES, FEMALE_KEY, GENDER_ITEMS_TYPE, GENDER_TYPES, MALE_KEY } from "../../../constants/account";
 import ButtonRectangleBorder from "../../../components/button-rectangle";
 import SearchItems, { DataListProps } from "../../../components/searchItems";
 import InputDateButton from "../../../components/inputDateButton";
@@ -37,12 +36,13 @@ import { formatBirthDate } from "../../../utils/formatDateBirth.util";
 import ModalTerms from "../../../components/modal-terms";
 import Loading from "../../../components/loading";
 import { GetTermsResponseDto } from "../../../context/dtos/signup.dto";
+import ButtonCircleBorder from "../../../components/button-circle";
 
 const schema = yup
   .object({
-    name: yup.string().required("Um nome é necessário!"),
-    lastName: yup.string().required("Um sobrenome é necessário!"),
-    email: yup.string().email("Digite um email valido!").required("Um email é necessário!"),
+    name: yup.string().required("Um nome é necessário!").lowercase(),
+    lastName: yup.string().required("Um sobrenome é necessário!").lowercase(),
+    email: yup.string().email("Digite um email valido!").required("Um email é necessário!").lowercase(),
     document: yup.string().test("cpf-cnpj-validation", "documento inválido", (value?: string) => {
       // Remove caracteres não numéricos
       if (!value) {
@@ -56,8 +56,8 @@ const schema = yup
       accept: yup.boolean().required("Aceite os termos!"),
       id: yup.string().required("Aceite os termos!"),
     }).required("Aceite os termos!"),
-    documentType: yup.string().oneOf(Object.values(DOCUMENT_TYPES), "Tipo de documento invalido").required("Selecione um tipo de documento!"),
-    gender: yup.string().oneOf(Object.values(GENDER_TYPES), "Tipo de gênero invalido").required("Selecione um tipo de gênero!"),
+    documentType: yup.string().oneOf([CPF_KEY, CNPJ_KEY], "Tipo de documento invalido").required("Selecione um tipo de documento!"),
+    gender: yup.string().oneOf([FEMALE_KEY, MALE_KEY], "Tipo de gênero invalido").required("Selecione um tipo de gênero!"),
     birthDate: yup.string().required("Selecione ou digite uma data valida!"),
     password: yup.string().min(6).required("Um password é necessário!"),
     confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Senha precisa ser idêntica').required("Preencha a confirmação de senha"),
@@ -89,7 +89,7 @@ type PropsRouteParams = {
 
 export default function SignUpAccount() {
   const params = useLocalSearchParams<PropsRouteParams>();
-  const { isSignUpLoading, createUserInfoCacheAccount, getLastTerm, loadingSignUp } = useSignUp();
+  const { createUserInfoCacheAccount, getLastTerm, loadingSignUp } = useSignUp();
 
   const [cpfIconName, setCpfIconName] = useState<iconName>("checkbox-blank-outline")
   const [cpfDocumentSelect, setCpfDocumentSelect] = useState<boolean>(false)
@@ -114,9 +114,10 @@ export default function SignUpAccount() {
   })
 
   useEffect(() => {
-    setFocus('name')
     getLastTerm().then((term) => {
       setTerm(term)
+    }).finally(() => {
+      setFocus('name')
     })
   }, [])
 
@@ -139,10 +140,6 @@ export default function SignUpAccount() {
       term: data.term
     })
   }
-
-  useEffect(() => {
-    const errorContent = Object.keys(errors).length === 0 && errors.constructor === Object
-  }, [isSignUpLoading, errors])
 
   const handleDocumentChange = (text: string) => {
     const formattedText = cpfDocumentSelect ? formatCPF(text) : formatCNPJ(text);
@@ -183,7 +180,7 @@ export default function SignUpAccount() {
     setCnpjDocumentDisable(false)
     setValue('document', '')
     setFocus('document')
-    setValue('documentType', DOCUMENT_TYPES.CPF)
+    setValue('documentType', CPF_KEY)
     clearErrors('document')
     clearErrors('documentType')
   }
@@ -197,7 +194,7 @@ export default function SignUpAccount() {
     setCpfDocumentDisable(false)
     setValue('document', '')
     setFocus('document')
-    setValue('documentType', DOCUMENT_TYPES.CNPJ)
+    setValue('documentType', CNPJ_KEY)
     clearErrors('document')
     clearErrors('documentType')
   }

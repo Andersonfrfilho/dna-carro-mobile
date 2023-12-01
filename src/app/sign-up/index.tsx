@@ -22,6 +22,7 @@ import { useSignUp } from "../../context/signup.context";
 import { validatePhone } from "../../utils/validatePhoneNumber.utils";
 import { useState } from "react";
 import { formatPhone } from "../../utils/formatPhone.util";
+import ButtonCircleBorder from "../../components/button-circle";
 
 const schema = yup
   .object({
@@ -88,6 +89,7 @@ export default function SignUp() {
                   value={phoneLocal}
                   onChangeText={handleTextChange}
                   error={errors?.phone?.message}
+                  keyboardType="phone-pad"
                 />
               )}
               name="phone"
@@ -96,16 +98,10 @@ export default function SignUp() {
         </ContainerForm>
       </ContainerBody>
       <ContainerFooter>
-        <ButtonBorder style={theme.shadow}>
-          <ButtonBorderSecond style={theme.shadow}>
-            <ButtonFirstStep
-              onPress={handleSubmit(handleVerifyPhoneToRegister)}
-              style={theme.shadow}
-            >
-              <TitleButton>Prosseguir</TitleButton>
-            </ButtonFirstStep>
-          </ButtonBorderSecond>
-        </ButtonBorder>
+        <ButtonCircleBorder
+          title="Prosseguir"
+          onPress={handleSubmit(handleVerifyPhoneToRegister)}
+        />
       </ContainerFooter>
     </Container>
   );

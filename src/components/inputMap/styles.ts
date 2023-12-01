@@ -12,8 +12,6 @@ interface ContainerInputProps extends ErrorProps {}
 export const Container = styled.View`
   height: 80px;
   width: 100%;
-
-  background-color: ${(props) => props.theme.colors.lightBlue};
 `;
 export const ContainerBorder = styled.View<ContainerBorderProps>`
   height: 100%;

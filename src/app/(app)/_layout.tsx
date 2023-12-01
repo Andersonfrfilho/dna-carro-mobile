@@ -1,29 +1,29 @@
-import { Link, Redirect, Stack } from 'expo-router';
-import { Text, View } from 'react-native';
+import { Redirect, Stack } from 'expo-router';
+import { Text } from 'react-native';
 import { useAuth } from '../../context/auth.context';
 
 
 export default function AppLayout() {
-  // const { session, isLoading } = useAuth();
+  const { session, isLoading } = useAuth();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
-  if (false) {
+  if (isLoading) {
     return <Text>Loading...</Text>;
   }
 
   // Only require authentication within the (app) group's layout as users
   // need to be able to access the (auth) group and sign in again.
-  if (true) {
+  if (session) {
     // On web, static rendering will stop here as the user is not authenticated
     // in the headless Node process that the pages are rendered in.
     // return <Redirect href="/sign-up/account" />;
-    // return <Redirect href="/sign-up" />;
+    return <Redirect href="/home" />;
     // return <Redirect href="/sign-up/phone" />;
-    return <Redirect href="/sign-up/address" />;
+    // return <Redirect href="/sign-up/address" />;
 
 
     // return <Redirect href="/sign-up/account" />;
   }
   // This layout can be deferred because it's not the root layout.
-  return <Stack />;
+  return <Redirect href="/initial" />;
 }

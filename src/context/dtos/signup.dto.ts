@@ -28,8 +28,64 @@ export interface PhoneVerifyCodeConfirmationCreateClientParamsDto {
   code: string;
 }
 
+export interface CreateUserInfoCacheContextParamsDto {
+  user: UserInfoCacheUser;
+  phone: string;
+  term: Term;
+}
+
 export interface GetTermsResponseDto {
   id: string;
   version: string;
   text: string;
+}
+
+export type AddressFindGeocodingReverseParamsDto = {
+  latitude: string;
+  longitude: string;
+};
+
+interface ComponentAddress {
+  street: string;
+  neighborhood: string;
+  postalCode: string;
+  city: string;
+  state: string;
+  number: string;
+  country: string;
+}
+export type AddressFindGeocodingReverseResult = {
+  components: ComponentAddress;
+  formattedAddress: string;
+  placeId: string;
+  latitude: string;
+  longitude: string;
+};
+
+export interface CreateUserAddressInfoCacheUser {
+  street: string;
+  number: string;
+  zipcode: string;
+  district: string;
+  city: string;
+  state: string;
+  latitude: string;
+  longitude: string;
+  complement: string;
+  reference: string;
+  details: any;
+}
+
+export interface CreateUserAddressInfoCacheContextParamsDto {
+  address: CreateUserAddressInfoCacheUser;
+  phone: string;
+}
+
+export interface CreateUserImage {
+  base64: string;
+}
+
+export interface CreateUserImageInfoCacheContextParamsDto {
+  image: CreateUserImage;
+  phone: string;
 }

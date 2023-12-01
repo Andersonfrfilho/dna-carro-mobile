@@ -88,8 +88,8 @@ export default function SignUpPhone() {
       <ModalPhoneConfirmation onClosed={closeModalCodeConfirmation} show={showModalCodeConfirmation} phone={params.phone} />
       <ContainerHeader>
         <ContainerTitle>
-          <Title>Faça seu cadastro</Title>
-          <Phrase>{`Cadastrar telefone, \n     digite seu telefone!`}</Phrase>
+          <Title>Cadastre seu telefone</Title>
+          <Phrase>{`digite seu telefone!`}</Phrase>
         </ContainerTitle>
       </ContainerHeader>
       <ContainerBody>

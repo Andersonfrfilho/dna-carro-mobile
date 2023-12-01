@@ -173,6 +173,12 @@ export default function ModalPhoneConfirmation({
     }
   }, [codeText])
 
+  useEffect(() => {
+    if (show) {
+      setFocus('code')
+    }
+  }, [show])
+
   return (
     <ContainerModal visible={show}>
       <Container>

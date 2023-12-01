@@ -22,6 +22,12 @@
     <string>Permitir $(PRODUCT_NAME) usar sua localizacao</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Permitir $(PRODUCT_NAME) usar sua localizacao</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Permitir $(PRODUCT_NAME) usar a camera</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Permitir $(PRODUCT_NAME) usar o microfone</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Permitir $(PRODUCT_NAME) salvar fotos</string>
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
