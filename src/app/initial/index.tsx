@@ -1,9 +1,12 @@
 import { useRouter } from 'expo-router';
-import { Container, ContainerBody, ContainerHeader, ContainerImage, ContainerSignIn, ContainerSignUp, ContainerTitle, LogoImage, Phrase, Title, TitleButton } from './styles';
+import { ButtonBorder, ButtonBorderSecond, ButtonSignIn, ButtonSignUp, Container, ContainerBody, ContainerHeader, ContainerImage, ContainerSignIn, ContainerSignUp, ContainerTitle, LogoImage, Phrase, Title, TitleButton } from './styles';
 import { useEffect, useRef } from 'react';
 import { Animated } from 'react-native';
+import { useTheme } from 'styled-components/native';
 
-export default function Home() {
+export default function Initial() {
+  const theme = useTheme()
+
   const logoAnimated = useRef(new Animated.Value(0)).current;
   const initialInputRangeLogo = useRef(0).current;
   const finallyInputRangeLogo = useRef(100).current;
@@ -12,6 +15,7 @@ export default function Home() {
   const sequenceOutputRangesOpacityLogo = useRef([0, 1]).current
   const sequenceOutputRangesScaleLogo = useRef([0, 1]).current
   const sequenceOutputRangesRotateLogo = useRef(['0deg', '2deg', '4deg', '2deg', '0deg', '-2deg', '-4deg', '-6deg', '-4deg', '-2deg', '0deg']).current
+
   const animationLogo = () => {
     // Will change fadeAnim value to 1 in 5 seconds
     Animated.timing(logoAnimated, {
@@ -31,7 +35,7 @@ export default function Home() {
   }
 
   const handleSignUp = () => {
-    router.push('sign-in')
+    router.push('sign-up')
   }
 
   const animatedOpacityLogo = {
@@ -77,17 +81,31 @@ export default function Home() {
         </ContainerImage>
       </ContainerHeader>
       <ContainerBody>
-        <ContainerSignIn
-          onPress={handleSignIn}
-        >
-          <TitleButton>Login</TitleButton>
+        <ContainerSignIn>
+          <ButtonBorder style={theme.shadow}>
+            <ButtonBorderSecond style={theme.shadow}>
+              <ButtonSignIn
+                onPress={handleSignIn}
+                style={theme.shadow}
+              >
+                <TitleButton>Login</TitleButton>
+              </ButtonSignIn>
+            </ButtonBorderSecond>
+          </ButtonBorder>
         </ContainerSignIn>
-        <ContainerSignUp
-          onPress={handleSignUp}
-        >
-          <TitleButton>Cadastro</TitleButton>
+        <ContainerSignUp>
+          <ButtonBorder style={theme.shadow}>
+            <ButtonBorderSecond style={theme.shadow}>
+              <ButtonSignUp
+                onPress={handleSignUp}
+                style={theme.shadow}
+              >
+                <TitleButton>Cadastro</TitleButton>
+              </ButtonSignUp>
+            </ButtonBorderSecond>
+          </ButtonBorder>
         </ContainerSignUp>
       </ContainerBody>
-    </Container>
+    </Container >
   );
 }

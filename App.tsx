@@ -2,7 +2,9 @@ import { Link } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { enableLatestRenderer } from 'react-native-maps';
 
+enableLatestRenderer();
 export default function App() {
   return (
     <View style={styles.container}>

@@ -1,9 +1,15 @@
 import React from "react";
+import { RFValue } from "react-native-responsive-fontsize";
 import { ThemeProvider } from "styled-components";
 
 export const theme = {
   colors: {
+    dark: "#000000",
     primary: "#473D33",
+    lightGray: "#D3D3D3",
+    silver: "#C0C0C0",
+    darkGray: "#A9A9A9",
+    gray: "#808080",
     secondary: "#EA8600",
     powderWhite: "#FFFDF9",
     persianGreen: "#06B49A",
@@ -13,8 +19,26 @@ export const theme = {
     primaryColor: '#3498db', // Azul
     backgroundColor: '#ffffff', // Branco
     accentColor: '#27ae60', // Verde
+    whiteGreenColor: '#5eb875', // Verde
     secondaryColor: '#666666', // Cinza
     highlightColor: '#f39c12', // Amarelo ou laranja (cor de destaque)
+    errors: {
+      darkRed: '#cd0000',
+      red: '#FF0000',    // Vermelho
+      whiteRed: '#ff6767',
+      orange: '#FFA500', // Laranja
+      yellow: '#FFFF00', // Amarelo
+      purple: '#800080', // Roxo
+      brown: '#8B4513',  // Marrom
+      darkGray: '#333',  // Cinza Escuro ou Preto
+    },
+    transparent: {
+      highlightColor: 'rgba(256, 256, 200, 0.8)',
+      secondary: 'rgba(234, 134, 0, 0.3)',
+      persianBlue: 'rgba(18, 87, 104, 0.4)',
+      onyx: 'rgba(0, 0, 0, 0.8)',
+      blackGray: 'rgba(0, 0, 0, 0.2)'
+    }
   },
   fonts: {
     'Lato-Black': 'Lato-Black',
@@ -35,10 +59,39 @@ export const theme = {
     'Lato-LightItalic': 'Lato-LightItalic',
   },
   fontSizes: {
-    small: "1em",
-    medium: "2em",
-    large: "3em",
+    small: `${RFValue(12)}px`,
+    median: `${RFValue(13)}px`,
+    medium: `${RFValue(14)}px`,
+    large: `${RFValue(18)}px`,
+    subTitle: `${RFValue(24)}px`,
+    title: `${RFValue(28)}px`,
   },
+  fontSizeWithoutPixel: {
+    small: RFValue(12),
+    median: RFValue(13),
+    medium: RFValue(14),
+    large: RFValue(18),
+    subTitle: RFValue(24),
+    title: RFValue(28),
+  },
+  icon: {
+    size: {
+      small: RFValue(12, 400),
+      median: RFValue(13, 400),
+      medium: RFValue(14, 400),
+      large: RFValue(18, 400),
+    }
+  },
+  shadow: {
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 11.27,
+    elevation: 14
+  }
 };
 
 const darkTheme = {

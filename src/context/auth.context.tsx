@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
+import { useError } from './errors.context';
+import { verifyWithoutFlowInfoCacheByEmailService } from '../services/api/services/verify-without-flow-info-cache-by-email.service';
 
 const AuthContext = React.createContext<{ signIn: () => void; signOut: () => void; session?: string | null, isLoading: boolean } | null>(null);
 
 // This hook can be used to access the user info.
 export function AuthProvider(props) {
+  const { appErrorVerifyError } = useError()
   // const [[isLoading, session], setSession] = useStorageState('session');
   const [isLoading, setIsLoading] = useState(false)
   const [session, setSession] = useState('')
+
+
 
   return (
     <AuthContext.Provider

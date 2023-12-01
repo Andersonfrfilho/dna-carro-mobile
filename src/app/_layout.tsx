@@ -1,14 +1,16 @@
 import { Slot, SplashScreen } from 'expo-router';
 import { OnboardingProvider } from '../context/onboarding.context';
 import { AuthProvider } from '../context/auth.context';
-import Theme from '../style/theme';
+import Theme from '../style/theme.style';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
+import { CommonProvider } from '../context/common.context';
+import { ErrorProvider } from '../context/errors.context';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Root() {
-  const [fontsLoaded, fontError] = useFonts({
+  const [fontsLoaded] = useFonts({
     'Inter-Black': require('../assets/fonts/Inter-VariableFont_slnt.ttf'),
     'Helvetica-Neue-Medium-Extended': require('../assets/fonts/Helvetica-Neue-Medium-Extended.ttf'),
     'Helvetica-Neue-UltraLight': require('../assets/fonts/Helvetica-Neue-UltraLight.ttf'),
@@ -38,11 +40,15 @@ export default function Root() {
 
   return (
     <Theme>
-      <AuthProvider>
-        <OnboardingProvider>
-          <Slot />
-        </OnboardingProvider>
-      </AuthProvider>
-    </Theme>
+      <CommonProvider>
+        <ErrorProvider>
+          <AuthProvider>
+            <OnboardingProvider>
+              <Slot />
+            </OnboardingProvider>
+          </AuthProvider>
+        </ErrorProvider>
+      </CommonProvider>
+    </Theme >
   );
 }

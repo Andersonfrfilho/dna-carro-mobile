@@ -1,24 +1,87 @@
-import { RFPercentage } from "react-native-responsive-fontsize";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
+
+interface ErrorProps {
+  error?: string;
+}
+
+interface ContainerBorderProps extends ErrorProps {}
+interface ContainerSecondBorderProps extends ErrorProps {}
+interface InputComponentProps extends ErrorProps {}
+interface ContainerInputProps extends ErrorProps {}
 
 export const Container = styled.View`
-  flex: 1;
+  height: 100%;
+  width: 100%;
+`;
+export const ContainerBorder = styled.View<ContainerBorderProps>`
+  border-width: 5px;
+  border-radius: 20px;
+  border-color: ${(props) => props.theme.colors.transparent.blackGray};
+
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        border-color: ${props.theme.colors.errors.whiteRed};
+      `
+    );
+  }}
+`;
+export const ContainerSecondBorder = styled.View<ContainerSecondBorderProps>`
+  border-width: 5px;
+  border-color: ${(props) => props.theme.colors.backgroundColor};
+  border-radius: 15px;
+
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        border-color: ${props.theme.colors.errors.red};
+      `
+    );
+  }}
+`;
+export const ContainerLabel = styled.View`
+  height: 20px;
+
+  padding-left: 15px;
+`;
+export const ContainerInput = styled.View<ContainerInputProps>`
+  border-width: 5px;
+  border-color: ${(props) => props.theme.colors.transparent.blackGray};
+  border-radius: 10px;
+
+  ${(props) =>
+    !!props.error &&
+    css`
+      border-color: ${props.theme.colors.errors.darkRed};
+    `}
 `;
 
-export const InputComponent = styled.TextInput.attrs((props) => ({
-  placeholderTextColor: props.theme.colors.secondary,
-}))`
+export const Label = styled.Text`
+  color: ${(props) => props.theme.colors.errors.darkRed};
+  text-align: left;
+`;
+
+export const InputComponent = styled.TextInput.attrs<InputComponentProps>(
+  (props) => ({
+    placeholderTextColor: props.error
+      ? props.theme.colors.errors.darkRed
+      : props.theme.colors.gray,
+  })
+)<InputComponentProps>`
   width: 100%;
-  height: ${RFPercentage(5)}px;
+  height: 100%;
   color: ${(props) => props.theme.colors.secondary};
-  border: solid;
-  border-width: 2px;
+  background-color: ${(props) => props.theme.colors.powderWhite};
+  font-size: ${(props) => props.theme.fontSizes.medium};
 
-  border-radius: 5px 5px 25px 5px;
+  padding-left: 10px;
 
-  padding-left: 5px;
-
-  font-size: ${RFPercentage(2)}px;
-
-  background-color: rgba(52, 52, 52, 0.7);
+  ${(props) =>
+    !!props.error &&
+    css`
+      border-color: ${props.theme.colors.errors.red};
+      color: ${props.theme.colors.errors.red};
+    `}
 `;

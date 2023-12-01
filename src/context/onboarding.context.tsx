@@ -1,5 +1,6 @@
 import React from "react";
 import { CommonProvider } from "./common.context";
+import { SignUpProvider } from "./signup.context";
 
 interface ContextsInterface {
 }
@@ -18,7 +19,9 @@ export function OnboardingProvider(props: ProviderProps) {
   return (
     <Context.Provider value={null} >
       <CommonProvider>
-        {props.children}
+        <SignUpProvider>
+          {props.children}
+        </SignUpProvider>
       </CommonProvider>
     </ Context.Provider>
   );
