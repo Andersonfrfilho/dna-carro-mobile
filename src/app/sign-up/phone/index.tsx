@@ -15,7 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useEffect, useState } from "react";
 import { validatePhone } from "../../../utils/validatePhoneNumber.utils";
-import { useSignUp } from "../../../context/signup.context";
+import { useSignUp } from "../../../context/signup/signup.context";
 import { formatPhone } from "../../../utils/formatPhone.util";
 import Input from "../../../components/input";
 import { useLocalSearchParams } from "expo-router";

@@ -21,7 +21,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { Marker } from "react-native-maps";
 import * as Location from 'expo-location';
 import { useEffect, useRef, useState } from "react";
-import { useSignUp } from "../../../context/signup.context";
+import { useSignUp } from "../../../context/signup/signup.context";
 import ModalAddressConfirmation from "../../../components/modal-address-confirmation";
 import { CreateUserAddressInfoCacheContextParamsDto } from "../../../context/dtos/signup.dto";
 import { useLocalSearchParams } from "expo-router";

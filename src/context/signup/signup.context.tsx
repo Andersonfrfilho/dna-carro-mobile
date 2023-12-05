@@ -1,22 +1,21 @@
 import React, { useContext, useMemo, useState } from "react";
-import { verifyWithoutFlowInfoCacheByEmailService } from "../services/api/services/verify-without-flow-info-cache-by-email.service";
-import { useError } from "./errors.context";
-import { CACHE_DATA_CONFIRMATION_PHONE_NOT_FOUND, CACHE_GET_ERROR, PHONE_NUMBER_CODE_CONFIRMATION_INCORRECT, SignUpErrors } from "../error/constants/signup.constant.error";
 import { useRouter } from "expo-router";
-import { UserClientCacheAddressServicePropsDto, UserClientCacheImageServicePropsDto, UserClientCachePhoneServicePropsDto, UserClientCacheUserServicePropsDto, createUserInfoCacheAddressService, createUserInfoCacheImageService, userClientCachePhoneService, userClientCacheTermService, userClientCacheUser } from "../services/api/services/create-user-info-cache.service";
-import { verifyWithoutFlowInfoCacheByPhoneService } from "../services/api/services/verify-without-flow-info-cache-by-phone.service";
 import { AddressFindGeocodingReverseParamsDto, AddressFindGeocodingReverseResult, CreateUserAddressInfoCacheContextParamsDto, CreateUserImageInfoCacheContextParamsDto, CreateUserInfoCacheContextParamsDto, CreateUserInfoCachePhoneContextParamsDto, GetTermsResponseDto, PhoneVerifyCodeConfirmationCreateClientParamsDto } from "./dtos/signup.dto";
-import { separatePhoneInComponent } from "../utils/separatePhoneInComponent.util";
+import { useError } from "../errors.context";
+import { getDateUnix } from "../../utils/getDate.util";
+import { separatePhoneInComponent } from "../../utils/separatePhoneInComponent.util";
+import { UserClientCacheAddressServicePropsDto, UserClientCacheImageServicePropsDto, UserClientCachePhoneServicePropsDto, UserClientCacheUserServicePropsDto, createUserInfoCacheAddressService, createUserInfoCacheImageService, userClientCachePhoneService, userClientCacheTermService, userClientCacheUser } from "../../services/api/signup/create-user-info-cache.service";
+import { COUNTRY_CODE, DOCUMENT_TYPES, GENDER_TYPES } from "../constants/account.constant";
+import { createUserClientService } from "../../services/api/signup/create-user-client.service";
+import { verifyWithoutFlowInfoCacheByEmailService } from "../../services/api/signup/verify-without-flow-info-cache-by-email.service";
+import { verifyWithoutFlowInfoCacheByPhoneService } from "../../services/api/signup/verify-without-flow-info-cache-by-phone.service";
+import { NameCacheKeyFlow } from "../../services/api/enums/account.enum";
+import { CACHE_DATA_CONFIRMATION_PHONE_NOT_FOUND, CACHE_GET_ERROR, PHONE_NUMBER_CODE_CONFIRMATION_INCORRECT, SignUpErrors } from "../../error/constants/signup.constant.error";
+import { phoneSendCodeConfirmationCreateClientService } from "../../services/api/signup/phone-send-code-confirmation-create-client.service";
+import { phoneVerifyCodeConfirmationCreateClientService } from "../../services/api/signup/phone-verify-code-confirmation-create-client.service";
+import { addressFindGeocodingReverseService } from "../../services/api/signup/address-find-geocoding-reverse.service";
+import { getLastTermService } from "../../services/api/signup/get-last-terms.service";
 
-import { getDateUnix } from "../utils/getDate.util";
-import { DOCUMENT_TYPES, GENDER_TYPES } from "../constants/account";
-import { phoneSendCodeConfirmationCreateClientService } from "../services/api/services/phone-send-code-confirmation-create-client.service";
-import { phoneVerifyCodeConfirmationCreateClientService } from "../services/api/services/phone-verify-code-confirmation-create-client.service";
-import { NameCacheKeyFlow } from "../services/api/enums/account.enum";
-import { getLastTermService } from "../services/api/services/get-last-terms.service";
-import { COUNTRY_CODE } from "./constants/account.constant";
-import { addressFindGeocodingReverseService } from "../services/api/services/address-find-geocoding-reverse.service";
-import { createUserClientService } from "../services/api/services/create-user-client.service";
 
 interface SignUpContextInterface {
   isSignUpLoading: boolean;

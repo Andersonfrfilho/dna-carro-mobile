@@ -9,7 +9,7 @@ import {
   ContainerHeader,
   ContainerImage,
 } from "./styles";
-import { useSignUp } from "../../../context/signup.context";
+import { useSignUp } from "../../../context/signup/signup.context";
 import { Camera, CameraType, FlashMode } from "expo-camera";
 import { useState } from "react";
 import ButtonCircleIconBorder from "../../../components/button-circle-icon";

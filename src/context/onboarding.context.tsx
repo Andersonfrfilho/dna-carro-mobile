@@ -1,6 +1,6 @@
 import React from "react";
 import { CommonProvider } from "./common.context";
-import { SignUpProvider } from "./signup.context";
+import { SignUpProvider } from "./signup/signup.context";
 
 interface ContextsInterface {
 }

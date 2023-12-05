@@ -15,7 +15,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import Input from "../../../components/input";
-import { useSignUp } from "../../../context/signup.context";
+import { useSignUp } from "../../../context/signup/signup.context";
 import InputCheck from "../../../components/inputCheck";
 import { useEffect, useState } from "react";
 import { validateCPF } from "../../../utils/validateCpf.util";

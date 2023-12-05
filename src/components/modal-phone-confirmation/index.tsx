@@ -27,7 +27,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useTheme } from "styled-components/native";
 import { useEffect, useState } from "react";
-import { useSignUp } from "../../context/signup.context";
+import { useSignUp } from "../../context/signup/signup.context";
 import ButtonRectangleBorder from "../button-rectangle";
 import { INDEXES, INITIAL_TIME_EXPIRATION, LENGTH_CODE, ONE_MINUTE, ONE_SECOND, RESET_SECOND, ZERO_MINUTES, ZERO_SECONDS } from "./constant";
 import { formatMinutesSeconds } from "../../utils/formatMinutesSeconds.utils";
