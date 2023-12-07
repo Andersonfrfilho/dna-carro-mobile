@@ -15,7 +15,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import Input from "../../../components/input";
-import { useSignUp } from "../../../context/signup/signup.context";
+import { useSignUp } from "../../../context/sign-up/sign-up.context";
 import InputCheck from "../../../components/inputCheck";
 import { useEffect, useState } from "react";
 import { validateCPF } from "../../../utils/validateCpf.util";
@@ -35,8 +35,9 @@ import { validateMajority } from "../../../utils/validateMajority.util";
 import { formatBirthDate } from "../../../utils/formatDateBirth.util";
 import ModalTerms from "../../../components/modal-terms";
 import Loading from "../../../components/loading";
-import { GetTermsResponseDto } from "../../../context/dtos/signup.dto";
 import ButtonCircleBorder from "../../../components/button-circle";
+import { getOnlyNumberString } from "../../../utils/getOnlyNumberString";
+import { GetTermsResponseDto } from "../../../context/sign-up/dtos/sign-up.dto";
 
 const schema = yup
   .object({
@@ -51,7 +52,7 @@ const schema = yup
       const cleanValue = value.replace(/\D/g, "");
       // Verifica se é um CPF ou CNPJ válido
       return cleanValue.length === 11 ? validateCPF(cleanValue) : validateCNPJ(cleanValue);
-    }),
+    }).transform(getOnlyNumberString),
     term: yup.object({
       accept: yup.boolean().required("Aceite os termos!"),
       id: yup.string().required("Aceite os termos!"),
@@ -208,7 +209,7 @@ export default function SignUpAccount() {
 
   const handleSelectItemGender = (param: DataListProps) => {
     setSelectItemGender(param);
-    setValue('gender', param.value)
+    setValue('gender', param.value as 'FEMALE' | 'MALE')
     clearErrors('gender')
     setFocus('birthDate')
   }

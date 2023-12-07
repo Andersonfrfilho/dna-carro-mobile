@@ -18,7 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useTheme } from "styled-components/native";
-import { useSignUp } from "../../context/signup/signup.context";
+import { useSignUp } from "../../context/sign-up/sign-up.context";
 import { validatePhone } from "../../utils/validatePhoneNumber.utils";
 import { useState } from "react";
 import { formatPhone } from "../../utils/formatPhone.util";
