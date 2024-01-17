@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { CommonProvider } from '../context/common.context';
 import { ErrorProvider } from '../context/errors.context';
 import { SignInProvider } from '../context/sign-in/sign-in.context';
+import { ForgotPasswordProvider } from '../context/forgot-password/forgot-password.context';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,7 +47,9 @@ export default function Root() {
           <AuthProvider>
             <OnboardingProvider>
               <SignInProvider>
-                <Slot />
+                <ForgotPasswordProvider>
+                  <Slot />
+                </ForgotPasswordProvider>
               </SignInProvider>
             </OnboardingProvider>
           </AuthProvider>

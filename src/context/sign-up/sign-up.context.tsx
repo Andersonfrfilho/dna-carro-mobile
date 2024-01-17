@@ -16,12 +16,11 @@ import { addressFindGeocodingReverseService } from "../../services/api/sign-up/a
 import { getLastTermService } from "../../services/api/sign-up/get-last-terms.service";
 import { CACHE_DATA_CONFIRMATION_PHONE_NOT_FOUND, CACHE_GET_ERROR, PHONE_NUMBER_CODE_CONFIRMATION_INCORRECT, SignUpErrors } from "./sign-up.constant.error";
 
-
+//errorConfirmationCodeLocal, setErrorConfirmationCodeLocal, expirationTimeCodeConfirmationPhone, setExpirationTimeCodeConfirmationPhone
 interface SignUpContextInterface {
   isSignUpLoading: boolean;
   setIsSignUpLoading: React.Dispatch<React.SetStateAction<boolean>>;
   showModalCodeConfirmation: boolean;
-  expirationTimeCodeConfirmationPhone: string;
   verifyEmailToRegister: (email: string) => Promise<void>;
   verifyAndCreatePhoneToRegister: (phone: string) => Promise<void>;
   createUserInfoCacheAccount: (data: CreateUserInfoCacheContextParamsDto) => Promise<void>;
@@ -31,6 +30,7 @@ interface SignUpContextInterface {
   closeModalCodeConfirmation: () => void;
   getLastTerm: () => Promise<GetTermsResponseDto>;
   loadingSignUp: boolean;
+  expirationTimeCodeConfirmationPhone: string;
   setExpirationTimeCodeConfirmationPhone: React.Dispatch<React.SetStateAction<string>>;
   errorConfirmationCodeLocal: string;
   setErrorConfirmationCodeLocal: React.Dispatch<React.SetStateAction<string>>;
@@ -203,7 +203,7 @@ export function SignUpProvider(props: ProviderProps) {
   }
 
   async function verifyAndCreatePhoneToRegister(phone: string): Promise<void> {
-    const phoneWithCountryCodeFormat = `55${phone}`
+    const phoneWithCountryCodeFormat = `${COUNTRY_CODE}${phone}`
     const separatePhone = separatePhoneInComponent(phoneWithCountryCodeFormat)
     const stringPhoneSeparated = JSON.stringify(separatePhone)
     try {

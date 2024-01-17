@@ -1,10 +1,11 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { useRouter } from "expo-router";
 import { useError } from "../errors.context";
 import { CreateSessionParamsDto } from "./dtos/sign-in.dto";
 import { createSessionUserService } from "../../services/api/sign-in/create-session.service";
 import { getSecurityStorageState, setSecurityStorageItemAsync } from "../../storage/secure/security.storage";
 import { SIGN_IN_AUTH_REFRESH_TOKEN_STORAGE_SECURITY_KEY, SIGN_IN_AUTH_TOKEN_STORAGE_SECURITY_KEY, SIGN_IN_REMEMBER_USER_STORAGE_SECURITY_KEY, SignInAuthRememberUserStorageSecurityKeyDto } from "../../storage/keys/sign-in.keys";
+import { SignInErrors } from "./sign-in.error";
 
 
 interface SignInContextInterface {
@@ -12,6 +13,9 @@ interface SignInContextInterface {
   setIsSignInLoading: React.Dispatch<React.SetStateAction<boolean>>;
   createSession(data: CreateSessionParamsDto): Promise<void>;
   getRememberMe(): Promise<SignInAuthRememberUserStorageSecurityKeyDto | null>;
+  errorLocalSignInContext: string;
+  setErrorLocalSignInContext: React.Dispatch<React.SetStateAction<string>>;
+  hasSession: boolean;
 }
 
 // Define the Provider component
@@ -29,11 +33,34 @@ export function SignInProvider(props: ProviderProps) {
   const { appErrorVerifyError } = useError()
   const [isSignInLoading, setIsSignInLoading] =
     React.useState<boolean>(false);
+  const [errorLocalSignInContext, setErrorLocalSignInContext] =
+    React.useState<string>("");
+  const [hasSession, setHasSession] = React.useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      await verifyHasSessionToken()
+    })()
+  }, [])
+
   async function getRememberMe(): Promise<SignInAuthRememberUserStorageSecurityKeyDto | null> {
     const dataRememberMeStringFormat = await getSecurityStorageState<SignInAuthRememberUserStorageSecurityKeyDto>(SIGN_IN_REMEMBER_USER_STORAGE_SECURITY_KEY)
     return dataRememberMeStringFormat
   }
 
+  async function verifyHasSessionToken(): Promise<void> {
+    setIsSignInLoading(true)
+    try {
+      const session = await getSecurityStorageState<SignInAuthRememberUserStorageSecurityKeyDto>(SIGN_IN_REMEMBER_USER_STORAGE_SECURITY_KEY)
+      if (session) {
+        setHasSession(true)
+        return;
+      }
+      setHasSession(false)
+    } catch { } finally {
+      setIsSignInLoading(false)
+    }
+  }
   async function createSession({ isRememberMe, ...data }: CreateSessionParamsDto) {
     try {
 
@@ -60,6 +87,7 @@ export function SignInProvider(props: ProviderProps) {
       }
       const dataRefreshTokenStringFormat = JSON.stringify(dataRefreshToken);
       await setSecurityStorageItemAsync(SIGN_IN_AUTH_REFRESH_TOKEN_STORAGE_SECURITY_KEY, dataRefreshTokenStringFormat)
+
     } catch (error) {
       const isLocalError = await appErrorVerifyErrorLocal(error);
       if (isLocalError) {
@@ -72,32 +100,33 @@ export function SignInProvider(props: ProviderProps) {
 
   async function appErrorVerifyErrorLocal(error: any): Promise<boolean> {
     const code = error?.response?.data?.code
-    // const codes = Object.keys(SignUpErrors)
 
-    // const existCodeInCodes = codes.includes(code.toString());
-    // if (!existCodeInCodes) {
-    //   return true;
-    // }
+    const codes = Object.keys(SignInErrors)
 
-    // if (code === SignUpErrors[CACHE_DATA_CONFIRMATION_PHONE_NOT_FOUND].code) {
-    //   router.replace('sign-up')
-    //   return true
-    // }
-
+    const existCodeInCodes = codes.includes(code.toString());
+    if (!existCodeInCodes) {
+      return true;
+    }
+    setErrorLocalSignInContext(SignInErrors[code].reason)
     return false;
   }
-
-
-
 
   const contextValue = useMemo(() => ({
     isSignInLoading,
     setIsSignInLoading,
-    createSession
+    createSession,
+    getRememberMe,
+    errorLocalSignInContext,
+    setErrorLocalSignInContext,
+    hasSession
   }), [
     isSignInLoading,
     createSession,
-    setIsSignInLoading
+    setIsSignInLoading,
+    getRememberMe,
+    errorLocalSignInContext,
+    setErrorLocalSignInContext,
+    hasSession
   ]);
   return (
     <SignInContext.Provider

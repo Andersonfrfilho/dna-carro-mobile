@@ -2,27 +2,18 @@ import {
   Container,
   ContainerBody,
   ContainerHeader,
-  ContainerInput,
   ContainerTitle,
   Phrase,
   Title,
-  ContainerLoading,
-  ContainerLogo,
-  ContainerButtons,
-  ContainerItens,
-  ContainerRememberSession,
-  ContainerForgotPassword,
-  Icon,
-  ContainerGoToRegister,
 } from "./styles";
 
-export default function SignUpAccount() {
+export default function ChoseTypeUser() {
 
   return (
     <Container>
       <ContainerHeader>
         <ContainerTitle>
-          <Title>Coloca seu usuário</Title>
+          <Title>Selecione a area</Title>
           <Phrase>{`Coloque seu login, \n     senha!`}</Phrase>
         </ContainerTitle>
 

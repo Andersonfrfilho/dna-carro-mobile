@@ -36,6 +36,9 @@ interface FormData {
   phone: string
 }
 
+interface FormDataCode {
+  code: string;
+}
 
 type Phone = {
   countryCode: "55";
@@ -49,7 +52,7 @@ type RouteParamsDto = {
 
 export default function SignUpPhone() {
   const params = useLocalSearchParams<RouteParamsDto>();
-  const { phoneSendCodeConfirmationCreateClient, closeModalCodeConfirmation, showModalCodeConfirmation } = useSignUp();
+  const { phoneSendCodeConfirmationCreateClient, phoneVerifyCodeConfirmationCreateClient, phoneResendCodeConfirmationCreateClient, closeModalCodeConfirmation, showModalCodeConfirmation, errorConfirmationCodeLocal, setErrorConfirmationCodeLocal, expirationTimeCodeConfirmationPhone, setExpirationTimeCodeConfirmationPhone, } = useSignUp();
   const [phoneLocal, setPhoneLocal] = useState('')
 
   const {
@@ -83,9 +86,30 @@ export default function SignUpPhone() {
     }
   }, [])
 
+  async function handlePhoneVerifyCodeConfirmationCreateClient(data: FormDataCode) {
+    const { ddd, number, countryCode } = JSON.parse(params.phone)
+    const phoneValue = `${countryCode}${ddd}${number}`
+    await phoneVerifyCodeConfirmationCreateClient({ code: data.code, phone: phoneValue })
+  }
+
+  async function handleResendCodeConfirmationCreateClient() {
+    const { ddd, number, countryCode } = JSON.parse(params.phone)
+    const phoneValue = `${countryCode}${ddd}${number}`
+    await phoneResendCodeConfirmationCreateClient(phoneValue)
+  }
+
   return (
     <Container>
-      <ModalPhoneConfirmation onClosed={closeModalCodeConfirmation} show={showModalCodeConfirmation} phone={params.phone} />
+      <ModalPhoneConfirmation
+        onClosed={closeModalCodeConfirmation}
+        show={showModalCodeConfirmation}
+        handleVerifyPhoneCode={handlePhoneVerifyCodeConfirmationCreateClient}
+        handleResendCode={handleResendCodeConfirmationCreateClient}
+        errorConfirmationCodeLocal={errorConfirmationCodeLocal}
+        setErrorConfirmationCodeLocal={setErrorConfirmationCodeLocal}
+        expirationTimeCodeConfirmationPhone={expirationTimeCodeConfirmationPhone}
+        setExpirationTimeCodeConfirmationPhone={setExpirationTimeCodeConfirmationPhone}
+      />
       <ContainerHeader>
         <ContainerTitle>
           <Title>Cadastre seu telefone</Title>

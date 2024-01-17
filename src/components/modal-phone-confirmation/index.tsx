@@ -47,13 +47,19 @@ interface FormData {
 interface ParamsDto {
   readonly onClosed: () => void;
   readonly show: boolean;
-  readonly phone: string;
+  readonly handleVerifyPhoneCode: (data: FormData) => Promise<void>;
+  readonly handleResendCode: () => Promise<void>;
+  readonly errorConfirmationCodeLocal: string;
+  readonly setErrorConfirmationCodeLocal: React.Dispatch<React.SetStateAction<string>>;
+  readonly expirationTimeCodeConfirmationPhone: string;
+  readonly setExpirationTimeCodeConfirmationPhone: React.Dispatch<React.SetStateAction<string>>;
+
 }
+
 export default function ModalPhoneConfirmation({
-  onClosed, show, phone
+  onClosed, show, handleResendCode, handleVerifyPhoneCode, errorConfirmationCodeLocal, expirationTimeCodeConfirmationPhone, setErrorConfirmationCodeLocal, setExpirationTimeCodeConfirmationPhone
 }: ParamsDto) {
   const theme = useTheme();
-  const { errorConfirmationCodeLocal, setErrorConfirmationCodeLocal, phoneVerifyCodeConfirmationCreateClient, expirationTimeCodeConfirmationPhone, setExpirationTimeCodeConfirmationPhone, phoneResendCodeConfirmationCreateClient } = useSignUp();
   const [codeText, setCodeText] = useState('');
   const [codeFirst, setCodeFirst] = useState('');
   const [codeSecond, setCodeSecond] = useState('');
@@ -74,16 +80,8 @@ export default function ModalPhoneConfirmation({
     resolver: yupResolver(schema),
   })
 
-  const handleVerifyPhoneToRegister = async (data: FormData) => {
-    const { ddd, number, countryCode } = JSON.parse(phone)
-    const phoneValue = `${countryCode}${ddd}${number}`
-    await phoneVerifyCodeConfirmationCreateClient({ code: data.code, phone: phoneValue })
-  }
-
-  const handleResendCode = async () => {
-    const { ddd, number, countryCode } = JSON.parse(phone)
-    const phoneValue = `${countryCode}${ddd}${number}`
-    await phoneResendCodeConfirmationCreateClient(phoneValue)
+  const handleResendCodeAndFormatValue = async () => {
+    await handleResendCode()
     setFocus('code')
     setValue('code', '')
     setCodeFirst('')
@@ -257,7 +255,7 @@ export default function ModalPhoneConfirmation({
           </ContainerForm>
           <ContainerTitle>
             {expirationTimeCodeConfirmationPhone === INITIAL_TIME_EXPIRATION && (<ButtonPhrase
-              onPress={handleResendCode}
+              onPress={handleResendCodeAndFormatValue}
             >
               <Phrase>
                 Reenviar
@@ -271,7 +269,7 @@ export default function ModalPhoneConfirmation({
           <ContainerButton>
             <ButtonRectangleBorder
               title="Confirmar"
-              onPress={handleSubmit(handleVerifyPhoneToRegister)}
+              onPress={handleSubmit(handleVerifyPhoneCode)}
             />
           </ContainerButton>
         </ContainerFooter>

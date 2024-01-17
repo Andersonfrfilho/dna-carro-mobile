@@ -38,7 +38,6 @@ interface FormData {
   phone: string
 }
 export default function SignUp() {
-  const theme = useTheme();
   const { verifyAndCreatePhoneToRegister } = useSignUp();
   const [phoneLocal, setPhoneLocal] = useState('')
 

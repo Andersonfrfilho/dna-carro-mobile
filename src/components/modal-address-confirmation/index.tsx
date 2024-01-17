@@ -56,16 +56,12 @@ interface ParamsDto {
 export default function ModalAddressConfirmation({
   onClosed, show, components, handleAccountAddressPreparedToRegister
 }: ParamsDto) {
-  const theme = useTheme();
-
   const {
     control,
     handleSubmit,
     formState: { errors },
     setFocus,
     setValue,
-    setError,
-    clearErrors
   } = useForm({
     resolver: yupResolver(schema),
   })

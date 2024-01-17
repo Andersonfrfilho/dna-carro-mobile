@@ -42,7 +42,7 @@ const schema = yup
   .object({
     user: yup.string().required("digite o document (cpf ou cnpj), telefone ou email").lowercase(),
     userType: yup.string().oneOf(Object.values(ACCOUNT_USER_TYPES), "Tipo de documento invalido").required("Selecione um tipo de documento!"),
-    password: yup.string().min(PASSWORD_MINIMAL_LENGTH).required("Um password é necessário!"),
+    password: yup.string().min(PASSWORD_MINIMAL_LENGTH, "Password deve ter no mínimo 6 caracteres").required("Um password é necessário!"),
   })
   .required()
 
@@ -50,7 +50,7 @@ interface FormData extends CreateSessionParamsDto { }
 
 export default function SignInAccount() {
   const router = useRouter()
-  const { isSignInLoading, createSession, getRememberMe } = useSignIn()
+  const { isSignInLoading, createSession, getRememberMe, errorLocalSignInContext, setErrorLocalSignInContext } = useSignIn()
   const [remember, setRemember] = useState(false);
   const [userValue, setUserValue] = useState('')
   const {
@@ -60,7 +60,7 @@ export default function SignInAccount() {
     setFocus,
     setValue,
     clearErrors,
-    setError
+    setError,
   } = useForm({
     resolver: yupResolver(schema),
   })
@@ -134,11 +134,11 @@ export default function SignInAccount() {
   }
 
   function handleGoToRegister() {
-    router.push("/sign-up");
+    router.push("sign-up");
   }
 
   function handleGoToRememberPassword() {
-    router.push({ pathname: "/forgot-password", params: { user: userValue } });
+    router.push({ pathname: "forgot-password", params: { user: userValue || '' } });
   }
 
   useEffect(() => {
@@ -152,6 +152,14 @@ export default function SignInAccount() {
       }
     })()
   }, [])
+
+  useEffect(() => {
+    if (errorLocalSignInContext) {
+      setError('user', { message: errorLocalSignInContext })
+      setError('password', { message: errorLocalSignInContext })
+    }
+    setErrorLocalSignInContext("")
+  }, [errorLocalSignInContext])
 
   if (isSignInLoading) {
     return (<ContainerLoading>

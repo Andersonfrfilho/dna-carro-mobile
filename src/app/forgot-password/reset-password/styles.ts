@@ -1,7 +1,5 @@
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
 import Constants from "expo-constants";
-import { Image } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface ErrorProps {
   error?: string;
@@ -22,27 +20,17 @@ export const ContainerLoading = styled.View`
 `;
 
 export const ContainerHeader = styled.View`
+  flex: 1;
   justify-content: space-between;
   align-items: stretch;
   background-color: ${(props) => props.theme.colors.powderWhite};
   padding-top: ${Constants.statusBarHeight + "px"};
-  height: 380px;
-  margin-bottom: 20px;
 `;
 
 export const ContainerTitle = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-`;
-
-export const LogoImage = styled(Image).attrs((props) => ({
-  contentFit: "contain",
-}))`
-  flex: 1;
-
-  width: 80%;
-  height: 80%;
 `;
 
 export const Phrase = styled.Text`
@@ -52,55 +40,38 @@ export const Phrase = styled.Text`
 
 export const ContainerLogo = styled.View`
   flex: 1;
-
-  justify-content: center;
-  align-items: center;
 `;
 
-export const ContainerBody = styled.ScrollView`
-  flex: 3;
+export const ContainerBody = styled.View`
+  flex: 4;
+`;
+
+export const ContainerForm = styled.ScrollView`
   padding-left: 15px;
   padding-right: 15px;
 `;
 
 export const ContainerInput = styled.View`
-  flex: 1;
-
   height: 80px;
-  max-height: 80px;
   margin-bottom: 20px;
 `;
-
-export const ContainerItens = styled.View`
+export const ContainerButtonGender = styled.View<ContainerBorderProps>`
+  height: 80px;
   margin-top: 20px;
 
-  height: 40px;
-
-  flex-direction: row;
+  ${(props) => {
+    return (
+      !!props.error &&
+      css`
+        margin-bottom: 20px;
+      `
+    );
+  }}
 `;
 
-export const Icon = styled(MaterialCommunityIcons).attrs((props) => ({
-  size: props.theme.icon.size.large,
-  color: props.theme.colors.gray,
-}))``;
-
-export const ContainerRememberSession = styled.TouchableOpacity`
-  flex: 1;
-  flex-direction: row;
-
-  justify-content: space-evenly;
-  align-items: center;
-`;
-export const ContainerForgotPassword = styled.TouchableOpacity`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const ContainerGoToRegister = styled.TouchableOpacity`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
+export const ContainerBirthDate = styled.View`
+  height: 80px;
+  margin-top: 20px;
 `;
 
 export const Title = styled.Text`
@@ -113,15 +84,11 @@ export const Title = styled.Text`
   text-align: center;
 `;
 
-export const ContainerButtons = styled.View`
-  flex-direction: row;
-
-  justify-content: space-evenly;
-  align-items: center;
-
-  flex: 1;
-
-  margin-top: 30px;
-
+export const ContainerFooter = styled.View`
   height: 120px;
+
+  margin-top: 20px;
+  margin-bottom: 20px;
+  justify-content: center;
+  align-items: center;
 `;
