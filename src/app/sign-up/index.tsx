@@ -18,7 +18,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useTheme } from "styled-components/native";
-import { useSignUp } from "../../context/signup.context";
+import { useSignUp } from "../../context/sign-up/sign-up.context";
 import { validatePhone } from "../../utils/validatePhoneNumber.utils";
 import { useState } from "react";
 import { formatPhone } from "../../utils/formatPhone.util";
@@ -38,7 +38,6 @@ interface FormData {
   phone: string
 }
 export default function SignUp() {
-  const theme = useTheme();
   const { verifyAndCreatePhoneToRegister } = useSignUp();
   const [phoneLocal, setPhoneLocal] = useState('')
 

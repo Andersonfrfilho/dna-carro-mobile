@@ -14,13 +14,13 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { useEffect, useState } from "react";
-import { validatePhone } from "../../../utils/validatePhoneNumber.utils";
-import { useSignUp } from "../../../context/sign-up/sign-up.context";
-import { formatPhone } from "../../../utils/formatPhone.util";
-import Input from "../../../components/input";
+import { validatePhone } from "../../utils/validatePhoneNumber.utils";
+import { formatPhone } from "../../utils/formatPhone.util";
+import Input from "../../components/input";
 import { useLocalSearchParams } from "expo-router";
-import ButtonRectangleBorder from "../../../components/button-rectangle";
-import ModalPhoneConfirmation from "../../../components/modal-phone-confirmation";
+import ButtonRectangleBorder from "../../components/button-rectangle";
+import ModalPhoneConfirmation from "../../components/modal-phone-confirmation";
+import { useForgotPassword } from "../../context/forgot-password/forgot-password.context";
 
 const schema = yup
   .object({
@@ -39,7 +39,6 @@ interface FormData {
 interface FormDataCode {
   code: string;
 }
-
 type Phone = {
   countryCode: "55";
   ddd: string;
@@ -52,20 +51,25 @@ type RouteParamsDto = {
 
 export default function SignUpPhone() {
   const params = useLocalSearchParams<RouteParamsDto>();
-  const { phoneSendCodeConfirmationCreateClient, phoneVerifyCodeConfirmationCreateClient, phoneResendCodeConfirmationCreateClient, closeModalCodeConfirmation, showModalCodeConfirmation, errorConfirmationCodeLocal, setErrorConfirmationCodeLocal, expirationTimeCodeConfirmationPhone, setExpirationTimeCodeConfirmationPhone, } = useSignUp();
+  const { phoneSendCodeConfirmationForgotPasswordClient, setShowModalCodeConfirmation, phoneVerifyCodeConfirmationForgotPasswordClient, showModalCodeConfirmation, errorConfirmationCodeLocal, setErrorConfirmationCodeLocal, expirationTimeCodeConfirmationPhone, setExpirationTimeCodeConfirmationPhone, } = useForgotPassword();
+
   const [phoneLocal, setPhoneLocal] = useState('')
+  const [phoneValue, setPhoneValue] = useState('')
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-    setValue
+    setValue,
+    getValues,
+    setError
   } = useForm({
     resolver: yupResolver(schema),
   })
 
-  const handleVerifyPhoneToRegister = async (data: FormData) => {
-    await phoneSendCodeConfirmationCreateClient(data.phone)
+  const handlePhoneSendCodeConfirmationForgotPasswordClient = async (data: FormData) => {
+    setPhoneValue(data.phone)
+    await phoneSendCodeConfirmationForgotPasswordClient(data.phone)
   }
 
   const handleTextChange = (text: string) => {
@@ -86,24 +90,29 @@ export default function SignUpPhone() {
     }
   }, [])
 
-  async function handlePhoneVerifyCodeConfirmationCreateClient(data: FormDataCode) {
-    const { ddd, number, countryCode } = JSON.parse(params.phone)
-    const phoneValue = `${countryCode}${ddd}${number}`
-    await phoneVerifyCodeConfirmationCreateClient({ code: data.code, phone: phoneValue })
+  function handleModalPhoneConfirmationClose() {
+    setShowModalCodeConfirmation(false)
+  }
+
+  const handleVerifyPhoneToRegister = async (data: FormDataCode) => {
+    if (phoneValue === '') {
+      setShowModalCodeConfirmation(false);
+      setError('phone', { message: 'Digite um telefone valido' })
+    } else {
+      await phoneVerifyCodeConfirmationForgotPasswordClient({ code: data.code, phone: phoneValue })
+    }
   }
 
   async function handleResendCodeConfirmationCreateClient() {
-    const { ddd, number, countryCode } = JSON.parse(params.phone)
-    const phoneValue = `${countryCode}${ddd}${number}`
-    await phoneResendCodeConfirmationCreateClient(phoneValue)
+    await phoneSendCodeConfirmationForgotPasswordClient(phoneValue)
   }
 
   return (
     <Container>
       <ModalPhoneConfirmation
-        onClosed={closeModalCodeConfirmation}
+        onClosed={handleModalPhoneConfirmationClose}
         show={showModalCodeConfirmation}
-        handleVerifyPhoneCode={handlePhoneVerifyCodeConfirmationCreateClient}
+        handleVerifyPhoneCode={handleVerifyPhoneToRegister}
         handleResendCode={handleResendCodeConfirmationCreateClient}
         errorConfirmationCodeLocal={errorConfirmationCodeLocal}
         setErrorConfirmationCodeLocal={setErrorConfirmationCodeLocal}
@@ -112,8 +121,8 @@ export default function SignUpPhone() {
       />
       <ContainerHeader>
         <ContainerTitle>
-          <Title>Cadastre seu telefone</Title>
-          <Phrase>{`digite seu telefone!`}</Phrase>
+          <Title>Esqueceu sua senha ?</Title>
+          <Phrase>{`digite seu telefone! \n            vamos recupera-la`}</Phrase>
         </ContainerTitle>
       </ContainerHeader>
       <ContainerBody>
@@ -139,7 +148,7 @@ export default function SignUpPhone() {
           <ContainerButton>
             <ButtonRectangleBorder
               title="Confirmar"
-              onPress={handleSubmit(handleVerifyPhoneToRegister)}
+              onPress={handleSubmit(handlePhoneSendCodeConfirmationForgotPasswordClient)}
             />
           </ContainerButton>
         </ContainerForm>

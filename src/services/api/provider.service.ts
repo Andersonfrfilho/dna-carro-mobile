@@ -1,6 +1,4 @@
 import axios from "axios";
-import { refreshTokenInterceptor } from "../interceptors/response.service.interceptor";
-import { requestInterceptor } from "../interceptors/request.service.interceptor";
 import { errorInterceptor } from "../interceptors/error.service.interceptor";
 
 const api = axios.create({
@@ -9,8 +7,6 @@ const api = axios.create({
   // baseURL: "http://localhost:3333",
 });
 
-requestInterceptor(api);
-refreshTokenInterceptor(api);
-// errorInterceptor(api);
+errorInterceptor(api);
 
 export { api };
