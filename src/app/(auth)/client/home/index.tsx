@@ -13,7 +13,7 @@ export default function ChoseTypeUser() {
     <Container>
       <ContainerHeader>
         <ContainerTitle>
-          <Title>Selecione a area</Title>
+          <Title>Area do usuário</Title>
           <Phrase>{`Coloque seu login, \n     senha!`}</Phrase>
         </ContainerTitle>
 

@@ -30,10 +30,12 @@ export const Phrase = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.medium};
 `;
 
-export const ContainerBody = styled.ScrollView`
-  flex: 3;
-  padding-left: 15px;
-  padding-right: 15px;
+export const ContainerBody = styled.View`
+  flex: 1;
+  padding: 15px;
+
+  justify-content: space-around;
+  align-items: stretch;
 `;
 
 export const Title = styled.Text`
@@ -51,19 +53,20 @@ export const IconClose = styled(MaterialCommunityIcons).attrs((props) => ({
   color: props.theme.colors.gray,
 }))``;
 
-export const ContainerButtonClose = styled.TouchableOpacity``;
+export const ContainerButtonClose = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: flex-end;
+`;
 
-export const ContainerButton = styled.View``;
+export const ContainerButton = styled.View`
+  height: 80px;
+
+  justify-content: center;
+  align-items: center;
+`;
 
 export const ContainerButtons = styled.View`
-  flex-direction: row;
-
-  justify-content: space-evenly;
-  align-items: center;
-
   flex: 1;
 
-  margin-top: 30px;
-
-  height: 120px;
+  justify-content: space-evenly;
 `;
