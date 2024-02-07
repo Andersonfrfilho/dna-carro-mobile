@@ -3,12 +3,13 @@ import { useRouter } from "expo-router";
 import { useError } from "../errors.context";
 import { CreateSessionParamsDto, GetUsersTypesResultDto, UserTypesDto, UserTypesResultDto, VerifyUserProviderTypeParamsDto } from "./dtos/sign-in.dto";
 import { createSessionUserService } from "../../services/api/sign-in/create-session.service";
-import { getSecurityStorageState, setSecurityStorageItemAsync } from "../../storage/secure/security.storage";
+import { getSecurityStorageState, removeSecurityByKeysItemsAsync, removeSecurityStorageAll, setSecurityStorageItemAsync } from "../../storage/secure/security.storage";
 import { SIGN_IN_AUTH_REFRESH_TOKEN_STORAGE_SECURITY_KEY, SIGN_IN_AUTH_TOKEN_STORAGE_SECURITY_KEY, SIGN_IN_REMEMBER_USER_STORAGE_SECURITY_KEY, SignInAuthRememberUserStorageSecurityKeyDto } from "../../storage/keys/sign-in.keys";
-import { SignInErrors } from "./sign-in.error";
+import { ERRORS_TO_RESET_SESSION, SignInErrors } from "./sign-in.error";
 import { getUserTypesService } from "../../services/api/sign-in/get-types.service";
 import { getUserTypesInitialValue } from "./initial.context";
 import { NUMBER_USER_TYPES_TO_ACCESS_CHOICE_TYPE, PROVIDER_USER_TYPE_ID } from "../constants/account.constant";
+import { CommonsErrors, EXPIRED_PROVIDER_TOKEN_LOCAL } from "../../modules/common/common.error";
 
 
 interface SignInContextInterface {
@@ -22,6 +23,7 @@ interface SignInContextInterface {
   getUsersTypes(): Promise<GetUsersTypesResultDto>;
   userTypes: UserTypesResultDto
   verifyUserProviderType(params: VerifyUserProviderTypeParamsDto): boolean
+  logout(): Promise<void>;
 }
 
 // Define the Provider component
@@ -98,7 +100,7 @@ export function SignInProvider(props: ProviderProps) {
       }
       const dataRefreshTokenStringFormat = JSON.stringify(dataRefreshToken);
       await setSecurityStorageItemAsync(SIGN_IN_AUTH_REFRESH_TOKEN_STORAGE_SECURITY_KEY, dataRefreshTokenStringFormat)
-      router.push('(auth)/chose-type-user')
+      router.push('(auth)/choose-type-user')
     } catch (error) {
       const isLocalError = await appErrorVerifyErrorLocal(error);
       if (isLocalError) {
@@ -112,8 +114,11 @@ export function SignInProvider(props: ProviderProps) {
 
   async function getUsersTypes(): Promise<GetUsersTypesResultDto> {
     try {
+      console.log("################ entrou")
       setIsSignInLoading(true)
+      console.log("################ entrou 2")
       const userTypes = await getUserTypesService()
+      console.log("############=>", userTypes)
       setUserTypes(userTypes)
       return userTypes;
     } catch (error) {
@@ -128,16 +133,44 @@ export function SignInProvider(props: ProviderProps) {
   }
 
   async function appErrorVerifyErrorLocal(error: any): Promise<boolean> {
-    const code = error?.response?.data?.code
+    const code = error?.response?.data?.code || error?.code
 
     const codes = Object.keys(SignInErrors)
 
     const existCodeInCodes = codes.includes(code.toString());
-    if (!existCodeInCodes) {
-      return true;
+    if (existCodeInCodes) {
+      console.log(ERRORS_TO_RESET_SESSION.includes(code.toString()))
+      if (ERRORS_TO_RESET_SESSION.includes(code.toString())) {
+        await removeSecurityStorageAll();
+        router.replace('/sign-in')
+        return;
+      }
     }
+
     setErrorLocalSignInContext(SignInErrors[code].reason)
     return false;
+  }
+
+  async function logout(): Promise<void> {
+    try {
+      setIsSignInLoading(true)
+      const keys = [
+        SIGN_IN_AUTH_TOKEN_STORAGE_SECURITY_KEY,
+        SIGN_IN_AUTH_REFRESH_TOKEN_STORAGE_SECURITY_KEY,
+        SIGN_IN_REMEMBER_USER_STORAGE_SECURITY_KEY
+      ]
+      await removeSecurityByKeysItemsAsync(keys)
+
+      router.replace('/sign-in')
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal(error);
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    } finally {
+      setIsSignInLoading(false)
+    }
   }
 
   const contextValue = useMemo(() => ({
@@ -151,7 +184,7 @@ export function SignInProvider(props: ProviderProps) {
     getUsersTypes,
     userTypes,
     verifyUserProviderType,
-
+    logout
   }), [
     isSignInLoading,
     createSession,
@@ -162,7 +195,8 @@ export function SignInProvider(props: ProviderProps) {
     hasSession,
     getUsersTypes,
     userTypes,
-    verifyUserProviderType
+    verifyUserProviderType,
+    logout
   ]);
   return (
     <SignInContext.Provider

@@ -32,6 +32,7 @@ export interface UserTypesUser {
 
 export async function getUserTypesService(): Promise<GetUserTypesServiceResultDto> {
   try {
+    console.log("################ entrou dentro do tipos");
     const { data } = await apiAuth.get<GetUserTypesServiceResultDto>(
       `/users/types`,
       {
@@ -42,6 +43,7 @@ export async function getUserTypesService(): Promise<GetUserTypesServiceResultDt
     );
     return data;
   } catch (error) {
+    console.log("#@############# error dentro do tipos");
     throw error;
   }
 }

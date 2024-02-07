@@ -35,6 +35,18 @@ export const ContainerBody = styled.ScrollView`
   padding-right: 15px;
 `;
 
+export const ContainerAppointmentsToConfirm = styled.View`
+  flex: 1;
+`;
+
+export const ContainerAppointment = styled.View`
+  flex: 1;
+`;
+
+export const ContainerAppointmentsNext = styled.View`
+  flex: 1;
+`;
+
 export const Title = styled.Text`
   color: ${(props) => props.theme.colors.background};
 

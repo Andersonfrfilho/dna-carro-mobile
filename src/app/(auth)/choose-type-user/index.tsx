@@ -16,13 +16,15 @@ import { useSignIn } from "../../../context/sign-in/sign-in.context";
 import { useEffect } from "react";
 import Loading from "../../../components/loading";
 
-export default function ChoseTypeUser() {
+export default function ChooseTypeUser() {
   const router = useRouter()
   const { getUsersTypes, verifyUserProviderType, isSignInLoading } = useSignIn()
 
   useEffect(() => {
     (async () => {
+      console.log("################=> choose type user")
       const userTypes = await getUsersTypes()
+      console.log(userTypes)
       if (!verifyUserProviderType(userTypes)) {
         router.replace('/client/home')
       }
@@ -30,7 +32,7 @@ export default function ChoseTypeUser() {
   }, [])
 
   function handleGoToProvider() {
-    router.push('/provider/home')
+    router.push('provider/options/sections')
   }
   function handleGoToClient() {
     router.push('/client/home')

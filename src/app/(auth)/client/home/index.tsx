@@ -7,7 +7,7 @@ import {
   Title,
 } from "./styles";
 
-export default function ChoseTypeUser() {
+export default function ClientHome() {
 
   return (
     <Container>
