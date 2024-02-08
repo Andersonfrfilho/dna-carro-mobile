@@ -22,9 +22,7 @@ export default function ChooseTypeUser() {
 
   useEffect(() => {
     (async () => {
-      console.log("################=> choose type user")
       const userTypes = await getUsersTypes()
-      console.log(userTypes)
       if (!verifyUserProviderType(userTypes)) {
         router.replace('/client/home')
       }

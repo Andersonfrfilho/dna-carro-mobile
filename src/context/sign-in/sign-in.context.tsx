@@ -114,11 +114,8 @@ export function SignInProvider(props: ProviderProps) {
 
   async function getUsersTypes(): Promise<GetUsersTypesResultDto> {
     try {
-      console.log("################ entrou")
       setIsSignInLoading(true)
-      console.log("################ entrou 2")
       const userTypes = await getUserTypesService()
-      console.log("############=>", userTypes)
       setUserTypes(userTypes)
       return userTypes;
     } catch (error) {
@@ -139,7 +136,6 @@ export function SignInProvider(props: ProviderProps) {
 
     const existCodeInCodes = codes.includes(code.toString());
     if (existCodeInCodes) {
-      console.log(ERRORS_TO_RESET_SESSION.includes(code.toString()))
       if (ERRORS_TO_RESET_SESSION.includes(code.toString())) {
         await removeSecurityStorageAll();
         router.replace('/sign-in')

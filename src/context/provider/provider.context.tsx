@@ -84,12 +84,9 @@ export function ProviderProvider(props: ProviderProps) {
     const code = error?.response?.data?.code || error?.code
 
     const codes = Object.keys(ProviderErrors)
-    console.log("################### provider", code, typeof code, codes)
     const existCodeInCodes = codes.includes(code.toString());
-    console.log("###################=><=##################", code)
     if (existCodeInCodes) {
       if ([ProviderErrors[EXPIRED_PROVIDER_TOKEN_LOCAL].code.toString(), ProviderErrors[TOKEN_NOT_FOUND].code.toString()].includes(code.toString())) {
-        console.log("################### entrou aqui")
         await removeSecurityStorageAll();
         router.replace('/sign-in')
         return;

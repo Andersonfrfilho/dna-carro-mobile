@@ -3,7 +3,6 @@ import { AxiosInstance } from "axios";
 export function providerAuthInterceptor(api: AxiosInstance) {
   api.interceptors.response.use(
     (response) => {
-      console.log("response interceptor ############");
       return response;
     },
     (err) => {

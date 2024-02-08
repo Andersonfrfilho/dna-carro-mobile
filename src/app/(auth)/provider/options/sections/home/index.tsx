@@ -14,6 +14,8 @@ import {
 import { useProvider } from "../../../../../../context/provider/provider.context";
 import { useEffect, useState } from "react";
 import { AppointmentStatus } from "../../../../../../context/constants/appointment.constant";
+import { Skeleton } from "../../../../../../components/skeleton";
+import ProviderHomeAppointmentsCreatedSkeleton from "../../../../../../components/provider/home/skeletons";
 
 export default function ProviderOptionsSectionsHome() {
   const { getAppointmentByStatus, setAppointmentsConfirmLoading, setAppointmentsCreateLoading } = useProvider();
@@ -48,17 +50,20 @@ export default function ProviderOptionsSectionsHome() {
   }, [])
   console.log(appointmentsToConfirm);
   console.log(appointmentsToCreated);
+  console.log("ta aqui")
   return (
     <Container>
       <ContainerBody>
         <ContainerAppointmentsToConfirm>
-          <Title>Agendamentos para confirmar</Title>
+          {/* <Title>Agendamentos para confirmar</Title>
           <AppointmentToConfirmList
             data={[]}
             renderItem={() => <Title>Agendamentos</Title>}
-          />
+          /> */}
+          <ProviderHomeAppointmentsCreatedSkeleton />
         </ContainerAppointmentsToConfirm>
         <ContainerAppointmentsNext>
+          <ProviderHomeAppointmentsCreatedSkeleton />
         </ContainerAppointmentsNext>
       </ContainerBody>
     </Container>

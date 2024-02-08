@@ -3,6 +3,7 @@ import Constants from "expo-constants";
 
 export const Container = styled.SafeAreaView`
   flex: 1;
+  background-color: #12ddff;
 `;
 
 export const ContainerLoading = styled.View`
@@ -33,10 +34,12 @@ export const ContainerBody = styled.View`
   flex: 3;
   padding-left: 15px;
   padding-right: 15px;
+  background-color: #addccf;
 `;
 
 export const ContainerAppointmentsToConfirm = styled.View`
   flex: 1;
+  background-color: #12ddff;
 `;
 
 export const ContainerAppointment = styled.View`
