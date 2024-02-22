@@ -1,5 +1,4 @@
 import axios from "axios";
-import { providerAuthInterceptor } from "../interceptors/provider-auth.interceptor";
 import { requestInsertTokenInterceptor } from "../interceptors/request-insert-token.interceptor";
 import { refreshTokenStrategyInterceptor } from "../interceptors/refresh-token-response.interceptor";
 

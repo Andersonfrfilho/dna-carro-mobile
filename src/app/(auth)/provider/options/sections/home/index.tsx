@@ -1,27 +1,26 @@
-import { FlatList } from "react-native";
 import {
-  AppointmentToConfirmList,
+  AppointmentToNextList,
+  AppointmentsToCreatedList,
+  AreaAppointmentTitle,
+  AreaAppointmentsContent,
   Container,
-  ContainerAppointment,
   ContainerAppointmentsNext,
   ContainerAppointmentsToConfirm,
   ContainerBody,
-  ContainerHeader,
-  ContainerTitle,
-  Phrase,
   Title,
 } from "./styles";
 import { useProvider } from "../../../../../../context/provider/provider.context";
 import { useEffect, useState } from "react";
 import { AppointmentStatus } from "../../../../../../context/constants/appointment.constant";
-import { Skeleton } from "../../../../../../components/skeleton";
-import ProviderHomeAppointmentsCreatedSkeleton from "../../../../../../components/provider/home/skeletons";
+import ProviderHomeAppointmentsSkeleton from "../../../../../../components/provider/home/skeletons";
+import AppointmentItemList from "../../../../../../components/provider/home/appointmentsItemList";
+import { Appointment } from "../../../../../../services/api/providers/providers.interface";
 
 export default function ProviderOptionsSectionsHome() {
-  const { getAppointmentByStatus, setAppointmentsConfirmLoading, setAppointmentsCreateLoading } = useProvider();
+  const { getAppointmentByStatus, appointmentsConfirmLoading, appointmentsCreateLoading, setAppointmentsConfirmLoading, setAppointmentsCreateLoading, handleSelectAppointment } = useProvider();
 
-  const [appointmentsToConfirm, setAppointmentsToConfirm] = useState([]);
-  const [appointmentsToCreated, setAppointmentsToCreated] = useState([]);
+  const [appointmentsToNext, setAppointmentsToNext] = useState<Appointment[]>([]);
+  const [appointmentsToCreated, setAppointmentsToCreated] = useState<Appointment[]>([]);
 
   async function handleGetAppointmentCreate() {
     setAppointmentsCreateLoading(true)
@@ -38,7 +37,7 @@ export default function ProviderOptionsSectionsHome() {
     setAppointmentsConfirmLoading(true)
     try {
       const appointmentsConfirm = await getAppointmentByStatus(AppointmentStatus.confirm);
-      setAppointmentsToConfirm(appointmentsConfirm.confirm.results.filter((appointment, index) => index < 3))
+      setAppointmentsToNext(appointmentsConfirm.confirm.results.filter((appointment, index) => index < 3))
     } catch {
     } finally {
       setAppointmentsConfirmLoading(false)
@@ -48,22 +47,45 @@ export default function ProviderOptionsSectionsHome() {
     handleGetAppointmentCreate()
     handleGetAppointmentConfirm()
   }, [])
-  console.log(appointmentsToConfirm);
-  console.log(appointmentsToCreated);
-  console.log("ta aqui")
+
   return (
     <Container>
       <ContainerBody>
         <ContainerAppointmentsToConfirm>
-          {/* <Title>Agendamentos para confirmar</Title>
-          <AppointmentToConfirmList
-            data={[]}
-            renderItem={() => <Title>Agendamentos</Title>}
-          /> */}
-          <ProviderHomeAppointmentsCreatedSkeleton />
+          <AreaAppointmentTitle>
+            <Title>Agendamentos em abertos:</Title>
+          </AreaAppointmentTitle>
+          <AreaAppointmentsContent>
+            {appointmentsCreateLoading ? (
+              <>
+                <ProviderHomeAppointmentsSkeleton />
+                <ProviderHomeAppointmentsSkeleton />
+                <ProviderHomeAppointmentsSkeleton />
+              </>
+            ) : <AppointmentsToCreatedList
+              data={appointmentsToCreated}
+              renderItem={(appointment) => <AppointmentItemList {...appointment} handlePressSelectAppointment={(id) => handleSelectAppointment(id)} />}
+            />}
+          </AreaAppointmentsContent>
         </ContainerAppointmentsToConfirm>
         <ContainerAppointmentsNext>
-          <ProviderHomeAppointmentsCreatedSkeleton />
+          <AreaAppointmentTitle>
+            <Title>Próximos Agendamentos:</Title>
+          </AreaAppointmentTitle>
+          <AreaAppointmentsContent>
+            {appointmentsConfirmLoading ?
+              (<>
+                <ProviderHomeAppointmentsSkeleton />
+                <ProviderHomeAppointmentsSkeleton />
+                <ProviderHomeAppointmentsSkeleton />
+              </>) :
+              <AppointmentToNextList
+                data={appointmentsToNext}
+                renderItem={(appointment) => <AppointmentItemList {...appointment} handlePressSelectAppointment={(id) => handleSelectAppointment(id)} />}
+              />
+
+            }
+          </AreaAppointmentsContent>
         </ContainerAppointmentsNext>
       </ContainerBody>
     </Container>

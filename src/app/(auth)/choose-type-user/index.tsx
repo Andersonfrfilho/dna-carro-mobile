@@ -30,7 +30,7 @@ export default function ChooseTypeUser() {
   }, [])
 
   function handleGoToProvider() {
-    router.push('provider/options/sections')
+    router.push('/provider/options/sections/home')
   }
   function handleGoToClient() {
     router.push('/client/home')

@@ -1,13 +1,39 @@
 import { Tabs } from 'expo-router/tabs';
-export default function AppLayout() {
+export default function ProviderAuthTabsRoutes() {
   return (
-    <Tabs>
+    <Tabs
+      initialRouteName='home'
+      backBehavior="history"
+    >
       <Tabs.Screen
-        // Name of the route to hide.
-        name="home/index"
+        name="home"
         options={{
-          // This tab will no longer show up in the tab bar.
+          href: "provider/options/sections/home",
+          tabBarLabel: 'Home',
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="appointments"
+        options={{
+          href: "provider/options/sections/appointments",
+          tabBarLabel: 'Agendamentos',
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="registers"
+        options={{
+          href: "provider/options/sections/registers",
+          tabBarLabel: 'Registros',
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="maps"
+        options={{
           href: null,
+          headerShown: false,
         }}
       />
     </Tabs>

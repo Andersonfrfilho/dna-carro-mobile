@@ -3,6 +3,7 @@ import {
   CommonsErrors,
   EXPIRED_PROVIDER_TOKEN_LOCAL,
 } from "../../modules/common/common.error";
+import { TOKEN_NOT_EXIST_SECURITY_CACHE } from "../../services/interceptors/error.service.interceptor";
 
 export const INVALID_PASSWORD = 1015;
 
@@ -18,4 +19,5 @@ export const SignInErrors = {
 
 export const ERRORS_TO_RESET_SESSION = [
   EXPIRED_PROVIDER_TOKEN_LOCAL.toString(),
+  TOKEN_NOT_EXIST_SECURITY_CACHE.toString(),
 ];

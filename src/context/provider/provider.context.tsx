@@ -1,13 +1,16 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
 import { useError } from "../errors.context";
-import { getSecurityStorageState, removeSecurityByKeysItemsAsync, removeSecurityStorageAll } from "../../storage/secure/security.storage";
+import { getSecurityStorageState, removeSecurityStorageAll } from "../../storage/secure/security.storage";
 import { SIGN_IN_REMEMBER_USER_STORAGE_SECURITY_KEY, SignInAuthRememberUserStorageSecurityKeyDto } from "../../storage/keys/sign-in.keys";
-import { getAppointmentsByStatusService } from "../../services/api/providers/get-appointments-by-status.service";
 import { AppointmentStatus } from "../constants/appointment.constant";
-import { AppointmentsByStatusInterface, FormattedAppointmentToAppointmentsByStatusParamsDto, GetAppointmentByStatusResultDto } from "./provider.context.interface";
-import { ProviderErrors, TOKEN_NOT_FOUND } from "./provider.error";
-import { EXPIRED_PROVIDER_TOKEN_LOCAL } from "../../modules/common/common.error";
+import { AppointmentsByStatusInterface, FormattedAppointmentToAppointmentsByStatusParamsDto, GetAppointmentByStatusResultDto, GetAvailableDaysItemListResultDto, SetAvailableDaysItemListResultDto, SetAvailableDaysParamsDto } from "./provider.context.interface";
+import { PROVIDER_ERRORS_TO_RESET_SESSION, ProviderErrors } from "./provider.error";
+import { getAppointmentsByStatusProviderService } from "../../services/api/providers/get-appointments-by-status.service";
+import { getAppointmentByIdProviderService } from "../../services/api/providers/get-appointment-by-id.service";
+import { getAvailableDaysProviderService } from "../../services/api/providers/get-available-days.service";
+import { DAYS_WEEK_IDS, DAYS_WEEK_SELECT_ITEMS, DaysItemList } from "../constants/datetime.constant";
+import { setAvailableDaysProviderService } from "../../services/api/providers/set-available-days.service";
 
 
 interface ProviderContextInterface {
@@ -18,6 +21,11 @@ interface ProviderContextInterface {
   getAppointmentByStatus(status: AppointmentStatus): Promise<GetAppointmentByStatusResultDto>;
   appointmentsConfirmLoading: boolean;
   appointmentsCreateLoading: boolean;
+  handleSelectAppointment(id: string): Promise<void>;
+  getAvailableDaysByProvider(): Promise<GetAvailableDaysItemListResultDto[]>;
+  setAvailableDaysByProvider(params: SetAvailableDaysParamsDto[]): Promise<SetAvailableDaysItemListResultDto[]>;
+  daysAvailable: DaysItemList[];
+  setDaysAvailable: React.Dispatch<React.SetStateAction<DaysItemList[]>>;
 }
 
 // Define the Provider component
@@ -41,13 +49,14 @@ export function ProviderProvider(props: ProviderProps) {
     React.useState<boolean>(false);
   const [errorLocalProviderContext, setErrorLocalProviderContext] =
     React.useState<string>("");
-  const [hasSession, setHasSession] = React.useState<boolean>(false);
   const [appointments, setAppointments] = React.useState<AppointmentsByStatusInterface>({
     cancel: {},
     confirm: {},
     created: {},
     expired: {}
   } as AppointmentsByStatusInterface)
+  const [daysAvailable, setDaysAvailable] = useState<DaysItemList[]>(DAYS_WEEK_SELECT_ITEMS);
+
 
 
   function formattedAppointmentToAppointmentsByStatus({ status, ...appointmentsParams }: FormattedAppointmentToAppointmentsByStatusParamsDto): AppointmentsByStatusInterface {
@@ -65,7 +74,7 @@ export function ProviderProvider(props: ProviderProps) {
   async function getAppointmentByStatus(status: AppointmentStatus): Promise<GetAppointmentByStatusResultDto> {
     try {
       setIsProviderLoading(true)
-      const result = await getAppointmentsByStatusService({ status })
+      const result = await getAppointmentsByStatusProviderService({ status })
       const formattedAppointments = formattedAppointmentToAppointmentsByStatus({ status, ...result });
       setAppointments(formattedAppointments)
       return formattedAppointments
@@ -85,8 +94,9 @@ export function ProviderProvider(props: ProviderProps) {
 
     const codes = Object.keys(ProviderErrors)
     const existCodeInCodes = codes.includes(code.toString());
+
     if (existCodeInCodes) {
-      if ([ProviderErrors[EXPIRED_PROVIDER_TOKEN_LOCAL].code.toString(), ProviderErrors[TOKEN_NOT_FOUND].code.toString()].includes(code.toString())) {
+      if (PROVIDER_ERRORS_TO_RESET_SESSION.includes(code)) {
         await removeSecurityStorageAll();
         router.replace('/sign-in')
         return;
@@ -97,6 +107,70 @@ export function ProviderProvider(props: ProviderProps) {
     return false;
   }
 
+  async function handleSelectAppointment(id: string) {
+    setIsProviderLoading(true)
+    try {
+      const appointment = await getAppointmentByIdProviderService({ id })
+      router.push({
+        pathname: 'provider/options/sections/appointments/appointment',
+        params: {
+          appointment
+        }
+      })
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal(error);
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    } finally {
+      setIsProviderLoading(false)
+    }
+  }
+
+  async function getAvailableDaysByProvider(): Promise<GetAvailableDaysItemListResultDto[]> {
+    try {
+      setIsProviderLoading(true)
+      const result = await getAvailableDaysProviderService()
+      const formattedAppointments = DAYS_WEEK_SELECT_ITEMS.map(item => ({
+        ...item,
+        selected: !!result.find(day => day.day === item.id) || false
+      }))
+      setDaysAvailable(formattedAppointments)
+      return formattedAppointments
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal(error);
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    } finally {
+      setIsProviderLoading(false)
+    }
+  }
+
+  async function setAvailableDaysByProvider(params: SetAvailableDaysParamsDto[]): Promise<SetAvailableDaysItemListResultDto[]> {
+    try {
+      setIsProviderLoading(true)
+      const formattedDays = params.filter(day => day.selected).map(day => (day.id as DAYS_WEEK_IDS))
+
+      const result = await setAvailableDaysProviderService({ days: formattedDays })
+      const formattedAppointments = DAYS_WEEK_SELECT_ITEMS.map(item => ({
+        ...item,
+        selected: result.some(day => day.day === item.id) || false
+      }))
+      setDaysAvailable(formattedAppointments)
+      return formattedAppointments
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal(error);
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    } finally {
+      setIsProviderLoading(false)
+    }
+  }
 
   const contextValue = useMemo(() => ({
     isProviderLoading,
@@ -105,7 +179,12 @@ export function ProviderProvider(props: ProviderProps) {
     setAppointmentsConfirmLoading,
     setAppointmentsCreateLoading,
     appointmentsConfirmLoading,
-    appointmentsCreateLoading
+    appointmentsCreateLoading,
+    handleSelectAppointment,
+    getAvailableDaysByProvider,
+    daysAvailable,
+    setDaysAvailable,
+    setAvailableDaysByProvider
   }), [
     isProviderLoading,
     setIsProviderLoading,
@@ -113,7 +192,12 @@ export function ProviderProvider(props: ProviderProps) {
     setAppointmentsConfirmLoading,
     setAppointmentsCreateLoading,
     appointmentsConfirmLoading,
-    appointmentsCreateLoading
+    appointmentsCreateLoading,
+    handleSelectAppointment,
+    getAvailableDaysByProvider,
+    daysAvailable,
+    setDaysAvailable,
+    setAvailableDaysByProvider
   ]);
   return (
     <ProviderContext.Provider

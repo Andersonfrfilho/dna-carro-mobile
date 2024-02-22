@@ -8,12 +8,12 @@ export interface GetAppointmentsByStatusServiceParamsDto {
 
 export interface GetAppointmentServiceResultDto extends AppointmentPagination {}
 
-export async function getAppointmentsByStatusService({
+export async function getAppointmentsByStatusProviderService({
   status,
 }: GetAppointmentsByStatusServiceParamsDto): Promise<GetAppointmentServiceResultDto> {
   try {
     const { data } = await apiAuth.get<GetAppointmentServiceResultDto>(
-      `/user/provider/appointments/${status}`,
+      `/user/provider/appointments/status/${status}`,
       {
         headers: {
           "Content-Type": "application/json; charset=utf-8",

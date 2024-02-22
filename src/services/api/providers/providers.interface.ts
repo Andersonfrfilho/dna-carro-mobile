@@ -89,6 +89,26 @@ export interface Client {
   createdAt: string;
   updatedAt: string;
   deletedAt: any;
+  userClientImageProfiles: UserClientImageProfile[];
+}
+
+export interface UserClientImageProfile {
+  id: string;
+  userId: string;
+  userImageProfileId: string;
+  createdAt: string;
+  updatedAt: any;
+  deletedAt: any;
+  imageProfile: ImageProfile;
+}
+
+export interface ImageProfile {
+  id: string;
+  name: string;
+  url: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
 }
 
 export interface AppointmentService {
@@ -132,3 +152,8 @@ export interface Previous extends Link {}
 export interface Last extends Link {}
 
 export interface First extends Link {}
+
+export interface AvailableDay {
+  id: string;
+  day: string;
+}

@@ -5,12 +5,15 @@ import { DrawerContentComponentProps } from "@react-navigation/drawer";
 
 export default function ProviderAuthDrawerRoutes() {
   return (
-    <Drawer drawerContent={(props: DrawerContentComponentProps) => <CustomDrawer {...props} />}>
+    <Drawer
+      drawerContent={(props: DrawerContentComponentProps) => <CustomDrawer {...props} />}
+      initialRouteName="sections"
+    >
       <Drawer.Screen
         name="sections" // This is the name of the page and must match the url from root
         options={{
           drawerLabel: 'Home',
-          title: 'overview',
+          title: 'Home',
         }}
       />
     </Drawer>

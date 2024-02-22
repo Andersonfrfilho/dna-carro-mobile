@@ -13,7 +13,7 @@ export interface CreateSessionServiceResultDto {
   expireInRefreshToken: number;
 }
 
-export async function createSessionService({
+export async function createSessionProviderService({
   userType,
   ...params
 }: CreateSessionServiceParamsDto): Promise<CreateSessionServiceResultDto> {

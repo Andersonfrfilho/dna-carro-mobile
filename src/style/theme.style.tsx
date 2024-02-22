@@ -62,6 +62,7 @@ export const theme = {
     small: `${RFValue(12)}px`,
     median: `${RFValue(13)}px`,
     medium: `${RFValue(14)}px`,
+    mediumX: `${RFValue(16)}px`,
     large: `${RFValue(18)}px`,
     subTitle: `${RFValue(24)}px`,
     title: `${RFValue(28)}px`,

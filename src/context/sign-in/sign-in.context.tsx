@@ -9,7 +9,6 @@ import { ERRORS_TO_RESET_SESSION, SignInErrors } from "./sign-in.error";
 import { getUserTypesService } from "../../services/api/sign-in/get-types.service";
 import { getUserTypesInitialValue } from "./initial.context";
 import { NUMBER_USER_TYPES_TO_ACCESS_CHOICE_TYPE, PROVIDER_USER_TYPE_ID } from "../constants/account.constant";
-import { CommonsErrors, EXPIRED_PROVIDER_TOKEN_LOCAL } from "../../modules/common/common.error";
 
 
 interface SignInContextInterface {
@@ -135,6 +134,7 @@ export function SignInProvider(props: ProviderProps) {
     const codes = Object.keys(SignInErrors)
 
     const existCodeInCodes = codes.includes(code.toString());
+
     if (existCodeInCodes) {
       if (ERRORS_TO_RESET_SESSION.includes(code.toString())) {
         await removeSecurityStorageAll();

@@ -1,9 +1,9 @@
 import styled from "styled-components/native";
 import Constants from "expo-constants";
+import { Appointment } from "../../../../../../services/api/providers/providers.interface";
 
 export const Container = styled.SafeAreaView`
   flex: 1;
-  background-color: #12ddff;
 `;
 
 export const ContainerLoading = styled.View`
@@ -11,9 +11,7 @@ export const ContainerLoading = styled.View`
 `;
 
 export const ContainerHeader = styled.View`
-  justify-content: space-between;
   align-items: stretch;
-  background-color: ${(props) => props.theme.colors.powderWhite};
   padding-top: ${Constants.statusBarHeight + "px"};
   height: 380px;
   margin-bottom: 20px;
@@ -34,12 +32,12 @@ export const ContainerBody = styled.View`
   flex: 3;
   padding-left: 15px;
   padding-right: 15px;
-  background-color: #addccf;
 `;
 
 export const ContainerAppointmentsToConfirm = styled.View`
   flex: 1;
-  background-color: #12ddff;
+
+  justify-content: space-around;
 `;
 
 export const ContainerAppointment = styled.View`
@@ -48,18 +46,33 @@ export const ContainerAppointment = styled.View`
 
 export const ContainerAppointmentsNext = styled.View`
   flex: 1;
+
+  justify-content: space-around;
+`;
+export const AreaAppointmentTitle = styled.View`
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+`;
+export const AreaAppointmentsContent = styled.View`
+  flex: 4;
+  overflow: hidden;
 `;
 
 export const Title = styled.Text`
   color: ${(props) => props.theme.colors.background};
 
-  font-family: ${(props) => props.theme.fonts["Lato-Black"]};
+  font-family: ${(props) => props.theme.fonts["Roboto-Bold"]};
 
-  font-size: ${(props) => props.theme.fontSizes.title};
+  font-size: ${(props) => props.theme.fontSizes.large};
 
   text-align: center;
 `;
 
-export const AppointmentToConfirmList = styled.FlatList`
+export const AppointmentToNextList = styled.FlatList`
+  flex: 1;
+`;
+
+export const AppointmentsToCreatedList = styled.FlatList`
   flex: 1;
 `;

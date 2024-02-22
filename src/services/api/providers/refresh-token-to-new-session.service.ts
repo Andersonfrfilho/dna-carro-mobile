@@ -11,7 +11,7 @@ export interface RefreshTokenToNewSessionServiceResultDto {
   expireInRefreshToken: number;
 }
 
-export async function refreshTokenToNewSessionService(
+export async function refreshTokenToNewSessionProviderService(
   params: RefreshTokenToNewSessionServiceParamsDto
 ): Promise<RefreshTokenToNewSessionServiceResultDto> {
   try {

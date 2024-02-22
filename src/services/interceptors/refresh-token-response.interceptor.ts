@@ -18,11 +18,8 @@ import {
   GET_NEW_TOKEN_SESSION_ERROR,
   InterceptorLocalErrors,
   SECURITY_CACHE_ERROR,
-  TOKEN_NOT_EXIST_SECURITY_CACHE,
 } from "./error.service.interceptor";
 import { tokenErrorsAvailableStrategyCodes } from "../../modules/common/common.error";
-
-let isRefreshing = false;
 
 const refreshTokenStrategyInterceptor = (api: AxiosInstance) => {
   api.interceptors.response.use(
@@ -48,10 +45,6 @@ const refreshTokenStrategyInterceptor = (api: AxiosInstance) => {
             SIGN_IN_AUTH_REFRESH_TOKEN_STORAGE_SECURITY_KEY
           )
             .then((refreshTokenSecurity) => {
-              console.log(
-                "#############################- entro no cache",
-                refreshTokenSecurity
-              );
               const res = api
                 .post("/auth/session/refresh-token", {
                   refreshToken: refreshTokenSecurity.refreshToken,
@@ -95,6 +88,7 @@ const refreshTokenStrategyInterceptor = (api: AxiosInstance) => {
                     })
                   );
                 });
+
               resolve(res);
             })
             .catch((err) => {
@@ -115,19 +109,17 @@ const refreshTokenStrategyInterceptor = (api: AxiosInstance) => {
             });
         } else {
           console.error(
-            "refreshTokenStrategyInterceptor - when get reason to be request error",
+            "refreshTokenStrategyInterceptor - when get reason other reason",
             JSON.stringify(error)
           );
+          const message = error.response?.data?.message;
+          const content = error.response?.data?.content;
           reject(
             new AppError({
-              message:
-                InterceptorLocalErrors[TOKEN_NOT_EXIST_SECURITY_CACHE].message,
-              code: InterceptorLocalErrors[
-                TOKEN_NOT_EXIST_SECURITY_CACHE
-              ].code.toString(),
-              status_code:
-                InterceptorLocalErrors[TOKEN_NOT_EXIST_SECURITY_CACHE]
-                  .statusCode,
+              message: message,
+              code: code,
+              status_code: status,
+              content: content,
             })
           );
         }
