@@ -7,13 +7,13 @@ import {
   Title,
 } from "./styles";
 
-export default function ChoseTypeUser() {
+export default function ClientHome() {
 
   return (
     <Container>
       <ContainerHeader>
         <ContainerTitle>
-          <Title>Selecione a area</Title>
+          <Title>Area do usuário</Title>
           <Phrase>{`Coloque seu login, \n     senha!`}</Phrase>
         </ContainerTitle>
 

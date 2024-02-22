@@ -15,6 +15,7 @@ interface ErrorParametersDTO {
   message: string;
   status_code?: number;
   code?: string;
+  content?: any;
 }
 
 export class AppError {
@@ -24,9 +25,17 @@ export class AppError {
 
   public readonly code: string;
 
-  constructor({ message, status_code = 400, code = "" }: ErrorParametersDTO) {
+  public readonly content: any;
+
+  constructor({
+    message,
+    status_code = 400,
+    code = "",
+    content = {},
+  }: ErrorParametersDTO) {
     this.message = message;
     this.status_code = status_code;
     this.code = code;
+    this.content = content;
   }
 }

@@ -71,23 +71,23 @@ export function ErrorProvider(props: ProviderProps) {
       internalServerError();
       return;
     }
-    if (err.response.status === HTTP_ERROR_CODES_ENUM.FORBIDDEN) {
+    if (err.response?.status === HTTP_ERROR_CODES_ENUM.FORBIDDEN) {
       forbiddenError(err);
       return;
     }
-    if (err.response.status === HTTP_ERROR_CODES_ENUM.UNAUTHORIZED) {
+    if (err.response?.status === HTTP_ERROR_CODES_ENUM.UNAUTHORIZED) {
       unauthorizedError(err);
       return;
     }
-    if (err.response.status === HTTP_ERROR_CODES_ENUM.BAD_REQUEST) {
+    if (err.response?.status === HTTP_ERROR_CODES_ENUM.BAD_REQUEST) {
       badRequestError(err);
       return;
     }
-    if (err.response.status === HTTP_ERROR_CODES_ENUM.NOT_FOUND) {
+    if (err.response?.status === HTTP_ERROR_CODES_ENUM.NOT_FOUND) {
       notFoundError(err);
       return;
     }
-    if (err.response.status === HTTP_ERROR_CODES_ENUM.INTERNAL_SERVER_ERROR) {
+    if (err.response?.status === HTTP_ERROR_CODES_ENUM.INTERNAL_SERVER_ERROR) {
       if (err.response.data.code === '50001') {
         notFoundError(err);
         return;

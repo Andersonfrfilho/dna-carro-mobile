@@ -1,3 +1,7 @@
+import { ItemListDto } from "../modules/common/common.interface";
+
+interface GenderItemList extends ItemListDto {}
+
 export const CPF_KEY = "CPF";
 export const CNPJ_KEY = "CNPJ";
 export const DOCUMENT_TYPES = {
@@ -13,7 +17,7 @@ export const GENDER_TYPES = {
   [FEMALE_KEY]: "female",
 };
 
-export const GENDER_ITEMS_TYPE = [
+export const GENDER_ITEMS_TYPE: GenderItemList[] = [
   {
     id: GENDER_TYPES.FEMALE,
     value: FEMALE_KEY,

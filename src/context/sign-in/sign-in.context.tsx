@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useMemo } from "react";
 import { useRouter } from "expo-router";
 import { useError } from "../errors.context";
-import { CreateSessionParamsDto } from "./dtos/sign-in.dto";
+import { CreateSessionParamsDto, GetUsersTypesResultDto, UserTypesDto, UserTypesResultDto, VerifyUserProviderTypeParamsDto } from "./dtos/sign-in.dto";
 import { createSessionUserService } from "../../services/api/sign-in/create-session.service";
-import { getSecurityStorageState, setSecurityStorageItemAsync } from "../../storage/secure/security.storage";
+import { getSecurityStorageState, removeSecurityByKeysItemsAsync, removeSecurityStorageAll, setSecurityStorageItemAsync } from "../../storage/secure/security.storage";
 import { SIGN_IN_AUTH_REFRESH_TOKEN_STORAGE_SECURITY_KEY, SIGN_IN_AUTH_TOKEN_STORAGE_SECURITY_KEY, SIGN_IN_REMEMBER_USER_STORAGE_SECURITY_KEY, SignInAuthRememberUserStorageSecurityKeyDto } from "../../storage/keys/sign-in.keys";
-import { SignInErrors } from "./sign-in.error";
+import { ERRORS_TO_RESET_SESSION, SignInErrors } from "./sign-in.error";
+import { getUserTypesService } from "../../services/api/sign-in/get-types.service";
+import { getUserTypesInitialValue } from "./initial.context";
+import { NUMBER_USER_TYPES_TO_ACCESS_CHOICE_TYPE, PROVIDER_USER_TYPE_ID } from "../constants/account.constant";
 
 
 interface SignInContextInterface {
@@ -16,6 +19,10 @@ interface SignInContextInterface {
   errorLocalSignInContext: string;
   setErrorLocalSignInContext: React.Dispatch<React.SetStateAction<string>>;
   hasSession: boolean;
+  getUsersTypes(): Promise<GetUsersTypesResultDto>;
+  userTypes: UserTypesResultDto
+  verifyUserProviderType(params: VerifyUserProviderTypeParamsDto): boolean
+  logout(): Promise<void>;
 }
 
 // Define the Provider component
@@ -36,12 +43,17 @@ export function SignInProvider(props: ProviderProps) {
   const [errorLocalSignInContext, setErrorLocalSignInContext] =
     React.useState<string>("");
   const [hasSession, setHasSession] = React.useState<boolean>(false);
+  const [userTypes, setUserTypes] = React.useState<UserTypesDto>(getUserTypesInitialValue)
 
   useEffect(() => {
     (async () => {
       await verifyHasSessionToken()
     })()
   }, [])
+
+  function verifyUserProviderType(params: VerifyUserProviderTypeParamsDto): boolean {
+    return !!params && !!params.userTypesUsers && params.userTypesUsers.length >= NUMBER_USER_TYPES_TO_ACCESS_CHOICE_TYPE && params.userTypesUsers.some(userType => userType.userTypeId === PROVIDER_USER_TYPE_ID && userType.active)
+  }
 
   async function getRememberMe(): Promise<SignInAuthRememberUserStorageSecurityKeyDto | null> {
     const dataRememberMeStringFormat = await getSecurityStorageState<SignInAuthRememberUserStorageSecurityKeyDto>(SIGN_IN_REMEMBER_USER_STORAGE_SECURITY_KEY)
@@ -63,7 +75,7 @@ export function SignInProvider(props: ProviderProps) {
   }
   async function createSession({ isRememberMe, ...data }: CreateSessionParamsDto) {
     try {
-
+      setIsSignInLoading(true)
       if (isRememberMe) {
         const dataRememberMe = {
           user: data.user,
@@ -87,28 +99,74 @@ export function SignInProvider(props: ProviderProps) {
       }
       const dataRefreshTokenStringFormat = JSON.stringify(dataRefreshToken);
       await setSecurityStorageItemAsync(SIGN_IN_AUTH_REFRESH_TOKEN_STORAGE_SECURITY_KEY, dataRefreshTokenStringFormat)
-
+      router.push('(auth)/choose-type-user')
     } catch (error) {
       const isLocalError = await appErrorVerifyErrorLocal(error);
       if (isLocalError) {
         return;
       }
       appErrorVerifyError(error)
+    } finally {
+      setIsSignInLoading(false)
     }
   }
 
+  async function getUsersTypes(): Promise<GetUsersTypesResultDto> {
+    try {
+      setIsSignInLoading(true)
+      const userTypes = await getUserTypesService()
+      setUserTypes(userTypes)
+      return userTypes;
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal(error);
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    } finally {
+      setIsSignInLoading(false)
+    }
+  }
 
   async function appErrorVerifyErrorLocal(error: any): Promise<boolean> {
-    const code = error?.response?.data?.code
+    const code = error?.response?.data?.code || error?.code
 
     const codes = Object.keys(SignInErrors)
 
     const existCodeInCodes = codes.includes(code.toString());
-    if (!existCodeInCodes) {
-      return true;
+
+    if (existCodeInCodes) {
+      if (ERRORS_TO_RESET_SESSION.includes(code.toString())) {
+        await removeSecurityStorageAll();
+        router.replace('/sign-in')
+        return;
+      }
     }
+
     setErrorLocalSignInContext(SignInErrors[code].reason)
     return false;
+  }
+
+  async function logout(): Promise<void> {
+    try {
+      setIsSignInLoading(true)
+      const keys = [
+        SIGN_IN_AUTH_TOKEN_STORAGE_SECURITY_KEY,
+        SIGN_IN_AUTH_REFRESH_TOKEN_STORAGE_SECURITY_KEY,
+        SIGN_IN_REMEMBER_USER_STORAGE_SECURITY_KEY
+      ]
+      await removeSecurityByKeysItemsAsync(keys)
+
+      router.replace('/sign-in')
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal(error);
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    } finally {
+      setIsSignInLoading(false)
+    }
   }
 
   const contextValue = useMemo(() => ({
@@ -118,7 +176,11 @@ export function SignInProvider(props: ProviderProps) {
     getRememberMe,
     errorLocalSignInContext,
     setErrorLocalSignInContext,
-    hasSession
+    hasSession,
+    getUsersTypes,
+    userTypes,
+    verifyUserProviderType,
+    logout
   }), [
     isSignInLoading,
     createSession,
@@ -126,7 +188,11 @@ export function SignInProvider(props: ProviderProps) {
     getRememberMe,
     errorLocalSignInContext,
     setErrorLocalSignInContext,
-    hasSession
+    hasSession,
+    getUsersTypes,
+    userTypes,
+    verifyUserProviderType,
+    logout
   ]);
   return (
     <SignInContext.Provider

@@ -19,3 +19,7 @@ export const DOCUMENT_TYPES: DocumentType = {
   CPF: DocumentsTypeEnum.CPF,
   CNPJ: DocumentsTypeEnum.CNPJ,
 };
+
+export const PROVIDER_USER_TYPE_ID = 2;
+
+export const NUMBER_USER_TYPES_TO_ACCESS_CHOICE_TYPE = 2;

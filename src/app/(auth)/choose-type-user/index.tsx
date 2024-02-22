@@ -14,38 +14,44 @@ import {
 } from "./styles";
 import { useSignIn } from "../../../context/sign-in/sign-in.context";
 import { useEffect } from "react";
+import Loading from "../../../components/loading";
 
-export default function ChoseTypeUser() {
+export default function ChooseTypeUser() {
   const router = useRouter()
-  const { getTypes } = useSignIn()
+  const { getUsersTypes, verifyUserProviderType, isSignInLoading } = useSignIn()
 
   useEffect(() => {
     (async () => {
-      const types = await getTypes()
-      if (types.length < 2) {
-        router.replace('/provider/home');
+      const userTypes = await getUsersTypes()
+      if (!verifyUserProviderType(userTypes)) {
+        router.replace('/client/home')
       }
     })()
   }, [])
 
   function handleGoToProvider() {
-    router.push('/provider/home')
+    router.push('/provider/options/sections/home')
   }
   function handleGoToClient() {
     router.push('/client/home')
   }
+
+  if (isSignInLoading) {
+    return <Loading />
+  }
+
   return (
     <Container>
       <ContainerHeader>
-        <ContainerTitle>
-          <Title>Selecione a area</Title>
-          <Phrase>{`Parece que você tem um perfil múltiplo, \n     selecione seu perfil hoje!`}</Phrase>
-        </ContainerTitle>
         <ContainerButtonClose>
           <IconClose
             name="close"
           />
         </ContainerButtonClose>
+        <ContainerTitle>
+          <Title>Selecione a area</Title>
+          <Phrase>{`Parece que você tem um perfil múltiplo, \n     selecione seu perfil hoje!`}</Phrase>
+        </ContainerTitle>
       </ContainerHeader>
       <ContainerBody>
         <ContainerButtons>
