@@ -4,13 +4,20 @@ import { useError } from "../errors.context";
 import { getSecurityStorageState, removeSecurityStorageAll } from "../../storage/secure/security.storage";
 import { SIGN_IN_REMEMBER_USER_STORAGE_SECURITY_KEY, SignInAuthRememberUserStorageSecurityKeyDto } from "../../storage/keys/sign-in.keys";
 import { AppointmentStatus } from "../constants/appointment.constant";
-import { AppointmentsByStatusInterface, FormattedAppointmentToAppointmentsByStatusParamsDto, GetAppointmentByStatusResultDto, GetAvailableDaysItemListResultDto, SetAvailableDaysItemListResultDto, SetAvailableDaysParamsDto } from "./provider.context.interface";
+import { AppointmentsByStatusInterface, CreateServiceParamsDto, FormattedAppointmentToAppointmentsByStatusParamsDto, GetAppointmentByStatusParamsDto, GetAppointmentByStatusResultDto, GetAvailableDaysItemListResultDto, GetServicesParamsDto, GetServicesResultDto, SetAvailabilitiesHoursParamsDto, SetAvailableDaysItemListResultDto, SetAvailableDaysParamsDto, SetAvailableHoursItemListResultDto } from "./provider.context.interface";
 import { PROVIDER_ERRORS_TO_RESET_SESSION, ProviderErrors } from "./provider.error";
 import { getAppointmentsByStatusProviderService } from "../../services/api/providers/get-appointments-by-status.service";
 import { getAppointmentByIdProviderService } from "../../services/api/providers/get-appointment-by-id.service";
 import { getAvailableDaysProviderService } from "../../services/api/providers/get-available-days.service";
 import { DAYS_WEEK_IDS, DAYS_WEEK_SELECT_ITEMS, DaysItemList } from "../constants/datetime.constant";
 import { setAvailableDaysProviderService } from "../../services/api/providers/set-available-days.service";
+import { getAvailableHoursProviderService } from "../../services/api/providers/get-available-hours.service";
+import { setAvailableHoursProviderService } from "../../services/api/providers/set-available-hours.service";
+import { AvailableHoursItems, GetAvailableHoursProviderServiceResultDto, Service, ServiceParamsPagination, ServicesItem } from "../../services/api/providers/providers.interface";
+import { createServiceProviderService } from "../../services/api/providers/create-service.service";
+import { getServicesProviderService } from "../../services/api/providers/get-services.service";
+import { set } from "react-hook-form";
+import { Pagination } from "../../modules/common/common.interface";
 
 
 interface ProviderContextInterface {
@@ -18,7 +25,7 @@ interface ProviderContextInterface {
   setIsProviderLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setAppointmentsConfirmLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setAppointmentsCreateLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  getAppointmentByStatus(status: AppointmentStatus): Promise<GetAppointmentByStatusResultDto>;
+  getAppointmentByStatus(params: GetAppointmentByStatusParamsDto): Promise<GetAppointmentByStatusResultDto>;
   appointmentsConfirmLoading: boolean;
   appointmentsCreateLoading: boolean;
   handleSelectAppointment(id: string): Promise<void>;
@@ -26,6 +33,13 @@ interface ProviderContextInterface {
   setAvailableDaysByProvider(params: SetAvailableDaysParamsDto[]): Promise<SetAvailableDaysItemListResultDto[]>;
   daysAvailable: DaysItemList[];
   setDaysAvailable: React.Dispatch<React.SetStateAction<DaysItemList[]>>;
+  setAvailabilitiesHoursByProvider(params: SetAvailabilitiesHoursParamsDto[]): Promise<SetAvailableHoursItemListResultDto[]>;
+  getAvailabilitiesHoursByProvider(): Promise<GetAvailableHoursProviderServiceResultDto[]>;
+  hoursAvailable: AvailableHoursItems[];
+  setHoursAvailable: React.Dispatch<React.SetStateAction<AvailableHoursItems[]>>;
+  createProviderService: (params: CreateServiceParamsDto) => Promise<void>;
+  getServices(params: GetServicesParamsDto): Promise<GetServicesResultDto>;
+  services: ServicesItem;
 }
 
 // Define the Provider component
@@ -56,6 +70,28 @@ export function ProviderProvider(props: ProviderProps) {
     expired: {}
   } as AppointmentsByStatusInterface)
   const [daysAvailable, setDaysAvailable] = useState<DaysItemList[]>(DAYS_WEEK_SELECT_ITEMS);
+  const [hoursAvailable, setHoursAvailable] = useState<AvailableHoursItems[]>([]);
+  const [services, setServices] = useState<ServicesItem>({
+    _links: {
+      first: {
+        href: ""
+      },
+      last: {
+        href: ""
+      },
+      next: {
+        href: ""
+      },
+      previous: {
+        href: ""
+      }
+    },
+    results: [],
+    limit: '0',
+    offset: '0',
+    size: '0'
+  });
+
 
 
 
@@ -71,11 +107,11 @@ export function ProviderProvider(props: ProviderProps) {
     return dataRememberMeStringFormat
   }
 
-  async function getAppointmentByStatus(status: AppointmentStatus): Promise<GetAppointmentByStatusResultDto> {
+  async function getAppointmentByStatus(params: GetAppointmentByStatusParamsDto): Promise<GetAppointmentByStatusResultDto> {
     try {
       setIsProviderLoading(true)
-      const result = await getAppointmentsByStatusProviderService({ status })
-      const formattedAppointments = formattedAppointmentToAppointmentsByStatus({ status, ...result });
+      const result = await getAppointmentsByStatusProviderService(params)
+      const formattedAppointments = formattedAppointmentToAppointmentsByStatus({ status: params.status, ...result });
       setAppointments(formattedAppointments)
       return formattedAppointments
     } catch (error) {
@@ -94,7 +130,6 @@ export function ProviderProvider(props: ProviderProps) {
 
     const codes = Object.keys(ProviderErrors)
     const existCodeInCodes = codes.includes(code.toString());
-
     if (existCodeInCodes) {
       if (PROVIDER_ERRORS_TO_RESET_SESSION.includes(code)) {
         await removeSecurityStorageAll();
@@ -172,6 +207,94 @@ export function ProviderProvider(props: ProviderProps) {
     }
   }
 
+  async function getAvailabilitiesHoursByProvider(): Promise<GetAvailableHoursProviderServiceResultDto[]> {
+    try {
+      setIsProviderLoading(true)
+      const result = await getAvailableHoursProviderService()
+      setHoursAvailable(result)
+      return result
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal(error);
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    } finally {
+      setIsProviderLoading(false)
+    }
+  }
+
+  async function createProviderService(params: CreateServiceParamsDto) {
+    try {
+      setIsProviderLoading(true)
+      await createServiceProviderService(params)
+      router.push('/provider/options/services')
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal(error);
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    } finally {
+      setIsProviderLoading(false)
+    }
+  }
+
+  async function setAvailabilitiesHoursByProvider(params: SetAvailabilitiesHoursParamsDto[]): Promise<SetAvailableHoursItemListResultDto[]> {
+    try {
+      setIsProviderLoading(true)
+      const selectedHoursStartEnd = []
+      let selectedIntervalHours = []
+      let addInOtherArray = 0;
+      params.forEach(hour => {
+        if (hour.selected) {
+          selectedIntervalHours.push(hour.hour)
+          addInOtherArray += 1
+        } else {
+          if (addInOtherArray > 1) {
+            selectedHoursStartEnd.push({
+              start: selectedIntervalHours[0],
+              end: selectedIntervalHours[selectedIntervalHours.length - 1],
+            })
+            selectedIntervalHours = []
+            addInOtherArray = 0;
+          }
+        }
+      })
+
+      const result = await setAvailableHoursProviderService({
+        hours: selectedHoursStartEnd
+      })
+
+      return result
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal(error);
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    } finally {
+      setIsProviderLoading(false)
+    }
+  }
+
+  async function getServices(params: GetServicesParamsDto): Promise<GetServicesResultDto> {
+    try {
+      setIsProviderLoading(true)
+      const result = await getServicesProviderService(params)
+      setServices(result)
+      return result
+    } catch (error) {
+      const isLocalError = await appErrorVerifyErrorLocal(error);
+      if (isLocalError) {
+        return;
+      }
+      appErrorVerifyError(error)
+    } finally {
+      setIsProviderLoading(false)
+    }
+  }
+
   const contextValue = useMemo(() => ({
     isProviderLoading,
     setIsProviderLoading,
@@ -184,7 +307,14 @@ export function ProviderProvider(props: ProviderProps) {
     getAvailableDaysByProvider,
     daysAvailable,
     setDaysAvailable,
-    setAvailableDaysByProvider
+    setAvailableDaysByProvider,
+    setAvailabilitiesHoursByProvider,
+    getAvailabilitiesHoursByProvider,
+    hoursAvailable,
+    setHoursAvailable,
+    createProviderService,
+    getServices,
+    services
   }), [
     isProviderLoading,
     setIsProviderLoading,
@@ -197,7 +327,14 @@ export function ProviderProvider(props: ProviderProps) {
     getAvailableDaysByProvider,
     daysAvailable,
     setDaysAvailable,
-    setAvailableDaysByProvider
+    setAvailableDaysByProvider,
+    setAvailabilitiesHoursByProvider,
+    getAvailabilitiesHoursByProvider,
+    hoursAvailable,
+    setHoursAvailable,
+    createProviderService,
+    getServices,
+    services
   ]);
   return (
     <ProviderContext.Provider

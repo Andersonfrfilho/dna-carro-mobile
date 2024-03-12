@@ -1,11 +1,12 @@
 import { Stack } from "expo-router";
 
-export default function RegisterHoursAvailable() {
+export default function ProviderOptionsServices() {
   return (
     <Stack
       screenOptions={{
         headerShown: false,
       }}
+      id="ProviderOptionsServices"
     />
   );
 }

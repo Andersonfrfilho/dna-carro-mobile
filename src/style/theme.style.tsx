@@ -13,6 +13,8 @@ export const theme = {
     secondary: "#EA8600",
     powderWhite: "#FFFDF9",
     persianGreen: "#06B49A",
+    lightGreen: "#A9F5D0",
+    darkGreen: "#0B5345",
     lightBlue: "#AFDBD2",
     onyx: "#36313D",
     background: "#3A3128",

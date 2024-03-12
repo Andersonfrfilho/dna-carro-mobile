@@ -11,6 +11,7 @@ export default function CustomDrawer(props: React.FC<CustomDrawerContentProps>) 
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
       <DrawerItem label={"Sair"} onPress={logout} icon={({ color, size }) => <IconLogout name="logout" color={color} size={size} />} />
+      <DrawerItem label={"Sair"} onPress={logout} icon={({ color, size }) => <IconLogout name="logout" color={color} size={size} />} />
     </DrawerContentScrollView>
   );
 }

@@ -1,14 +1,13 @@
-export interface Link {
-  href: string;
-}
+import {
+  Pagination,
+  PaginationParamsDto,
+} from "../../../modules/common/common.interface";
 
-export interface AppointmentPagination {
-  limit: string;
-  offset: string;
-  results: Appointment[];
-  size: string;
-  _links: Links;
-}
+export interface ServiceParamsPagination extends PaginationParamsDto<Service> {}
+
+export interface ServicesPagination extends Pagination<Service> {}
+
+export interface AppointmentPagination extends Pagination<Appointment> {}
 
 export interface Appointment {
   id: string;
@@ -138,22 +137,18 @@ export interface Event {
   details: any;
 }
 
-export interface Links {
-  next: Next;
-  previous: Previous;
-  last: Last;
-  first: First;
-}
-
-export interface Next extends Link {}
-
-export interface Previous extends Link {}
-
-export interface Last extends Link {}
-
-export interface First extends Link {}
-
 export interface AvailableDay {
   id: string;
   day: string;
 }
+
+export interface AvailableHoursItems {
+  id: string;
+  hour: string;
+  selected: boolean;
+}
+
+export interface GetAvailableHoursProviderServiceResultDto
+  extends AvailableHoursItems {}
+
+export interface ServicesItem extends Pagination<Service> {}

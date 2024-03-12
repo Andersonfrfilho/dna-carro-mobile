@@ -41,11 +41,6 @@ export const ContainerSecondBorder = styled.View<ContainerSecondBorderProps>`
     );
   }}
 `;
-export const ContainerLabel = styled.View`
-  height: 20px;
-
-  padding-left: 15px;
-`;
 export const ContainerInput = styled.View<ContainerInputProps>`
   border-width: 5px;
   border-color: ${(props) => props.theme.colors.transparent.blackGray};
@@ -56,6 +51,11 @@ export const ContainerInput = styled.View<ContainerInputProps>`
     css`
       border-color: ${props.theme.colors.errors.darkRed};
     `}
+`;
+export const ContainerLabel = styled.View`
+  height: 20px;
+
+  padding-left: 15px;
 `;
 
 export const Label = styled.Text`

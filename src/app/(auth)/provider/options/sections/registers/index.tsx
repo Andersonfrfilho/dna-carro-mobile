@@ -14,6 +14,12 @@ export default function ProviderOptionsSectionsRegister() {
   function handleToGoRegisterAvailableDays() {
     router.push("/provider/options/sections/registers/days-available");
   }
+  function handleToGoRegisterAvailableHours() {
+    router.push("/provider/options/sections/registers/hours-available");
+  }
+  function handleToGoRegisterServices() {
+    router.push("/provider/options/sections/registers/services-available");
+  }
   return (
     <Container>
       <Header>
@@ -29,13 +35,13 @@ export default function ProviderOptionsSectionsRegister() {
         <ContainerButtonHoursAvailable>
           <ButtonRectangleBorder
             title="Horas Disponíveis"
-            onPress={() => { }}
+            onPress={handleToGoRegisterAvailableHours}
           />
         </ContainerButtonHoursAvailable>
         <ContainerButtonServices>
           <ButtonRectangleBorder
             title="Serviços"
-            onPress={() => { }}
+            onPress={handleToGoRegisterServices}
           />
         </ContainerButtonServices>
       </Body>

@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function RegisterHoursAvailable() {
+export default function RegisterDaysAvailable() {
   return (
     <Stack
       screenOptions={{
